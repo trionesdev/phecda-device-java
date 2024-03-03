@@ -9,16 +9,20 @@ class Container {
     companion object {
         @JvmStatic
         val locator: ServiceLocator = ServiceLocatorUtilities.createAndPopulateServiceLocator()
+        fun newContainer(instances: List<Any?>): Container {
+            val container = Container()
+            container.init()
+            container.update(instances)
+            return container
+        }
     }
 
-    fun update(instances: List<Any>?) {
-        if (instances?.isNotEmpty() == true) {
+    fun update(instances: List<Any?>) {
+        if (instances.isNotEmpty()) {
             instances.forEach { instance ->
                 ServiceLocatorUtilities.bind(locator, object : AbstractBinder() {
                     override fun configure() {
-                        if (Objects.isNull(instance)) {
-                            return
-                        }
+                        instance ?: let { return }
                         bind(instance) to instance.javaClass as Class<*>
                         val interfaces = instance.javaClass.interfaces
                         if (interfaces.isNotEmpty()) {
