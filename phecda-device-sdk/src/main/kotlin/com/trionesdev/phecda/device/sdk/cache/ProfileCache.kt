@@ -50,19 +50,23 @@ class ProfileCacheImpl : ProfileCache {
     var deviceResourceMap: MutableMap<String, MutableMap<String, DeviceResource>> = mutableMapOf()
     var deviceCommandMap: MutableMap<String, MutableMap<String, DeviceCommand>> = mutableMapOf()
     override fun forName(name: String): DeviceProfile? {
-        TODO("Not yet implemented")
+        return this.deviceProfileMap[name]
     }
 
     override fun all(): MutableList<DeviceProfile> {
-        TODO("Not yet implemented")
+        return this.deviceProfileMap.values.toMutableList()
     }
 
     override fun add(profile: DeviceProfile) {
-        TODO("Not yet implemented")
+        profile.name?.let { profileName ->
+            this.deviceProfileMap[profileName] = profile
+        }
     }
 
     override fun update(profile: DeviceProfile) {
-        TODO("Not yet implemented")
+        profile.name?.let { profileName ->
+            this.deviceProfileMap[profileName] = profile
+        }
     }
 
     override fun removeByName(name: String) {
