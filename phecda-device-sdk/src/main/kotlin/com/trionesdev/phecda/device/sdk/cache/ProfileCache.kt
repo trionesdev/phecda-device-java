@@ -10,6 +10,7 @@ interface ProfileCache {
     companion object {
         @JvmStatic
         var pc: ProfileCache? = null
+        @JvmStatic
         fun newProfileCache(profiles: List<DeviceProfile>): ProfileCache {
             val dpMap: MutableMap<String, DeviceProfile> = mutableMapOf()
             val drMap: MutableMap<String, MutableMap<String, DeviceResource>> = mutableMapOf()
