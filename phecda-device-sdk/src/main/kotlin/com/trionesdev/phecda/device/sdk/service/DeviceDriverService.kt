@@ -4,19 +4,19 @@ import com.trionesdev.phecda.device.bootstrap.args.CommonArgs
 import com.trionesdev.phecda.device.bootstrap.args.DefaultArgs
 import com.trionesdev.phecda.device.bootstrap.environement.Variables
 import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
-import com.trionesdev.phecda.device.sdk.interfaces.DeviceServiceSDK
+import com.trionesdev.phecda.device.sdk.interfaces.DeviceDriverServiceSDK
 import com.trionesdev.phecda.device.sdk.interfaces.ProtocolDriver
 
-class DeviceService : DeviceServiceSDK {
+class DeviceDriverService : DeviceDriverServiceSDK {
 
     companion object {
         @JvmStatic
         var EnvInstanceName: String = "PHECDA_INSTANCE_NAME"
-        fun newDeviceService(serviceKey: String?, serviceVersion: String?, driver: ProtocolDriver): DeviceServiceSDK {
+        fun newDeviceService(serviceKey: String?, serviceVersion: String?, driver: ProtocolDriver): DeviceDriverServiceSDK {
             if (serviceKey.isNullOrBlank()) {
                 throw RuntimeException("serviceKey is null")
             }
-            return DeviceService().apply {
+            return DeviceDriverService().apply {
                 this.serviceKey = serviceKey
                 this.driver = driver
                 this.config = ConfigurationStruct()

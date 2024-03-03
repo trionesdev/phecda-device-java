@@ -1,4 +1,6 @@
 package com.trionesdev.phecda.device.sdk.interfaces
 
-interface Configuration {
+interface DeviceDriverServiceSDK {
+
+    fun run()
 }
