@@ -27,7 +27,8 @@ interface ProfileCache {
             }
             pc = ProfileCacheImpl().apply {
                 this.deviceProfileMap = dpMap
-
+                this.deviceResourceMap = drMap
+                this.deviceCommandMap = dcMap
             }
             return pc!!
         }
