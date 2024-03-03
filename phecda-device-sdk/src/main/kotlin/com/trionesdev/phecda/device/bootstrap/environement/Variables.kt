@@ -1,7 +1,7 @@
 package com.trionesdev.phecda.device.bootstrap.environement
 
-import com.trionesdev.phecda.device.bootstrap.log.Slf4j
-import com.trionesdev.phecda.device.bootstrap.log.Slf4j.Companion.log
+import com.trionesdev.kotlin.log.Slf4j
+import com.trionesdev.kotlin.log.Slf4j.Companion.log
 
 @Slf4j
 class Variables {
