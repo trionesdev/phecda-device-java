@@ -3,7 +3,7 @@ package com.trionesdev.phecda.device.sdk.autoevent
 import com.trionesdev.phecda.device.bootstrap.BootstrapHandlerArgs
 import com.trionesdev.phecda.device.sdk.interfaces.AutoEventManager
 
-class AutoEventManagerInstance : AutoEventManager {
+class DeviceAutoEventManager : AutoEventManager {
     companion object {
         fun bootstrapHandler(args: BootstrapHandlerArgs): Boolean {
             return true

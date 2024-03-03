@@ -7,7 +7,7 @@ import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.bootstrap.environement.Variables
 import com.trionesdev.phecda.device.bootstrap.startup.Timer
 import com.trionesdev.phecda.device.contracts.model.DeviceService
-import com.trionesdev.phecda.device.sdk.autoevent.AutoEventManagerInstance
+import com.trionesdev.phecda.device.sdk.autoevent.DeviceAutoEventManager
 import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
 import com.trionesdev.phecda.device.sdk.interfaces.DeviceDriverServiceSDK
 import com.trionesdev.phecda.device.sdk.interfaces.ProtocolDriver
@@ -68,7 +68,7 @@ class DeviceDriverService : DeviceDriverServiceSDK {
             startupTimer,
             dic,
             mutableListOf(
-                AutoEventManagerInstance::bootstrapHandler
+                DeviceAutoEventManager::bootstrapHandler
             )
         )
 
