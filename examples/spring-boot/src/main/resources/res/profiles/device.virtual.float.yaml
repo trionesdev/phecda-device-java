@@ -1,0 +1,102 @@
+name: "Random-Float-Device"
+manufacturer: "IOTech"
+model: "Device-Virtual-01"
+labels:
+- "device-virtual-example"
+description: "Example of Device-Virtual"
+
+deviceResources:
+-
+  name: "EnableRandomization_Float32"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "EnableRandomization_Float64"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "Float32"
+  isHidden: false
+  description: "Generate random float32 value"
+  properties:
+    valueType: "Float32"
+    readWrite: "RW"
+    defaultValue: "0"
+-
+  name: "Float64"
+  isHidden: false
+  description: "Generate random float64 value"
+  properties:
+    valueType: "Float64"
+    readWrite: "RW"
+    defaultValue: "0"
+-
+  name: "EnableRandomization_Float32Array"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "EnableRandomization_Float64Array"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "Float32Array"
+  isHidden: false
+  description: "Generate random float32 array value"
+  properties:
+    valueType: "Float32Array"
+    readWrite: "RW"
+    defaultValue: "[0]"
+-
+  name: "Float64Array"
+  isHidden: false
+  description: "Generate random float64 array value"
+  properties:
+    valueType: "Float64Array"
+    readWrite: "RW"
+    defaultValue: "[0]"
+
+deviceCommands:
+-
+  name: "WriteFloat32Value"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Float32" }
+    - { deviceResource: "EnableRandomization_Float32", defaultValue: "false" }
+-
+  name: "WriteFloat64Value"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Float64" }
+    - { deviceResource: "EnableRandomization_Float64", defaultValue: "false" }
+-
+  name: "WriteFloat32ArrayValue"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Float32Array" }
+    - { deviceResource: "EnableRandomization_Float32Array", defaultValue: "false" }
+-
+  name: "WriteFloat64ArrayValue"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Float64Array" }
+    - { deviceResource: "EnableRandomization_Float64Array", defaultValue: "false" }

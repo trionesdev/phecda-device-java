@@ -163,7 +163,7 @@ class DeviceDriverService : DeviceDriverServiceSDK {
     private fun setServiceName(instanceName: String) {
         var instanceNameInner = instanceName
         val envValue = System.getenv(EnvInstanceName)
-        if (envValue.isNullOrBlank()) {
+        if (!envValue.isNullOrBlank()) {
             instanceNameInner = envValue
         }
         this.baseServiceName = this.serviceKey

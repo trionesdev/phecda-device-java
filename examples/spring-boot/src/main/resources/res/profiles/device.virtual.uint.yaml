@@ -1,0 +1,194 @@
+name: "Random-UnsignedInteger-Device"
+manufacturer: "IOTech"
+model: "Device-Virtual-01"
+labels:
+- "device-virtual-example"
+description: "Example of Device-Virtual"
+
+deviceResources:
+-
+  name: "EnableRandomization_Uint8"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "EnableRandomization_Uint16"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "EnableRandomization_Uint32"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "EnableRandomization_Uint64"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "Uint8"
+  isHidden: false
+  description: "Generate random uint8 value"
+  properties:
+    valueType: "Uint8"
+    readWrite: "RW"
+    defaultValue: "0"
+-
+  name: "Uint16"
+  isHidden: false
+  description: "Generate random uint16 value"
+  properties:
+    valueType: "Uint16"
+    readWrite: "RW"
+    defaultValue: "0"
+-
+  name: "Uint32"
+  isHidden: false
+  description: "Generate random uint32 value"
+  properties:
+    valueType: "Uint32"
+    readWrite: "RW"
+    defaultValue: "0"
+-
+  name: "Uint64"
+  isHidden: false
+  description: "Generate random uint64 value"
+  properties:
+    valueType: "Uint64"
+    readWrite: "RW"
+    defaultValue: "0"
+-
+  name: "EnableRandomization_Uint8Array"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "EnableRandomization_Uint16Array"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "EnableRandomization_Uint32Array"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "EnableRandomization_Uint64Array"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "Uint8Array"
+  isHidden: false
+  description: "Generate random uint8 array value"
+  properties:
+    valueType: "Uint8Array"
+    readWrite: "RW"
+    defaultValue: "[0]"
+-
+  name: "Uint16Array"
+  isHidden: false
+  description: "Generate random uint16 array value"
+  properties:
+    valueType: "Uint16Array"
+    readWrite: "RW"
+    defaultValue: "[0]"
+-
+  name: "Uint32Array"
+  isHidden: false
+  description: "Generate random uint32 array value"
+  properties:
+    valueType: "Uint32Array"
+    readWrite: "RW"
+    defaultValue: "[0]"
+-
+  name: "Uint64Array"
+  isHidden: false
+  description: "Generate random uint64 array value"
+  properties:
+    valueType: "Uint64Array"
+    readWrite: "RW"
+    defaultValue: "[0]"
+
+deviceCommands:
+-
+  name: "WriteUint8Value"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+  - { deviceResource: "Uint8" }
+  - { deviceResource: "EnableRandomization_Uint8", defaultValue: "false" }
+-
+  name: "WriteUint16Value"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Uint16" }
+    - { deviceResource: "EnableRandomization_Uint16", defaultValue: "false" }
+-
+  name: "WriteUint32Value"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Uint32" }
+    - { deviceResource: "EnableRandomization_Uint32", defaultValue: "false" }
+-
+  name: "WriteUint64Value"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Uint64" }
+    - { deviceResource: "EnableRandomization_Uint64", defaultValue: "false" }
+-
+  name: "WriteUint8ArrayValue"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Uint8Array" }
+    - { deviceResource: "EnableRandomization_Uint8Array", defaultValue: "false" }
+-
+  name: "WriteUint16ArrayValue"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Uint16Array" }
+    - { deviceResource: "EnableRandomization_Uint16Array", defaultValue: "false" }
+-
+  name: "WriteUint32ArrayValue"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Uint32Array" }
+    - { deviceResource: "EnableRandomization_Uint32Array", defaultValue: "false" }
+-
+  name: "WriteUint64ArrayValue"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Uint64Array" }
+    - { deviceResource: "EnableRandomization_Uint64Array", defaultValue: "false" }
