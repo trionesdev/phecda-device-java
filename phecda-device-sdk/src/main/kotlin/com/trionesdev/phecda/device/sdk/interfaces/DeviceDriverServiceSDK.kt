@@ -20,7 +20,7 @@ interface DeviceDriverServiceSDK {
     fun addDeviceAutoEvent(deviceName: String,autoEvent: AutoEvent)
     fun removeDeviceAutoEvent(deviceName: String, autoEventName: String)
     fun run()
-    fun name()
+    fun name():String?
     fun asyncReadingsEnabled(): Boolean
     fun asyncValuesChannel(): Disruptor<AsyncValuesEvent>?
 }

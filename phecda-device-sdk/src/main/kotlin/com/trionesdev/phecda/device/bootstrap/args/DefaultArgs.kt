@@ -13,6 +13,7 @@ class DefaultArgs : CommonArgs {
     }
 
     private var additionalUsage: String? = null
+    private var overwriteConfig = false
     private var devMode: Boolean = false
     private var commonConfig = ""
     private var profile = ""
@@ -65,6 +66,26 @@ class DefaultArgs : CommonArgs {
             res[key] = value
         }
         return res
+    }
+
+    override fun overwriteConfig(): Boolean {
+        return this.overwriteConfig
+    }
+
+    override fun profile(): String? {
+        return this.profile
+    }
+
+    override fun configDirectory(): String? {
+        return this.configDir
+    }
+
+    override fun configFileName(): String? {
+        return this.configFileName
+    }
+
+    override fun commonConfig(): String? {
+        return this.commonConfig
     }
 
     override fun parse(arguments: Array<String>?) {

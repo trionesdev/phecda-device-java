@@ -6,13 +6,14 @@ import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.bootstrap.environement.Variables
 import com.trionesdev.phecda.device.bootstrap.interfaces.Configuration
 import com.trionesdev.phecda.device.bootstrap.startup.Timer
+import com.trionesdev.phecda.device.bootstrap.util.Utils
 import com.trionesdev.phecda.device.contracts.go.WaitGroup
 import org.yaml.snakeyaml.Yaml
 import java.nio.file.Paths
 
 class Processor {
     companion object {
-        fun newProcessor(args: CommonArgs, envVars: Variables, startupTimer: Timer, dic: Container): Processor {
+        fun newProcessor(args: CommonArgs?, envVars: Variables?, startupTimer: Timer?, dic: Container): Processor {
             return Processor().apply {
                 this.args = args
                 this.envVars = envVars
@@ -28,11 +29,11 @@ class Processor {
     var wg: WaitGroup? = null
     var dic: Container? = null
 
-    fun process(serviceKey: String, serviceConfig: Configuration) {
+    fun process(serviceKey: String?, serviceConfig: Configuration?) {
 
         val filePath = getConfigFileLocation(args!!)
         val configMap = loadConfigYamlFromFile(filePath)
-
+        Utils.mergeValues(serviceConfig!!,configMap!!)
     }
 
     fun loadCommonConfigFromFile(configFile: String, serviceConfig: Configuration) {
