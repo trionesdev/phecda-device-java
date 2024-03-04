@@ -10,9 +10,12 @@ import com.trionesdev.phecda.device.bootstrap.args.DefaultArgs
 import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.bootstrap.environement.Variables
 import com.trionesdev.phecda.device.bootstrap.startup.Timer
+import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
+import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindDuplicateName
 import com.trionesdev.phecda.device.contracts.go.WaitGroup
 import com.trionesdev.phecda.device.contracts.model.*
 import com.trionesdev.phecda.device.sdk.autoevent.DeviceAutoEventManager
+import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.common.SdkCommonUtils
 import com.trionesdev.phecda.device.sdk.common.SdkConstants
 import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
@@ -60,36 +63,44 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
     var config: ConfigurationStruct? = null
     var wg: WaitGroup? = null
     var dic: Container? = null
-    override fun addDevice(device: Device) {
-        TODO("Not yet implemented")
+    override fun addDevice(device: Device): String? {
+        Cache.devices()?.forName(device.name!!)?.let {
+            throw CommonPhedaException.newCommonPhedaException(
+                KindDuplicateName,
+                String.format("name conflicted, Device %s exists", device.name), null
+            )
+        }
+        device.serviceName = serviceKey
+        log.debug("Adding managed Device {}", device.name)
+        return ""
     }
 
     override fun devices(): MutableList<Device> {
-        TODO("Not yet implemented")
+        return Cache.devices()?.all() ?: mutableListOf()
     }
 
-    override fun getDeviceByName(name: String) {
-        TODO("Not yet implemented")
+    override fun getDeviceByName(name: String): Device? {
+        return Cache.devices()?.forName(name)
     }
 
     override fun updateDevice(device: Device) {
-        TODO("Not yet implemented")
+        Cache.devices()?.update(device)
     }
 
     override fun removeDeviceByName(name: String) {
-        TODO("Not yet implemented")
+        Cache.devices()?.removeByName(name)
     }
 
     override fun addDeviceProfile(profile: DeviceProfile) {
-        TODO("Not yet implemented")
+        Cache.profiles()?.add(profile)
     }
 
     override fun deviceProfiles(): MutableList<DeviceProfile> {
-        TODO("Not yet implemented")
+        return Cache.profiles()?.all() ?: mutableListOf()
     }
 
-    override fun getProfileByName(name: String): DeviceProfile {
-        TODO("Not yet implemented")
+    override fun getProfileByName(name: String): DeviceProfile? {
+        return Cache.profiles()?.forName(name)
     }
 
     override fun updateDeviceProfile(profile: DeviceProfile) {
