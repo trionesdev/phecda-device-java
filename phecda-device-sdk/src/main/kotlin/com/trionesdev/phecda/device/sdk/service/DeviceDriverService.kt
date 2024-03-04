@@ -22,7 +22,6 @@ import com.trionesdev.phecda.device.sdk.interfaces.ProtocolDriver
 import com.trionesdev.phecda.device.sdk.model.AsyncValues
 import com.trionesdev.phecda.device.sdk.service.init.ServiceBootstrap
 import com.trionesdev.phecda.device.sdk.transformer.Transformer
-import java.security.Provider.Service
 
 @Slf4j
 class DeviceDriverService : DeviceDriverServiceSDK {
@@ -115,7 +114,7 @@ class DeviceDriverService : DeviceDriverServiceSDK {
 
     override fun run() {
         var instanceName = ""
-        val startupTimer = Timer()
+        val startupTimer = Timer.newStartUpTimer(serviceKey!!)
         val additionalUsage =
             """    
                 -i, --instance  Provides a service name suffix which allows unique instance to be created
@@ -148,16 +147,16 @@ class DeviceDriverService : DeviceDriverServiceSDK {
         wg.await()
     }
 
-    override fun name() {
-        TODO("Not yet implemented")
+    override fun name(): String? {
+        return this.serviceKey
     }
 
     override fun asyncReadingsEnabled(): Boolean {
-        TODO("Not yet implemented")
+        return config?.device?.enableAsyncReadings ?: false
     }
 
     override fun asyncValuesChannel(): Disruptor<AsyncValuesEvent>? {
-        TODO("Not yet implemented")
+        return asyncCh
     }
 
     private fun setServiceName(instanceName: String) {

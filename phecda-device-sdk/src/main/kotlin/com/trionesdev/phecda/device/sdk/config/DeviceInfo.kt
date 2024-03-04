@@ -8,4 +8,7 @@ class DeviceInfo {
 
     @JSONField(name = "DevicesDir")
     var devicesDir: String? = null
+
+    @JSONField(name = "EnableAsyncReadings")
+    var enableAsyncReadings = false
 }
