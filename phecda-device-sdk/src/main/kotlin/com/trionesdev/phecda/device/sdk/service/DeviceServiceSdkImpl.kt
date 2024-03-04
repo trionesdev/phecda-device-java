@@ -14,17 +14,18 @@ import com.trionesdev.phecda.device.contracts.go.WaitGroup
 import com.trionesdev.phecda.device.contracts.model.*
 import com.trionesdev.phecda.device.sdk.autoevent.DeviceAutoEventManager
 import com.trionesdev.phecda.device.sdk.common.SdkCommonUtils
+import com.trionesdev.phecda.device.sdk.common.SdkConstants
 import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
 import com.trionesdev.phecda.device.sdk.disruptor.AsyncValuesEvent
 import com.trionesdev.phecda.device.sdk.interfaces.AutoEventManager
-import com.trionesdev.phecda.device.sdk.interfaces.DeviceDriverServiceSDK
+import com.trionesdev.phecda.device.sdk.interfaces.DeviceServiceSDK
 import com.trionesdev.phecda.device.sdk.interfaces.ProtocolDriver
 import com.trionesdev.phecda.device.sdk.model.AsyncValues
 import com.trionesdev.phecda.device.sdk.service.init.ServiceBootstrap
 import com.trionesdev.phecda.device.sdk.transformer.Transformer
 
 @Slf4j
-class DeviceDriverService : DeviceDriverServiceSDK {
+class DeviceServiceSdkImpl : DeviceServiceSDK {
 
     companion object {
         @JvmStatic
@@ -33,11 +34,15 @@ class DeviceDriverService : DeviceDriverServiceSDK {
             serviceKey: String?,
             serviceVersion: String?,
             driver: ProtocolDriver
-        ): DeviceDriverServiceSDK {
+        ): DeviceServiceSDK {
             if (serviceKey.isNullOrBlank()) {
-                throw RuntimeException("serviceKey is null")
+                throw RuntimeException("please specify device service name")
             }
-            return DeviceDriverService().apply {
+            if (serviceVersion.isNullOrBlank()) {
+                throw RuntimeException("please specify device service version")
+            }
+            SdkConstants.ServiceVersion = serviceVersion
+            return DeviceServiceSdkImpl().apply {
                 this.serviceKey = serviceKey
                 this.driver = driver
                 this.config = ConfigurationStruct()

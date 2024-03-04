@@ -1,6 +1,6 @@
 package com.trionesdev.phecda.device.sdk.common
 
-class SdkConstants {
+object SdkConstants {
     var URLRawQuery: String = "urlRawQuery"
     var SDKReservedPrefix: String = "ds-"
 

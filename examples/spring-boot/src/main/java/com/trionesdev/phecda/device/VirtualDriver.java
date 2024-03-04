@@ -1,6 +1,6 @@
 package com.trionesdev.phecda.device;
 
-import com.trionesdev.phecda.device.sdk.interfaces.DeviceDriverServiceSDK;
+import com.trionesdev.phecda.device.sdk.interfaces.DeviceServiceSDK;
 import com.trionesdev.phecda.device.sdk.interfaces.ProtocolDriver;
 import com.trionesdev.phecda.device.sdk.model.CommandRequest;
 import com.trionesdev.phecda.device.sdk.model.CommandValue;
@@ -15,7 +15,7 @@ import java.util.Map;
 @Component
 public class VirtualDriver implements ProtocolDriver {
     @Override
-    public void initialize(@NotNull DeviceDriverServiceSDK sdk) {
+    public void initialize(@NotNull DeviceServiceSDK sdk) {
 
     }
 
