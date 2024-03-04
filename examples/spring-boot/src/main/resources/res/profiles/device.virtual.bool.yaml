@@ -1,0 +1,56 @@
+name: "Random-Boolean-Device"
+manufacturer: "IOTech"
+model: "Device-Virtual-01"
+labels:
+- "device-virtual-example"
+description: "Example of Device-Virtual"
+
+deviceResources:
+-
+  name: "EnableRandomization_Bool"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "Bool"
+  isHidden: false
+  description: "Generate random boolean value"
+  properties:
+    valueType: "Bool"
+    readWrite: "RW"
+    defaultValue: "true"
+-
+  name: "EnableRandomization_BoolArray"
+  isHidden: true
+  description: "used to decide whether to re-generate a random value"
+  properties:
+    valueType: "Bool"
+    readWrite: "W"
+    defaultValue: "true"
+-
+  name: "BoolArray"
+  isHidden: false
+  description: "Generate random boolean array value"
+  properties:
+    valueType: "BoolArray"
+    readWrite: "RW"
+    defaultValue: "[true]"
+
+deviceCommands:
+-
+  name: "WriteBoolValue"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "Bool" }
+    - { deviceResource: "EnableRandomization_Bool", defaultValue: "false" }
+-
+  name: "WriteBoolArrayValue"
+  readWrite: "W"
+  isHidden: false
+  resourceOperations:
+    - { deviceResource: "BoolArray" }
+    - { deviceResource: "EnableRandomization_BoolArray", defaultValue: "false" }

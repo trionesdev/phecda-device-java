@@ -2,11 +2,11 @@ package com.trionesdev.phecda.device.contracts.go
 
 import java.util.concurrent.CountDownLatch
 
-class WaitGroup {
+class WaitGroup() {
     private var latch: CountDownLatch? = null
     private var count = 0
 
-    fun waitGroup() {
+    init {
         this.latch = CountDownLatch(1)
     }
 
