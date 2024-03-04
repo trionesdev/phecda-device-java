@@ -11,17 +11,17 @@ import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.disruptor.AsyncValuesEvent
 import com.trionesdev.phecda.device.sdk.interfaces.AutoEventManager
 import com.trionesdev.phecda.device.sdk.provision.Provision
-import com.trionesdev.phecda.device.sdk.service.DeviceDriverService
+import com.trionesdev.phecda.device.sdk.service.DeviceServiceSdkImpl
 
 @Slf4j
 class ServiceBootstrap {
     companion object {
-        fun newBootstrap(ds: DeviceDriverService): ServiceBootstrap {
+        fun newBootstrap(ds: DeviceServiceSdkImpl): ServiceBootstrap {
             return ServiceBootstrap().apply { this.ds = ds }
         }
     }
 
-    private var ds: DeviceDriverService? = null
+    private var ds: DeviceServiceSdkImpl? = null
 
     fun bootstrapHandler(args: BootstrapHandlerArgs): Boolean {
         val dic = args.dic!!

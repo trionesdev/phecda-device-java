@@ -4,7 +4,7 @@ import com.trionesdev.phecda.device.sdk.model.CommandRequest
 import com.trionesdev.phecda.device.sdk.model.CommandValue
 
 interface ProtocolDriver {
-    fun initialize(sdk: DeviceDriverServiceSDK)
+    fun initialize(sdk: DeviceServiceSDK)
     fun start()
     fun stop(force: Boolean)
     fun handleReadCommands(

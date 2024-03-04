@@ -4,7 +4,7 @@ import com.lmax.disruptor.dsl.Disruptor
 import com.trionesdev.phecda.device.contracts.model.*
 import com.trionesdev.phecda.device.sdk.disruptor.AsyncValuesEvent
 
-interface DeviceDriverServiceSDK {
+interface DeviceServiceSDK {
     fun addDevice(device: Device)
     fun devices(): MutableList<Device>
     fun getDeviceByName(name:String)
