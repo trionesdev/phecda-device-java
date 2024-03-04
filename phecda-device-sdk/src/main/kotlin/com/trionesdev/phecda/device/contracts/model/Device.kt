@@ -9,7 +9,7 @@ class Device : DBTimestamp() {
     val protocols: Map<String, Map<String, Any>>? = null
     val labels: List<String>? = null
     val location: Any? = null
-    val serviceName: String? = null
+    var serviceName: String? = null
     val profileName: String? = null
     val autoEvents: List<AutoEvent>? = null
     val tags: Map<String, Any>? = null

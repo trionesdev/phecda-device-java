@@ -7,6 +7,8 @@ object ErrorKind {
     const val KindEntityDoesNotExist = "NotFound"
     const val KindContractInvalid = "ContractInvalid"
     const val KindServerError = "UnexpectedServerError"
+    const val KindDuplicateName = "DuplicateName"
+    const val KindInvalidId = "InvalidId"
     const val KindOverflowError = "OverflowError"
     const val KindNaNError = "NaNError"
 }
