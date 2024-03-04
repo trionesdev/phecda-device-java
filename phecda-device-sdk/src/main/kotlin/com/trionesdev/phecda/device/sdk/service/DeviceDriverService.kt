@@ -53,7 +53,7 @@ class DeviceDriverService : DeviceDriverServiceSDK {
     var asyncCh: Disruptor<AsyncValuesEvent>? = null //异步上报数据通道
     private var args: CommonArgs? = null
     private var deviceService: DeviceService? = null
-    private var config: ConfigurationStruct? = null
+    var config: ConfigurationStruct? = null
     var wg: WaitGroup? = null
     var dic: Container? = null
     override fun addDevice(device: Device) {
