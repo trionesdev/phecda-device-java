@@ -1,7 +1,6 @@
 package com.trionesdev.phecda.device.sdk.service.init
 
 import com.lmax.disruptor.BlockingWaitStrategy
-import com.lmax.disruptor.EventFactory
 import com.lmax.disruptor.dsl.Disruptor
 import com.lmax.disruptor.dsl.ProducerType
 import com.lmax.disruptor.util.DaemonThreadFactory
@@ -11,6 +10,7 @@ import com.trionesdev.phecda.device.bootstrap.BootstrapHandlerArgs
 import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.disruptor.AsyncValuesEvent
 import com.trionesdev.phecda.device.sdk.interfaces.AutoEventManager
+import com.trionesdev.phecda.device.sdk.provision.Provision
 import com.trionesdev.phecda.device.sdk.service.DeviceDriverService
 
 @Slf4j
@@ -55,6 +55,20 @@ class ServiceBootstrap {
         }
         //endregion
 
+        try {
+            Provision.loadProfiles(ds?.config?.device?.profilesDir!!, dic)
+        } catch (e: Exception) {
+            log.error("Failed to load device profiles: {}", e.message, e)
+            return false
+        }
+
+        try {
+            Provision.loadDevices(ds?.config?.device?.devicesDir!!, dic)
+        } catch (e: Exception) {
+            log.error("Failed to load devices: {}", e.message, e)
+            return false
+        }
+        ds?.autoEventManager?.startAutoEvents()
         return true
     }
 }
