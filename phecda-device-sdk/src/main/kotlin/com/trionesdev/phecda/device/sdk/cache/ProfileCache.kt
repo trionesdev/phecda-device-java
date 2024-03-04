@@ -42,7 +42,7 @@ interface ProfileCache {
     fun removeByName(name: String)
     fun deviceResource(profileName: String, resourceName: String): DeviceResource?
     fun deviceResourcesByRegex(profileName: String, regex: Pattern): DeviceResource?
-    fun deviceCommand(profileName: String, commandName: String): DeviceCommand?
+    fun deviceCommand(profileName: String?, commandName: String?): DeviceCommand?
     fun resourceOperation(profileName: String, deviceResource: String): ResourceOperation?
 }
 
@@ -82,7 +82,7 @@ class ProfileCacheImpl : ProfileCache {
         TODO("Not yet implemented")
     }
 
-    override fun deviceCommand(profileName: String, commandName: String): DeviceCommand? {
+    override fun deviceCommand(profileName: String?, commandName: String?): DeviceCommand? {
         TODO("Not yet implemented")
     }
 

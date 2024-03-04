@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Slf4j() {
     companion object {
+        @JvmStatic
         val <reified T> T.log: Logger
+            @JvmStatic
             inline get() = LoggerFactory.getLogger(T::class.java)
     }
 }

@@ -5,6 +5,6 @@ class DeviceResource {
     val name: String? = null
     val isHidden = false
     val properties: ResourceProperties? = null
-    val attributes: Map<String, Any>? = null
-    val tags: Map<String, Any>? = null
+    val attributes: MutableMap<String, Any>? = null
+    val tags: MutableMap<String, Any>? = null
 }

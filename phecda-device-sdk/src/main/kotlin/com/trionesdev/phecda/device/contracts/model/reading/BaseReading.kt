@@ -1,12 +1,37 @@
 package com.trionesdev.phecda.device.contracts.model.reading
 
+import java.time.Instant
+import java.util.*
+
 open class BaseReading : Reading {
-    val id: String? = null
-    val origin: Long? = null
-    val deviceName: String? = null
-    val resourceName: String? = null
-    val profileName: String? = null
-    val valueType: String? = null
+    companion object {
+        fun newBaseReading(
+            profileName: String?,
+            deviceName: String?,
+            resourceName: String?,
+            valueType: String?
+        ): BaseReading {
+            return BaseReading().apply {
+                this.id = UUID.randomUUID().toString()
+                this.origin = Instant.now().toEpochMilli()
+                this.deviceName = deviceName
+                this.resourceName = resourceName
+                this.profileName = profileName
+                this.valueType = valueType
+            }
+        }
+    }
+
+    var id: String? = null
+    var origin: Long? = null
+    var deviceName: String? = null
+    var resourceName: String? = null
+    var profileName: String? = null
+    var valueType: String? = null
     val utils: String? = null
-    val tags: MutableMap<String, Any>? = null
+    var tags: MutableMap<String, Any>? = mutableMapOf()
+    var binaryValue: ByteArray? = null
+    var mediaType: String? = null
+    var objectValue: Any? = null
+    var value: String? = null
 }
