@@ -7,6 +7,7 @@ import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.contracts.model.Device
 import com.trionesdev.phecda.device.contracts.model.DeviceProfile
 import com.trionesdev.phecda.device.contracts.model.DeviceService
+import com.trionesdev.phecda.device.sdk.cache.Cache
 import org.yaml.snakeyaml.Yaml
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -40,6 +41,11 @@ object Provision {
         }
         val serviceName = dic.getInstance(DeviceService::class.java)?.name
         val devices = loadDevicesFromFile(path, serviceName!!)
+        devices.let {
+            for (device in devices) {
+                Cache.devices()?.add(device)
+            }
+        }
     }
 
     private fun loadDevicesFromFile(path: String, serviceName: String): MutableList<Device> {
@@ -82,7 +88,12 @@ object Provision {
         if (path.isBlank()) {
             return
         }
-        loadProfilesFromFile(path)
+        val profiles = loadProfilesFromFile(path)
+        profiles.let {
+            for (profile in profiles) {
+                Cache.profiles()?.add(profile)
+            }
+        }
     }
 
     private fun loadProfilesFromFile(path: String): MutableList<DeviceProfile> {

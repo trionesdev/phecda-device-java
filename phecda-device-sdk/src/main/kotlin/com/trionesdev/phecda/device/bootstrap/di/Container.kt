@@ -1,5 +1,7 @@
 package com.trionesdev.phecda.device.bootstrap.di
 
+import com.trionesdev.phecda.device.bootstrap.interfaces.Configuration
+import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
 import org.glassfish.hk2.api.ServiceLocator
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities
 import org.glassfish.hk2.utilities.binding.AbstractBinder
@@ -23,10 +25,15 @@ class Container {
                 ServiceLocatorUtilities.bind(locator, object : AbstractBinder() {
                     override fun configure() {
                         instance ?: let { return }
-                        bind(instance) to instance.javaClass as Class<*>
+                        bind(instance) to instance.javaClass
                         val interfaces = instance.javaClass.interfaces
+                        if (instance.javaClass == ConfigurationStruct::class.java){
+                            bind(instance).to(instance.javaClass)
+                            bind(instance).to(Configuration::class.java)
+                        }
                         if (interfaces.isNotEmpty()) {
-                            Arrays.stream(interfaces).forEach { ic: Class<*>? ->
+                            Arrays.stream(interfaces).forEach { ic ->
+//                                bind(instance) to ic
                                 bind(instance) to ic
                             }
                         }
@@ -36,15 +43,14 @@ class Container {
         }
     }
 
-    fun update(instances: Map<Class<*>, Any>) {
+    fun update(instances: Map<Class<*>, Any?>) {
         if (instances.isNotEmpty()) {
             instances.forEach { (key, value) ->
                 ServiceLocatorUtilities.bind(locator, object : AbstractBinder() {
                     override fun configure() {
-                        if (Objects.isNull(value)) {
-                            return
+                        value?.let {
+                            bind(value) to key
                         }
-                        bind(value) to key
                     }
                 })
             }
@@ -52,10 +58,9 @@ class Container {
     }
 
     fun <T> getInstance(clazz: Class<T>?): T? {
-        if (Objects.isNull(clazz)) {
-            return null
+        return clazz?.let {
+            return locator.getService<T>(clazz)
         }
-        return locator.getService(clazz)
     }
 
 

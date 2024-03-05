@@ -8,7 +8,7 @@ interface DeviceCache {
         @JvmStatic
         var dc: DeviceCache? = null
         fun newDeviceCache(devices: List<Device>, dic: Container): DeviceCache {
-            val deviceMap = devices.associateBy { it.name!! }.toMutableMap()
+            val deviceMap: MutableMap<String, Device?> = devices.associateBy { it.name!! }.toMutableMap()
             dc = DeviceCacheImpl().apply {
                 this.deviceMap = deviceMap
             }
@@ -17,7 +17,7 @@ interface DeviceCache {
     }
 
     fun forName(name: String): Device?
-    fun all(): MutableList<Device>
+    fun all(): MutableList<Device?>
     fun add(device: Device)
     fun update(device: Device)
     fun removeByName(name: String)
@@ -26,14 +26,14 @@ interface DeviceCache {
 class DeviceCacheImpl : DeviceCache {
 
 
-    var deviceMap: MutableMap<String, Device> = mutableMapOf()
+    var deviceMap: MutableMap<String, Device?> = mutableMapOf()
 
     override fun forName(name: String): Device? {
         return this.deviceMap[name]
     }
 
-    override fun all(): MutableList<Device> {
-        return deviceMap.values.toMutableList()
+    override fun all(): MutableList<Device?> {
+        return deviceMap.values.toMutableList() ?: mutableListOf()
     }
 
     override fun add(device: Device) {
