@@ -21,13 +21,13 @@ object SdkCommonUtils {
         val cmd = Cache.profiles()?.deviceCommand(event.profileName, event.sourceName)
         cmd?.let {
             if (!cmd.tags.isNullOrEmpty()) {
-                event.tags?.putAll(cmd.tags)
+                event.tags?.putAll(cmd.tags!!)
             }
         }
         val device = Cache.devices()?.forName(event.deviceName!!)
         device?.let {
             if (!device.tags.isNullOrEmpty()) {
-                event.tags?.putAll(device.tags)
+                event.tags?.putAll(device.tags!!)
             }
         }
     }

@@ -1,10 +1,10 @@
 package com.trionesdev.phecda.device.contracts.model
 
 class DeviceResource {
-    val description: String? = null
-    val name: String? = null
-    val isHidden = false
-    val properties: ResourceProperties? = null
-    val attributes: MutableMap<String, Any>? = null
-    val tags: MutableMap<String, Any>? = null
+    var description: String? = null
+    var name: String? = null
+    var isHidden: Boolean? = false
+    var properties: ResourceProperties? = null
+    var attributes: MutableMap<String, Any>? = null
+    var tags: MutableMap<String, Any>? = null
 }

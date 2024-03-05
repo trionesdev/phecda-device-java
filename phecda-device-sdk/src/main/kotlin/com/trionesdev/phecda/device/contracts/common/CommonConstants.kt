@@ -2,7 +2,10 @@ package com.trionesdev.phecda.device.contracts.common
 
 object CommonConstants {
 
-    //endregion
+    const val Name: String = "name"
+    const val Command: String = "command"
+
+
     const val ApiVersion: String = "v1"
 
 
@@ -14,6 +17,7 @@ object CommonConstants {
     const val ValueTypeString: String = "STRING"
     const val ValueTypeStruct: String = "STRUCT"
     const val ValueTypeArray: String = "ARRAY"
+    const val ValueTypeBinary: String = "Binary"
     //endregion
 
 }

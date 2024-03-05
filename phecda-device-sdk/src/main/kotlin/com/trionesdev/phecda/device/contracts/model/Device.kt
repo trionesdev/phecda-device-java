@@ -1,17 +1,17 @@
 package com.trionesdev.phecda.device.contracts.model
 
 class Device : DBTimestamp() {
-    val id: String? = null
-    val name: String? = null
-    val description: String? = null
-    val adminState: String? = null
-    val operatingState: String? = null
-    val protocols: Map<String, Map<String, Any>>? = null
-    val labels: List<String>? = null
-    val location: Any? = null
+    var id: String? = null
+    var name: String? = null
+    var description: String? = null
+    var adminState: String? = null
+    var operatingState: String? = null
+    var protocols: MutableMap<String, Map<String, Any>>? = null
+    var labels: MutableList<String>? = null
+    var location: Any? = null
     var serviceName: String? = null
-    val profileName: String? = null
-    val autoEvents: List<AutoEvent>? = null
-    val tags: Map<String, Any>? = null
-    val properties: Map<String, Any>? = null
+    var profileName: String? = null
+    var autoEvents: List<AutoEvent>? = null
+    var tags: MutableMap<String, Any>? = null
+    var properties: MutableMap<String, Any>? = null
 }

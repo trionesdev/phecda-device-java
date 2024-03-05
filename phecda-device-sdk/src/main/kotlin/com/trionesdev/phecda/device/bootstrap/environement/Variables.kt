@@ -10,11 +10,11 @@ import java.util.*
 @Slf4j
 class Variables {
     companion object {
-        var bootTimeoutSecondsDefault: Int = 60
-        var bootRetrySecondsDefault: Int = 1
-        var envKeyCommonConfig: String = "PHECDA_COMMON_CONFIG"
-        var envKeyStartupDuration: String = "PHECDA_STARTUP_DURATION"
-        var envKeyStartupInterval: String = "PHECDA_STARTUP_INTERVAL"
+        private var bootTimeoutSecondsDefault: Int = 60
+        private var bootRetrySecondsDefault: Int = 1
+        private var envKeyCommonConfig: String = "PHECDA_COMMON_CONFIG"
+        private var envKeyStartupDuration: String = "PHECDA_STARTUP_DURATION"
+        private var envKeyStartupInterval: String = "PHECDA_STARTUP_INTERVAL"
 
         @JvmStatic
         var envKeyConfigDir: String = "PHECDA_CONFIG_DIR"

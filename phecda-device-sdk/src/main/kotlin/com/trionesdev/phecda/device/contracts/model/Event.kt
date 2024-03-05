@@ -1,5 +1,6 @@
 package com.trionesdev.phecda.device.contracts.model
 
+import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
 import com.trionesdev.phecda.device.contracts.model.reading.Reading
 import java.time.Instant
 import java.util.*
@@ -28,6 +29,6 @@ class Event : Versionable() {
     var profileName: String? = null
     var sourceName: String? = null
     var origin: Long? = null
-    var readings: MutableList<Reading>? = null
+    var readings: MutableList<BaseReading>? = null
     var tags: MutableMap<String, Any>? = null
 }
