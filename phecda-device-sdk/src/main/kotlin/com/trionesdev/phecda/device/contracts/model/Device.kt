@@ -1,11 +1,14 @@
 package com.trionesdev.phecda.device.contracts.model
 
+import com.trionesdev.phecda.device.contracts.model.enums.AdminState
+import com.trionesdev.phecda.device.contracts.model.enums.OperatingState
+
 class Device : DBTimestamp() {
     var id: String? = null
     var name: String? = null
     var description: String? = null
-    var adminState: String? = null
-    var operatingState: String? = null
+    var adminState: AdminState? = null
+    var operatingState: OperatingState? = null
     var protocols: MutableMap<String, Map<String, Any>>? = null
     var labels: MutableList<String>? = null
     var location: Any? = null

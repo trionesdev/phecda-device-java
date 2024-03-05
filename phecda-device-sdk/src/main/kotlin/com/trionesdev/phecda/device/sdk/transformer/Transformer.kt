@@ -5,13 +5,12 @@ import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeString
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeStruct
 import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
+import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindEntityDoesNotExist
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindNaNError
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindOverflowError
-import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindServerError
 import com.trionesdev.phecda.device.contracts.model.Event
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
-import com.trionesdev.phecda.device.contracts.model.reading.Reading
 import com.trionesdev.phecda.device.contracts.model.reading.SimpleReading
 import com.trionesdev.phecda.device.contracts.model.reading.StructReading
 import com.trionesdev.phecda.device.sdk.cache.Cache
@@ -92,7 +91,7 @@ object Transformer {
         }
         if (transformsOK) {
             throw CommonPhedaException.newCommonPhedaException(
-                KindServerError, String.format("failed to transform value for %s", deviceName), null
+                KIND_SERVER_ERROR, String.format("failed to transform value for %s", deviceName), null
             )
         }
         if (!readings.isNullOrEmpty()) {

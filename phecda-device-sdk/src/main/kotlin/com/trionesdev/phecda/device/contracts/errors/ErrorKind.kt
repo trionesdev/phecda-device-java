@@ -6,9 +6,11 @@ object ErrorKind {
     const val KindCommunicationError = "Communication"
     const val KindEntityDoesNotExist = "NotFound"
     const val KindContractInvalid = "ContractInvalid"
-    const val KindServerError = "UnexpectedServerError"
+    const val KIND_SERVER_ERROR = "UnexpectedServerError"
     const val KindDuplicateName = "DuplicateName"
-    const val KindInvalidId = "InvalidId"
+    const val KIND_INVALID_ID = "InvalidId"
+    const val KIND_NOT_ALLOWED = "NotAllowed"
+    const val KindServiceLocked = "ServiceLocked"
     const val KindOverflowError = "OverflowError"
     const val KindNaNError = "NaNError"
 }

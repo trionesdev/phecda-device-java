@@ -21,7 +21,7 @@ import kotlin.time.Duration
 class Executor {
     companion object {
         fun newExecutor(deviceName: String, autoEvent: AutoEvent): Executor {
-            val duration = Duration.parse("PT" + autoEvent.interval!!)
+            val duration = Duration.parse( autoEvent.interval!!)
             return Executor().apply {
                 this.deviceName = deviceName
                 this.sourceName = autoEvent.sourceName
