@@ -6,7 +6,7 @@ import com.trionesdev.phecda.device.sdk.disruptor.AsyncValuesEvent
 
 interface DeviceServiceSDK {
     fun addDevice(device: Device): String?
-    fun devices(): MutableList<Device>
+    fun devices(): MutableList<Device?>
     fun getDeviceByName(name: String): Device?
     fun updateDevice(device: Device)
     fun removeDeviceByName(name: String)

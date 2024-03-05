@@ -75,7 +75,7 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
         return ""
     }
 
-    override fun devices(): MutableList<Device> {
+    override fun devices(): MutableList<Device?> {
         return Cache.devices()?.all() ?: mutableListOf()
     }
 

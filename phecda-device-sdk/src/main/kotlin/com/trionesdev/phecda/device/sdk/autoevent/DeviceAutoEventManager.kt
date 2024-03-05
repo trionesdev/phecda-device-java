@@ -50,8 +50,10 @@ class DeviceAutoEventManager : AutoEventManager {
     override fun startAutoEvents() {
         val devices = Cache.devices()?.all()
         devices?.forEach { device ->
-            if (!executorMap.containsKey(device.name)) {
-                executorMap[device.name!!] = triggerExecutors(device.name!!, device.autoEvents!!, dic!!)
+            device?.let {
+                if (!executorMap.containsKey(device.name)) {
+                    executorMap[device.name!!] = triggerExecutors(device.name!!, device.autoEvents!!, dic!!)
+                }
             }
         }
     }
