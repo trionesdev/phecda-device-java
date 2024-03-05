@@ -1,13 +1,13 @@
 package com.trionesdev.phecda.device.sdk.transformer
 
 import com.trionesdev.phecda.device.contracts.common.CommonConstants
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeDouble
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeFloat
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeInt
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeString
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_DOUBLE
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_FLOAT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING
 import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
-import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindNaNError
-import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindOverflowError
+import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_NAN_ERROR
+import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_OVERFLOW_ERROR
 import com.trionesdev.phecda.device.contracts.model.ResourceProperties
 import com.trionesdev.phecda.device.sdk.model.CommandValue
 import kotlin.math.ln
@@ -29,26 +29,26 @@ object TransformResult {
         if (CheckNaN.isNaN(cv)) {
             val errMsg = String.format("NaN error for DeviceResource %s", cv.deviceResourceName)
             throw CommonPhedaException.newCommonPhedaException(
-                KindNaNError,
+                KIND_NAN_ERROR,
                 errMsg,
                 null
             )
         }
         val value = commandValueForTransform(cv)
         var newValue = value
-        if (pv.mask != null && pv.mask != defaultMask && (cv.type == ValueTypeInt)) {
+        if (pv.mask != null && pv.mask != defaultMask && (cv.type == VALUE_TYPE_INT)) {
             newValue = transformReadMask(newValue!!, pv.mask!!)
         }
-        if (pv.shift != null && pv.shift != defaultShift && (cv.type == ValueTypeInt)) {
+        if (pv.shift != null && pv.shift != defaultShift && (cv.type == VALUE_TYPE_INT)) {
             newValue = transformReadShift(newValue!!, pv.shift!!)
         }
-        if (pv.base != null && pv.base != defaultBase && (cv.type == ValueTypeInt)) {
+        if (pv.base != null && pv.base != defaultBase && (cv.type == VALUE_TYPE_INT)) {
             newValue = transformBase(newValue!!, pv.base!!, true)
         }
-        if (pv.scale != null && pv.scale != defaultScale && (cv.type == ValueTypeInt)) {
+        if (pv.scale != null && pv.scale != defaultScale && (cv.type == VALUE_TYPE_INT)) {
             newValue = transformScale(newValue!!, pv.scale!!, true)
         }
-        if (pv.offset != null && pv.offset != defaultOffset && (cv.type == ValueTypeInt)) {
+        if (pv.offset != null && pv.offset != defaultOffset && (cv.type == VALUE_TYPE_INT)) {
             newValue = transformOffset(newValue!!, pv.offset!!, true)
         }
         if (value != newValue) {
@@ -83,7 +83,7 @@ object TransformResult {
         val inRange = TransformValueChecker.checkTransformedValueInRange(value, doubleValue)
         if (!inRange) {
             val errMsg = String.format("transformed value out of its original type (%s) range", value)
-            throw CommonPhedaException.newCommonPhedaException(KindOverflowError, errMsg, null)
+            throw CommonPhedaException.newCommonPhedaException(KIND_OVERFLOW_ERROR, errMsg, null)
         }
         return when (value) {
             is Int -> {
@@ -132,7 +132,7 @@ object TransformResult {
         val inRange = TransformValueChecker.checkTransformedValueInRange(value, valueDouble)
         if (!inRange) {
             val errMsg = String.format("transformed value out of its original type (%s) range", value)
-            throw CommonPhedaException.newCommonPhedaException(KindOverflowError, errMsg, null)
+            throw CommonPhedaException.newCommonPhedaException(KIND_OVERFLOW_ERROR, errMsg, null)
         }
         when (value) {
             is Int -> {
@@ -192,7 +192,7 @@ object TransformResult {
         val inRange = TransformValueChecker.checkTransformedValueInRange(value, valueDouble)
         if (!inRange) {
             val errMsg = String.format("transformed value out of its original type (%s) range", value)
-            throw CommonPhedaException.newCommonPhedaException(KindOverflowError, errMsg, null)
+            throw CommonPhedaException.newCommonPhedaException(KIND_OVERFLOW_ERROR, errMsg, null)
         }
         when (value) {
             is Int -> {
@@ -257,27 +257,27 @@ object TransformResult {
 
     fun commandValueForTransform(cv: CommandValue?): Any? {
         when (cv?.type!!) {
-            ValueTypeInt -> {
+            VALUE_TYPE_INT -> {
                 return cv.value as Int
             }
 
-            CommonConstants.ValueTypeFloat -> {
+            CommonConstants.VALUE_TYPE_FLOAT -> {
                 return cv.value as Float
             }
 
-            CommonConstants.ValueTypeDouble -> {
+            CommonConstants.VALUE_TYPE_DOUBLE -> {
                 return cv.value as Double
             }
 
-            CommonConstants.ValueTypeBool -> {
+            CommonConstants.VALUE_TYPE_BOOL -> {
                 return cv.value as Boolean
             }
 
-            CommonConstants.ValueTypeString -> {
+            CommonConstants.VALUE_TYPE_STRING -> {
                 return cv.value as String
             }
 
-            CommonConstants.ValueTypeStruct -> {
+            CommonConstants.VALUE_TYPE_STRUCT -> {
                 return cv.value as Map<String, Any>
             }
 
@@ -293,7 +293,7 @@ object TransformResult {
             it[value.valueToString()]
         }?.let {
             if (it.isNotBlank()) {
-                result = CommandValue.newCommandValue(value.deviceResourceName!!, ValueTypeString, it)
+                result = CommandValue.newCommandValue(value.deviceResourceName!!, VALUE_TYPE_STRING, it)
             }
         }
         return result
@@ -301,7 +301,7 @@ object TransformResult {
 
     fun isNumericValueType(cv: CommandValue): Boolean {
         return when (cv.type) {
-            ValueTypeInt, ValueTypeFloat, ValueTypeDouble -> true
+            VALUE_TYPE_INT, VALUE_TYPE_FLOAT, VALUE_TYPE_DOUBLE -> true
             else -> false
         }
     }

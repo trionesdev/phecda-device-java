@@ -4,8 +4,8 @@ import com.trionesdev.kotlin.log.Slf4j
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.contracts.common.CommonConstants
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.Command
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.Name
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.COMMAND
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.NAME
 import com.trionesdev.phecda.device.contracts.go.WaitGroup
 import com.trionesdev.phecda.device.contracts.model.AutoEvent
 import com.trionesdev.phecda.device.contracts.model.Event
@@ -33,8 +33,8 @@ class Executor {
 
         fun readResource(e: Executor, dic: Container): Event? {
             val vars: MutableMap<String, String?> = HashMap(2)
-            vars[Name] = e.deviceName
-            vars[Command] = e.sourceName
+            vars[NAME] = e.deviceName
+            vars[COMMAND] = e.sourceName
             return ApplicationCommand.getCommand(e.deviceName!!, e.sourceName!!, "", false, dic)
         }
     }
@@ -106,7 +106,7 @@ class Executor {
         for (reading in readings) {
             val lastReading = lastReadings!![reading.resourceName!!]
             lastReading?.let {
-                if (CommonConstants.ValueTypeBinary == reading.valueType) {
+                if (CommonConstants.VALUE_TYPE_BINARY == reading.valueType) {
                     val checksum = xxHash64.hash(reading.binaryValue, 0, reading.binaryValue!!.size, 0)
                     if (lastReading != checksum) {
                         lastReadings!![reading.resourceName!!] = checksum
@@ -129,7 +129,7 @@ class Executor {
     fun renewLastReadings(readings: MutableList<BaseReading>) {
         lastReadings = mutableMapOf()
         for (reading in readings) {
-            if (CommonConstants.ValueTypeBinary == reading.valueType) {
+            if (CommonConstants.VALUE_TYPE_BINARY == reading.valueType) {
                 reading.resourceName?.let {
                     lastReadings!!.put(
                         it,

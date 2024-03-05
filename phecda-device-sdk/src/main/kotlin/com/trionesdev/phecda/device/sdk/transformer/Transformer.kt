@@ -2,13 +2,13 @@ package com.trionesdev.phecda.device.sdk.transformer
 
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeString
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeStruct
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRUCT
 import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
-import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindEntityDoesNotExist
-import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindNaNError
-import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindOverflowError
+import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_ENTITY_DOSE_NOT_EXIST
+import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_NAN_ERROR
+import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_OVERFLOW_ERROR
 import com.trionesdev.phecda.device.contracts.model.Event
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
 import com.trionesdev.phecda.device.contracts.model.reading.SimpleReading
@@ -31,7 +31,7 @@ object Transformer {
         }
         val device = Cache.devices()?.forName(deviceName) ?: let {
             throw CommonPhedaException.newCommonPhedaException(
-                KindEntityDoesNotExist, String.format("failed to find device %s", deviceName), null
+                KIND_ENTITY_DOSE_NOT_EXIST, String.format("failed to find device %s", deviceName), null
             )
         }
         var transformsOK = true
@@ -52,7 +52,7 @@ object Transformer {
                 )
                 log.error(msg)
                 throw CommonPhedaException.newCommonPhedaException(
-                    KindEntityDoesNotExist, msg, null
+                    KIND_ENTITY_DOSE_NOT_EXIST, msg, null
                 )
             }
             if (dataTransform) {
@@ -60,13 +60,13 @@ object Transformer {
                     TransformResult.transformReadResult(cv, dr.properties!!)
                 } catch (e: CommonPhedaException) {
                     when (e.kind) {
-                        KindOverflowError -> {
+                        KIND_OVERFLOW_ERROR -> {
                             cvs[index] =
-                                CommandValue.newCommandValue(cv.deviceResourceName!!, ValueTypeString, Overflow)
+                                CommandValue.newCommandValue(cv.deviceResourceName!!, VALUE_TYPE_STRING, Overflow)
                         }
 
-                        KindNaNError -> {
-                            cvs[index] = CommandValue.newCommandValue(cv.deviceResourceName!!, ValueTypeString, NaN)
+                        KIND_NAN_ERROR -> {
+                            cvs[index] = CommandValue.newCommandValue(cv.deviceResourceName!!, VALUE_TYPE_STRING, NaN)
                         }
 
                         else -> {
@@ -112,7 +112,7 @@ object Transformer {
     ): BaseReading {
 
         val reading = when (cv.type) {
-            ValueTypeStruct -> {
+            VALUE_TYPE_STRUCT -> {
                 StructReading.newStructReading(profileName, deviceName, cv.deviceResourceName, cv.type)
             }
 
