@@ -3,6 +3,9 @@ package com.trionesdev.phecda.device.sdk.config
 import com.alibaba.fastjson2.annotation.JSONField
 
 class DeviceInfo {
+    @JSONField(name = "MaxCmdOps")
+    var maxCmdOps = 0
+
     @JSONField(name = "ProfilesDir")
     var profilesDir: String? = null
 

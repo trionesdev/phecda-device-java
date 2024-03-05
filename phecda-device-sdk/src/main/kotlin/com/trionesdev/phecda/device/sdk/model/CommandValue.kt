@@ -4,7 +4,7 @@ import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeDo
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeFloat
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeInt
 import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
-import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KindServerError
+import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 
 class CommandValue {
     companion object {
@@ -44,7 +44,7 @@ class CommandValue {
                 this.type, ValueTypeInt
             )
             throw CommonPhedaException.newCommonPhedaException(
-                KindServerError,
+                KIND_SERVER_ERROR,
                 errMsg,
                 null
             )
@@ -59,7 +59,7 @@ class CommandValue {
                 this.type, ValueTypeFloat
             )
             throw CommonPhedaException.newCommonPhedaException(
-                KindServerError,
+                KIND_SERVER_ERROR,
                 errMsg,
                 null
             )
@@ -74,7 +74,7 @@ class CommandValue {
                 this.type, ValueTypeDouble
             )
             throw CommonPhedaException.newCommonPhedaException(
-                KindServerError,
+                KIND_SERVER_ERROR,
                 errMsg,
                 null
             )

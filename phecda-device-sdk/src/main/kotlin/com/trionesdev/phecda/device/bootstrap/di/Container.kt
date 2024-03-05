@@ -1,11 +1,8 @@
 package com.trionesdev.phecda.device.bootstrap.di
 
-import com.trionesdev.phecda.device.bootstrap.interfaces.Configuration
-import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
 import org.glassfish.hk2.api.ServiceLocator
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities
 import org.glassfish.hk2.utilities.binding.AbstractBinder
-import java.util.*
 
 class Container {
     companion object {
@@ -13,7 +10,6 @@ class Container {
         val locator: ServiceLocator = ServiceLocatorUtilities.createAndPopulateServiceLocator()
         fun newContainer(instances: List<Any?>): Container {
             val container = Container()
-            container.init()
             container.update(instances)
             return container
         }
@@ -22,23 +18,19 @@ class Container {
     fun update(instances: List<Any?>) {
         if (instances.isNotEmpty()) {
             instances.forEach { instance ->
-                ServiceLocatorUtilities.bind(locator, object : AbstractBinder() {
+                val binder: AbstractBinder = object : AbstractBinder() {
                     override fun configure() {
                         instance ?: let { return }
-                        bind(instance) to instance.javaClass
+                        this.bind(instance).to(instance.javaClass)
                         val interfaces = instance.javaClass.interfaces
-                        if (instance.javaClass == ConfigurationStruct::class.java){
-                            bind(instance).to(instance.javaClass)
-                            bind(instance).to(Configuration::class.java)
-                        }
                         if (interfaces.isNotEmpty()) {
-                            Arrays.stream(interfaces).forEach { ic ->
-//                                bind(instance) to ic
-                                bind(instance) to ic
+                            for (i in interfaces) {
+                                bind(instance).to(i as Class<in Any>)
                             }
                         }
                     }
-                })
+                }
+                ServiceLocatorUtilities.bind(locator, binder)
             }
         }
     }
@@ -49,7 +41,7 @@ class Container {
                 ServiceLocatorUtilities.bind(locator, object : AbstractBinder() {
                     override fun configure() {
                         value?.let {
-                            bind(value) to key
+                            bind(value).to(key as Class<in Any>)
                         }
                     }
                 })
@@ -62,8 +54,5 @@ class Container {
             return locator.getService<T>(clazz)
         }
     }
-
-
-    fun init() {}
 
 }

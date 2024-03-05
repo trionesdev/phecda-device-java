@@ -25,23 +25,25 @@ class DeviceAutoEventManager : AutoEventManager {
     private var wg: WaitGroup? = null
     private var dic: Container? = null
 
-    fun triggerExecutors(deviceName: String, autoEvents: List<AutoEvent>, dic: Container): MutableList<Executor> {
+    fun triggerExecutors(deviceName: String, autoEvents: List<AutoEvent>?, dic: Container): MutableList<Executor> {
         val executors = mutableListOf<Executor>()
-        for (autoEvent in autoEvents) {
-            try {
-                Executor.newExecutor(deviceName, autoEvent).let {
-                    executors.add(it)
-                    it.run(wg!!, dic)
+        if (!autoEvents.isNullOrEmpty()){
+            for (autoEvent in autoEvents) {
+                try {
+                    Executor.newExecutor(deviceName, autoEvent).let {
+                        executors.add(it)
+                        it.run(wg!!, dic)
+                    }
+                } catch (e: Exception) {
+                    log.error(
+                        "failed to create executor of AutoEvent {} for Device {}: {}",
+                        autoEvent.sourceName,
+                        deviceName,
+                        e.message,
+                        e
+                    )
+                    continue
                 }
-            } catch (e: Exception) {
-                log.error(
-                    "failed to create executor of AutoEvent {} for Device {}: {}",
-                    autoEvent.sourceName,
-                    deviceName,
-                    e.message,
-                    e
-                )
-                continue
             }
         }
         return executors
@@ -52,7 +54,7 @@ class DeviceAutoEventManager : AutoEventManager {
         devices?.forEach { device ->
             device?.let {
                 if (!executorMap.containsKey(device.name)) {
-                    executorMap[device.name!!] = triggerExecutors(device.name!!, device.autoEvents!!, dic!!)
+                    executorMap[device.name!!] = triggerExecutors(device.name!!, device.autoEvents, dic!!)
                 }
             }
         }
