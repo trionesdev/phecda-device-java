@@ -1,8 +1,8 @@
 package com.trionesdev.phecda.device.sdk.model
 
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeDouble
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeFloat
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.ValueTypeInt
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_DOUBLE
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_FLOAT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT
 import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 
@@ -38,10 +38,10 @@ class CommandValue {
     }
 
     fun intValue(): Int {
-        if (this.type != ValueTypeInt) {
+        if (this.type != VALUE_TYPE_INT) {
             val errMsg = java.lang.String.format(
                 "cannot convert CommandValue of %s to %s",
-                this.type, ValueTypeInt
+                this.type, VALUE_TYPE_INT
             )
             throw CommonPhedaException.newCommonPhedaException(
                 KIND_SERVER_ERROR,
@@ -53,10 +53,10 @@ class CommandValue {
     }
 
     fun floatValue(): Float {
-        if (this.type != ValueTypeFloat) {
+        if (this.type != VALUE_TYPE_FLOAT) {
             val errMsg = java.lang.String.format(
                 "cannot convert CommandValue of %s to %s",
-                this.type, ValueTypeFloat
+                this.type, VALUE_TYPE_FLOAT
             )
             throw CommonPhedaException.newCommonPhedaException(
                 KIND_SERVER_ERROR,
@@ -68,10 +68,10 @@ class CommandValue {
     }
 
     fun doubleValue(): Double {
-        if (this.type != ValueTypeDouble) {
+        if (this.type != VALUE_TYPE_DOUBLE) {
             val errMsg = java.lang.String.format(
                 "cannot convert CommandValue of %s to %s",
-                this.type, ValueTypeDouble
+                this.type, VALUE_TYPE_DOUBLE
             )
             throw CommonPhedaException.newCommonPhedaException(
                 KIND_SERVER_ERROR,
