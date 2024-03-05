@@ -1,7 +1,7 @@
 package com.trionesdev.phecda.device.contracts.model
 
 class ResourceOperation {
-    val deviceResource: String? = null
-    val defaultValue: String? = null
-    val mappings: Map<String, String>? = null
+    var deviceResource: String? = null
+    var defaultValue: String? = null
+    var mappings: MutableMap<String, String>? = null
 }

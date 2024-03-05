@@ -45,7 +45,7 @@ class Processor {
         return Yaml().load(ResourceUtil.getStream(yamlFile))
     }
 
-    fun getConfigFileLocation(args: CommonArgs): String {
+    private fun getConfigFileLocation(args: CommonArgs): String {
         val configFileName = Variables.getConfigFileName(args.configFileName())
         val configDir = Variables.getConfigDir(args.configDirectory())
         val profileDir = Variables.getProfileDir(args.profile())

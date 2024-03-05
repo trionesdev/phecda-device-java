@@ -1,7 +1,7 @@
 package com.trionesdev.phecda.device.contracts.model
 
 class AutoEvent {
-    val interval: String? = null
-    val onChange: Boolean? = null
-    val sourceName: String? = null
+    var interval: String? = null
+    var onChange: Boolean? = null
+    var sourceName: String? = null
 }

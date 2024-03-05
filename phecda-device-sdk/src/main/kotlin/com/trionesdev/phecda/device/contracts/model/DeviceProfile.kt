@@ -2,12 +2,12 @@ package com.trionesdev.phecda.device.contracts.model
 
 class DeviceProfile:DBTimestamp() {
 
-     val id: String? = null
-     val name: String? = null
-     val description: String? = null
-     val manufacturer: String? = null
-     val model: String? = null
-     val labels: MutableList<String>? = null
-     val deviceResources: MutableList<DeviceResource>? = null
-     val deviceCommands: MutableList<DeviceCommand>? = null
+     var id: String? = null
+     var name: String? = null
+     var description: String? = null
+     var manufacturer: String? = null
+     var model: String? = null
+     var labels: MutableList<String>? = null
+     var deviceResources: MutableList<DeviceResource>? = null
+     var deviceCommands: MutableList<DeviceCommand>? = null
 }

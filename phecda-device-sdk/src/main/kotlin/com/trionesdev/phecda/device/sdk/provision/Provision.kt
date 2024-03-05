@@ -30,7 +30,7 @@ object Provision {
     }
 
     class DevicesYaml {
-        val deviceList: MutableList<Device>? = null
+        var deviceList: MutableList<Device>? = null
     }
 
     @JvmStatic
@@ -47,7 +47,7 @@ object Provision {
         ResourceUtil.getResource(path).let { resource ->
             val resourcePath = Paths.get(resource.toURI())
             Files.walk(resourcePath, 1)
-                .filter { p -> p.equals(resourcePath) }
+                .filter { p -> !p.equals(resourcePath) }
                 .forEach { p ->
                     processDevices(p.toString(), p.toString(), serviceName)?.forEach { device ->
                         devices.add(device)
@@ -90,7 +90,7 @@ object Provision {
         ResourceUtil.getResource(path).let { it ->
             val resourcePath = Paths.get(it.toURI())
             Files.walk(resourcePath, 1)
-                .filter { p -> p.equals(resourcePath) }
+                .filter { p -> !p.equals(resourcePath) }
                 .forEach { p ->
                     processProfiles(p.toString())?.let { profile -> profiles.add(profile) }
                 }
@@ -103,7 +103,8 @@ object Provision {
         val fileType = getFileType(path)
         when (fileType) {
             FileType.YAML -> {
-                profile = Yaml().loadAs(ResourceUtil.getStream(path), DeviceProfile::class.java)
+                val profileMap: MutableMap<String, Any> = Yaml().load(ResourceUtil.getStream(path))
+                profile = JSON.parseObject(JSON.toJSONString(profileMap), DeviceProfile::class.java)
             }
 
             FileType.JSON -> {

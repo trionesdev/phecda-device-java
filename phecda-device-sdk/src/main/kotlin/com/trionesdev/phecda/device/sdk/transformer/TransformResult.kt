@@ -36,20 +36,20 @@ object TransformResult {
         }
         val value = commandValueForTransform(cv)
         var newValue = value
-        if (pv.mask != null && pv.mask != defaultMask && (cv.type == CommonConstants.ValueTypeInt)) {
-            newValue = transformReadMask(newValue!!, pv.mask);
+        if (pv.mask != null && pv.mask != defaultMask && (cv.type == ValueTypeInt)) {
+            newValue = transformReadMask(newValue!!, pv.mask!!)
         }
-        if (pv.shift != null && pv.shift != defaultShift && (cv.type == CommonConstants.ValueTypeInt)) {
-            newValue = transformReadShift(newValue!!, pv.shift);
+        if (pv.shift != null && pv.shift != defaultShift && (cv.type == ValueTypeInt)) {
+            newValue = transformReadShift(newValue!!, pv.shift!!)
         }
-        if (pv.base != null && pv.base != defaultBase && (cv.type == CommonConstants.ValueTypeInt)) {
-            newValue = transformBase(newValue!!, pv.base, true);
+        if (pv.base != null && pv.base != defaultBase && (cv.type == ValueTypeInt)) {
+            newValue = transformBase(newValue!!, pv.base!!, true)
         }
-        if (pv.scale != null && pv.scale != defaultScale && (cv.type == CommonConstants.ValueTypeInt)) {
-            newValue = transformScale(newValue!!, pv.scale, true);
+        if (pv.scale != null && pv.scale != defaultScale && (cv.type == ValueTypeInt)) {
+            newValue = transformScale(newValue!!, pv.scale!!, true)
         }
-        if (pv.offset != null && pv.offset != defaultOffset && (cv.type == CommonConstants.ValueTypeInt)) {
-            newValue = transformOffset(newValue!!, pv.offset, true);
+        if (pv.offset != null && pv.offset != defaultOffset && (cv.type == ValueTypeInt)) {
+            newValue = transformOffset(newValue!!, pv.offset!!, true)
         }
         if (value != newValue) {
             cv.value = newValue
@@ -257,7 +257,7 @@ object TransformResult {
 
     fun commandValueForTransform(cv: CommandValue?): Any? {
         when (cv?.type!!) {
-            CommonConstants.ValueTypeInt -> {
+            ValueTypeInt -> {
                 return cv.value as Int
             }
 
