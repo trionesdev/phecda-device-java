@@ -37,5 +37,6 @@ interface ProtocolDriver {
         protocols: MutableMap<String, MutableMap<String, Any>>
     )
 
+    fun messagingConnectionLost(cause: Throwable?)
 
 }

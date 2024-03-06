@@ -23,6 +23,7 @@ public class VirtualDriver implements ProtocolDriver {
 
     @Override
     public void initialize(@NotNull DeviceServiceSDK sdk) {
+        messagingClient = sdk.messagingClient();
         messagingClient.subscribe("sd", (topic, message) -> {
             return null;
         });
@@ -98,6 +99,11 @@ public class VirtualDriver implements ProtocolDriver {
 
     @Override
     public void removeDevice(@NotNull String deviceName, @NotNull Map<String, Map<String, Object>> protocols) {
+
+    }
+
+    @Override
+    public void messagingConnectionLost(Throwable cause) {
 
     }
 }
