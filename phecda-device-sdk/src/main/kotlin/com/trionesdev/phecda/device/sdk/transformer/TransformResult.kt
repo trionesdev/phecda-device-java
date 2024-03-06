@@ -1,15 +1,22 @@
 package com.trionesdev.phecda.device.sdk.transformer
 
-import com.trionesdev.phecda.device.contracts.common.CommonConstants
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_DOUBLE
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_FLOAT
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_FLOAT32
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_FLOAT64
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT16
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT32
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT64
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT8
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT16
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT32
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT64
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT8
 import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_NAN_ERROR
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_OVERFLOW_ERROR
 import com.trionesdev.phecda.device.contracts.model.ResourceProperties
 import com.trionesdev.phecda.device.sdk.model.CommandValue
+import kotlin.experimental.and
 import kotlin.math.ln
 import kotlin.math.pow
 
@@ -36,19 +43,19 @@ object TransformResult {
         }
         val value = commandValueForTransform(cv)
         var newValue = value
-        if (pv.mask != null && pv.mask != defaultMask && (cv.type == VALUE_TYPE_INT)) {
+        if (pv.mask != null && pv.mask != defaultMask && (cv.type == VALUE_TYPE_UINT8 || cv.type == VALUE_TYPE_UINT16 || cv.type == VALUE_TYPE_UINT32 || cv.type == VALUE_TYPE_UINT64)) {
             newValue = transformReadMask(newValue!!, pv.mask!!)
         }
-        if (pv.shift != null && pv.shift != defaultShift && (cv.type == VALUE_TYPE_INT)) {
+        if (pv.shift != null && pv.shift != defaultShift && (cv.type == VALUE_TYPE_UINT8 || cv.type == VALUE_TYPE_UINT16 || cv.type == VALUE_TYPE_UINT32 || cv.type == VALUE_TYPE_UINT64)) {
             newValue = transformReadShift(newValue!!, pv.shift!!)
         }
-        if (pv.base != null && pv.base != defaultBase && (cv.type == VALUE_TYPE_INT)) {
+        if (pv.base != null && pv.base != defaultBase) {
             newValue = transformBase(newValue!!, pv.base!!, true)
         }
-        if (pv.scale != null && pv.scale != defaultScale && (cv.type == VALUE_TYPE_INT)) {
+        if (pv.scale != null && pv.scale != defaultScale) {
             newValue = transformScale(newValue!!, pv.scale!!, true)
         }
-        if (pv.offset != null && pv.offset != defaultOffset && (cv.type == VALUE_TYPE_INT)) {
+        if (pv.offset != null && pv.offset != defaultOffset) {
             newValue = transformOffset(newValue!!, pv.offset!!, true)
         }
         if (value != newValue) {
@@ -57,22 +64,28 @@ object TransformResult {
     }
 
     fun transformBase(value: Any, base: Double, read: Boolean): Any {
-        var doubleValue: Double? = null
+        var doubleValue: Double = 0.0
         when (value) {
-            is Int -> {
-                doubleValue = value.toLong().toDouble()
-            }
-
-            is Float -> {
+            is Byte-> {
                 doubleValue = value.toDouble()
             }
 
-            is Double -> {
-                doubleValue = value
+            is Short -> {
+                doubleValue = value.toDouble()
             }
 
-            else -> {
-                return value
+            is Int -> {
+                doubleValue = value.toDouble()
+            }
+
+            is Long -> {
+                doubleValue = value.toDouble()
+            }
+            is Float -> {
+                doubleValue = value.toDouble()
+            }
+            is Double -> {
+                doubleValue = value
             }
         }
         doubleValue = if (read) {
@@ -86,6 +99,13 @@ object TransformResult {
             throw CommonPhedaException.newCommonPhedaException(KIND_OVERFLOW_ERROR, errMsg, null)
         }
         return when (value) {
+            is Byte -> {
+                doubleValue.toInt().toByte()
+            }
+
+            is Short -> {
+                doubleValue.toInt().toShort()
+            }
             is Int -> {
                 doubleValue.toInt()
             }
@@ -107,8 +127,20 @@ object TransformResult {
     fun transformScale(value: Any, scale: Double, read: Boolean): Any {
         var valueDouble: Double? = null
         when (value) {
+            is Byte -> {
+                valueDouble = value.toDouble()
+            }
+
+            is Short -> {
+                valueDouble = value.toDouble()
+            }
+
             is Int -> {
                 valueDouble = value.toLong().toDouble()
+            }
+
+            is Long -> {
+                valueDouble = value.toDouble()
             }
 
             is Float -> {
@@ -135,7 +167,31 @@ object TransformResult {
             throw CommonPhedaException.newCommonPhedaException(KIND_OVERFLOW_ERROR, errMsg, null)
         }
         when (value) {
+            is Byte -> {
+                return if (read) {
+                    value * scale
+                } else {
+                    value / scale
+                }
+            }
+
+            is Short -> {
+                return if (read) {
+                    value * scale
+                } else {
+                    value / scale
+                }
+            }
+
             is Int -> {
+                return if (read) {
+                    value * scale
+                } else {
+                    value / scale
+                }
+            }
+
+            is Long -> {
                 return if (read) {
                     value * scale
                 } else {
@@ -167,6 +223,14 @@ object TransformResult {
 
     fun transformOffset(value: Any, offset: Double, read: Boolean): Any {
         var valueDouble = when (value) {
+            is Byte -> {
+                value.toDouble()
+            }
+
+            is Short -> {
+                value.toDouble()
+            }
+
             is Int -> {
                 value.toDouble()
             }
@@ -195,6 +259,22 @@ object TransformResult {
             throw CommonPhedaException.newCommonPhedaException(KIND_OVERFLOW_ERROR, errMsg, null)
         }
         when (value) {
+            is Byte -> {
+                return if (read) {
+                    value + offset
+                } else {
+                    value - offset
+                }
+            }
+
+            is Short -> {
+                return if (read) {
+                    value + offset
+                } else {
+                    value - offset
+                }
+            }
+
             is Int -> {
                 return if (read) {
                     value + offset
@@ -228,8 +308,16 @@ object TransformResult {
     fun transformReadMask(value: Any, mask: Long): Any {
 
         return when (value) {
+            is Short -> {
+                value.toShort() and mask.toShort()
+            }
+
             is Int -> {
                 value.toLong() and mask
+            }
+
+            is Long -> {
+                value and mask
             }
 
             else -> {
@@ -257,28 +345,44 @@ object TransformResult {
 
     fun commandValueForTransform(cv: CommandValue?): Any? {
         when (cv?.type!!) {
-            VALUE_TYPE_INT -> {
-                return cv.value as Int
+            VALUE_TYPE_UINT8 -> {
+                return cv.uint8Value()
             }
 
-            CommonConstants.VALUE_TYPE_FLOAT -> {
-                return cv.value as Float
+            VALUE_TYPE_UINT16 -> {
+                return cv.uint16Value()
             }
 
-            CommonConstants.VALUE_TYPE_DOUBLE -> {
-                return cv.value as Double
+            VALUE_TYPE_UINT32 -> {
+                return cv.uint32Value()
             }
 
-            CommonConstants.VALUE_TYPE_BOOL -> {
-                return cv.value as Boolean
+            VALUE_TYPE_UINT64 -> {
+                return cv.uint64Value()
             }
 
-            CommonConstants.VALUE_TYPE_STRING -> {
-                return cv.value as String
+            VALUE_TYPE_INT8 -> {
+                return cv.int8Value()
             }
 
-            CommonConstants.VALUE_TYPE_STRUCT -> {
-                return cv.value as Map<String, Any>
+            VALUE_TYPE_INT16 -> {
+                return cv.int16Value()
+            }
+
+            VALUE_TYPE_INT32 -> {
+                return cv.int32Value()
+            }
+
+            VALUE_TYPE_INT64 -> {
+                return cv.int64Value()
+            }
+
+            VALUE_TYPE_FLOAT32 -> {
+                return cv.float32Value()
+            }
+
+            VALUE_TYPE_FLOAT64 -> {
+                return cv.float64Value()
             }
 
             else -> {
@@ -301,7 +405,7 @@ object TransformResult {
 
     fun isNumericValueType(cv: CommandValue): Boolean {
         return when (cv.type) {
-            VALUE_TYPE_INT, VALUE_TYPE_FLOAT, VALUE_TYPE_DOUBLE -> true
+            VALUE_TYPE_UINT8, VALUE_TYPE_UINT16, VALUE_TYPE_UINT32, VALUE_TYPE_UINT64, VALUE_TYPE_INT8, VALUE_TYPE_INT16, VALUE_TYPE_INT32, VALUE_TYPE_INT64, VALUE_TYPE_FLOAT32, VALUE_TYPE_FLOAT64 -> true
             else -> false
         }
     }

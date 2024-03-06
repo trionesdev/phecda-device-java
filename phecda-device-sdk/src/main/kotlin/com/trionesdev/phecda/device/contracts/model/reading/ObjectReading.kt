@@ -1,17 +1,17 @@
 package com.trionesdev.phecda.device.contracts.model.reading
 
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRUCT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_OBJECT
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading.Companion.newBaseReading
 
-open class StructReading : Reading {
+class ObjectReading : Reading {
     companion object {
-        fun newStructReading(
+        fun newObjectReading(
             profileName: String?,
             deviceName: String?,
             resourceName: String?,
             objectValue: Any?
         ): BaseReading {
-            return newBaseReading(profileName, deviceName, resourceName, VALUE_TYPE_STRUCT).apply {
+            return newBaseReading(profileName, deviceName, resourceName, VALUE_TYPE_OBJECT).apply {
                 this.objectValue = objectValue
             }
         }

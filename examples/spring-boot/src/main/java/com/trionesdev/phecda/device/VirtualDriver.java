@@ -42,14 +42,34 @@ public class VirtualDriver implements ProtocolDriver {
                 case VALUE_TYPE_BOOL:
                     cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), "Bool", true));
                     break;
-                case VALUE_TYPE_INT:
-                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_INT, 1));
+                case VALUE_TYPE_UINT8:
+                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_UINT8, 1));
+                case VALUE_TYPE_UINT16:
+                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_UINT16, 1));
                     break;
-                case VALUE_TYPE_FLOAT:
-                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_FLOAT, 1));
+                case VALUE_TYPE_UINT32:
+                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_UINT32, 1));
                     break;
-                case VALUE_TYPE_DOUBLE:
-                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_DOUBLE, 1));
+                case VALUE_TYPE_UINT64:
+                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_UINT64, 1));
+                    break;
+                case VALUE_TYPE_INT8:
+                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_INT8, 1));
+                    break;
+                case VALUE_TYPE_INT16:
+                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_INT16, 1));
+                    break;
+                case VALUE_TYPE_INT32:
+                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_INT32, 1));
+                    break;
+                case VALUE_TYPE_INT64:
+                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_INT64, 1));
+                    break;
+                case VALUE_TYPE_FLOAT32:
+                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_FLOAT32, 1));
+                    break;
+                case VALUE_TYPE_FLOAT64:
+                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_FLOAT64, 1));
                     break;
             }
         }
