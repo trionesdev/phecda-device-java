@@ -9,7 +9,7 @@ class Device : DBTimestamp() {
     var description: String? = null
     var adminState: AdminState? = null
     var operatingState: OperatingState? = null
-    var protocols: MutableMap<String, Map<String, Any>>? = null
+    var protocols: MutableMap<String, MutableMap<String, Any?>?>? = null
     var labels: MutableList<String>? = null
     var location: Any? = null
     var serviceName: String? = null

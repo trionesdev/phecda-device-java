@@ -8,16 +8,16 @@ interface ProtocolDriver {
     fun start()
     fun stop(force: Boolean)
     fun handleReadCommands(
-        deviceName: String,
-        protocols: MutableMap<String, MutableMap<String, Any>>,
-        reqs: MutableList<CommandRequest>
+        deviceName: String?,
+        protocols: MutableMap<String, MutableMap<String, Any?>?>?,
+        reqs: MutableList<CommandRequest>?
     ): MutableList<CommandValue>
 
     fun handleWriteCommands(
-        deviceName: String,
-        protocols: MutableMap<String, MutableMap<String, Any>>,
-        reqs: MutableList<CommandRequest>,
-        params: MutableList<CommandValue>
+        deviceName: String?,
+        protocols: MutableMap<String, MutableMap<String, Any?>?>?,
+        reqs: MutableList<CommandRequest>?,
+        params: MutableList<CommandValue>?
     )
 
     fun addDevice(

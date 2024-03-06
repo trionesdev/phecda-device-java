@@ -24,12 +24,12 @@ import java.util.*
 
 object Transformer {
     fun commandValuesToEvent(
-        cvs: MutableList<CommandValue>, deviceName: String, sourceName: String, dataTransform: Boolean, dic: Container
+        cvs: MutableList<CommandValue>, deviceName: String?, sourceName: String, dataTransform: Boolean, dic: Container
     ): Event? {
         if (cvs.isEmpty()) {
             return null
         }
-        val device = Cache.devices()?.forName(deviceName) ?: let {
+        val device = Cache.devices()?.forName(deviceName!!) ?: let {
             throw CommonPhedaException.newCommonPhedaException(
                 KIND_ENTITY_DOSE_NOT_EXIST, String.format("failed to find device %s", deviceName), null
             )
@@ -84,7 +84,7 @@ object Transformer {
                     cvs[index] = TransformResult.mapCommandValue(cv, it.mappings)!!
                 }
             }
-            val reading = commandValueToReading(cv, deviceName, device.profileName!!, dr.properties?.mediaType, origin)
+            val reading = commandValueToReading(cv, deviceName!!, device.profileName!!, dr.properties?.mediaType, origin)
             val config = dic.getInstance(ConfigurationStruct::class.java)
             SdkCommonUtils.addReadingTags(reading)
             readings.add(reading!!)
