@@ -1,7 +1,7 @@
 package com.trionesdev.phecda.device.sdk.model
 
 class CommandRequest {
-    val deviceResourceName: String? = null
-    val attributes: MutableMap<String, Any>? = null
-    val type: String? = null
+    var deviceResourceName: String? = null
+    var attributes: MutableMap<String, Any>? = null
+    var type: String? = null
 }

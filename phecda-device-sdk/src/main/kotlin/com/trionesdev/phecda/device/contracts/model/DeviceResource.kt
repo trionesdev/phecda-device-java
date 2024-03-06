@@ -1,8 +1,8 @@
 package com.trionesdev.phecda.device.contracts.model
 
 class DeviceResource {
-    var description: String? = null
     var name: String? = null
+    var description: String? = null
     var isHidden: Boolean? = false
     var properties: ResourceProperties? = null
     var attributes: MutableMap<String, Any>? = null

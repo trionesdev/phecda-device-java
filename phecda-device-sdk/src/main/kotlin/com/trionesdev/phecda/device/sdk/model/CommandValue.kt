@@ -8,6 +8,7 @@ import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 
 class CommandValue {
     companion object {
+        @JvmStatic
         fun newCommandValue(deviceResourceName: String, valueType: String, value: Any): CommandValue {
             return CommandValue().apply {
                 this.deviceResourceName = deviceResourceName
