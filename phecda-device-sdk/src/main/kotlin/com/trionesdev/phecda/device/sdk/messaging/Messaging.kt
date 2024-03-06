@@ -21,6 +21,7 @@ object Messaging {
             )
             return false
         }
+        args.dic?.update(listOf(messagingClient))
         while (args.startupTimer?.hasNotElapsed() == true) {
             try {
                 messagingClient.connect()

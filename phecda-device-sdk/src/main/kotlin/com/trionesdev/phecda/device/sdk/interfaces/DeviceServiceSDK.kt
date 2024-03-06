@@ -3,6 +3,7 @@ package com.trionesdev.phecda.device.sdk.interfaces
 import com.lmax.disruptor.dsl.Disruptor
 import com.trionesdev.phecda.device.contracts.model.*
 import com.trionesdev.phecda.device.sdk.disruptor.AsyncValuesEvent
+import com.trionesdev.phecda.device.sdk.messaging.MessagingClient
 
 interface DeviceServiceSDK {
     fun addDevice(device: Device): String?
@@ -23,4 +24,5 @@ interface DeviceServiceSDK {
     fun name(): String?
     fun asyncReadingsEnabled(): Boolean
     fun asyncValuesChannel(): Disruptor<AsyncValuesEvent>?
+    fun messagingClient(): MessagingClient?
 }
