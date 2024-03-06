@@ -13,4 +13,6 @@ class ConfigurationStruct : Configuration {
     @JSONField(name = "Driver")
     var driver: Map<String, String>? = null
 
+    @JSONField(name = "MQTT")
+    var mqtt: MqttInfo?=null
 }

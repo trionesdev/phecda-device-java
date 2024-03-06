@@ -38,7 +38,7 @@ object Transformer {
         }
         var transformsOK = true
         val origin: Long = uniqueOrigin()
-        val tags = mutableMapOf<String, Any>()
+        val tags = mutableMapOf<String, Any?>()
         val readings = mutableListOf<BaseReading>()
 
         cvs.forEachIndexed { index, cv ->

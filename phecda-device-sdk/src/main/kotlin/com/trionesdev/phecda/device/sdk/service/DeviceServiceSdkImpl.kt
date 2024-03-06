@@ -24,6 +24,7 @@ import com.trionesdev.phecda.device.sdk.interfaces.AutoEventManager
 import com.trionesdev.phecda.device.sdk.interfaces.DeviceServiceSDK
 import com.trionesdev.phecda.device.sdk.interfaces.ProtocolDriver
 import com.trionesdev.phecda.device.sdk.model.AsyncValues
+import com.trionesdev.phecda.device.sdk.service.init.MessagingBootstrap
 import com.trionesdev.phecda.device.sdk.service.init.ServiceBootstrap
 import com.trionesdev.phecda.device.sdk.transformer.Transformer
 
@@ -155,6 +156,7 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
             startupTimer,
             dic,
             mutableListOf(
+                MessagingBootstrap.newMessagingBootstrap(baseServiceName)::bootstrapHandler,
                 DeviceAutoEventManager::bootstrapHandler,
                 ServiceBootstrap.newBootstrap(this)::bootstrapHandler,
             )
