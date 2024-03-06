@@ -105,9 +105,8 @@ object ApplicationCommand {
             }
             reqs.add(req)
 
-            val results = dic.getInstance(ProtocolDriver::class.java)!!.let { driver ->
-                driver.handleReadCommands(device.name, device.protocols, reqs)
-            }
+            val results =
+                dic.getInstance(ProtocolDriver::class.java)!!.handleReadCommands(device.name, device.protocols, reqs)
             val configuration = dic.getInstance(ConfigurationStruct::class.java)
             return Transformer.commandValuesToEvent(
                 results,

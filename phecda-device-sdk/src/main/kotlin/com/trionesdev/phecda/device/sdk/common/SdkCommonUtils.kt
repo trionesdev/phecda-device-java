@@ -8,7 +8,6 @@ import com.trionesdev.phecda.device.contracts.model.Event
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
 import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
-import kotlin.math.log
 
 @Slf4j
 object SdkCommonUtils {
@@ -19,7 +18,7 @@ object SdkCommonUtils {
      */
     fun sendEvent(event: Event, correlationID: String?, dic: Container) {
         val configuration = dic.getInstance(ConfigurationStruct::class.java)
-        log.debug(JSON.toJSONString(event))
+        log.info(JSON.toJSONString(event))
     }
 
     fun addEventTags(event: Event) {

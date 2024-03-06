@@ -2,8 +2,9 @@ package com.trionesdev.phecda.device.sdk.transformer
 
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_BINARY
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_OBJECT
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRUCT
 import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_ENTITY_DOSE_NOT_EXIST
@@ -12,7 +13,8 @@ import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_OVERFLOW_ERR
 import com.trionesdev.phecda.device.contracts.model.Event
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
 import com.trionesdev.phecda.device.contracts.model.reading.SimpleReading
-import com.trionesdev.phecda.device.contracts.model.reading.StructReading
+import com.trionesdev.phecda.device.contracts.model.reading.BinaryReading
+import com.trionesdev.phecda.device.contracts.model.reading.ObjectReading
 import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.common.SdkCommonUtils
 import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
@@ -80,21 +82,22 @@ object Transformer {
             }
             val ro = Cache.profiles()?.resourceOperation(device.profileName!!, cv.deviceResourceName!!)
             ro?.let {
-                if (it.mappings.isNullOrEmpty()) {
-                    cvs[index] = TransformResult.mapCommandValue(cv, it.mappings)!!
+                if (!it.mappings.isNullOrEmpty()) {
+                    TransformResult.mapCommandValue(cv, it.mappings)?.let { itCv -> cvs[index] = itCv }
                 }
             }
-            val reading = commandValueToReading(cv, deviceName!!, device.profileName!!, dr.properties?.mediaType, origin)
+            val reading =
+                commandValueToReading(cv, deviceName!!, device.profileName!!, dr.properties?.mediaType, origin)
             val config = dic.getInstance(ConfigurationStruct::class.java)
             SdkCommonUtils.addReadingTags(reading)
-            readings.add(reading!!)
+            readings.add(reading)
         }
-        if (transformsOK) {
+        if (!transformsOK) {
             throw CommonPhedaException.newCommonPhedaException(
                 KIND_SERVER_ERROR, String.format("failed to transform value for %s", deviceName), null
             )
         }
-        if (!readings.isNullOrEmpty()) {
+        if (readings.isNotEmpty()) {
             val event = Event.newEvent(device.profileName, device.name, sourceName).apply {
                 this.readings = readings
                 this.origin = origin
@@ -112,8 +115,18 @@ object Transformer {
     ): BaseReading {
 
         val reading = when (cv.type) {
-            VALUE_TYPE_STRUCT -> {
-                StructReading.newStructReading(profileName, deviceName, cv.deviceResourceName, cv.type)
+            VALUE_TYPE_BINARY -> {
+                BinaryReading.newBinaryReading(
+                    profileName,
+                    deviceName,
+                    cv.deviceResourceName,
+                    cv.binaryValue(),
+                    mediaType
+                )
+            }
+
+            VALUE_TYPE_OBJECT -> {
+                ObjectReading.newObjectReading(profileName, deviceName, cv.deviceResourceName, cv.value)
             }
 
             else -> {
