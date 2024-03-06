@@ -23,6 +23,7 @@ import com.trionesdev.phecda.device.sdk.disruptor.AsyncValuesEvent
 import com.trionesdev.phecda.device.sdk.interfaces.AutoEventManager
 import com.trionesdev.phecda.device.sdk.interfaces.DeviceServiceSDK
 import com.trionesdev.phecda.device.sdk.interfaces.ProtocolDriver
+import com.trionesdev.phecda.device.sdk.messaging.MessagingClient
 import com.trionesdev.phecda.device.sdk.model.AsyncValues
 import com.trionesdev.phecda.device.sdk.service.init.MessagingBootstrap
 import com.trionesdev.phecda.device.sdk.service.init.ServiceBootstrap
@@ -175,6 +176,10 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
 
     override fun asyncValuesChannel(): Disruptor<AsyncValuesEvent>? {
         return asyncCh
+    }
+
+    override fun messagingClient(): MessagingClient? {
+        return dic?.getInstance(MessagingClient::class.java)
     }
 
     private fun setServiceName(instanceName: String) {

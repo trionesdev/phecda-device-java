@@ -1,15 +1,16 @@
 package com.trionesdev.phecda.device.sdk.messaging.mqtt
 
+import com.alibaba.fastjson2.JSON
 import com.trionesdev.kotlin.log.Slf4j
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
+import com.trionesdev.phecda.device.sdk.application.ApplicationCommand
+import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.config.MqttInfo
 import com.trionesdev.phecda.device.sdk.messaging.MessagingClient
-import org.eclipse.paho.client.mqttv3.MqttClient
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions
-import org.eclipse.paho.client.mqttv3.MqttException
-import org.eclipse.paho.client.mqttv3.MqttMessage
+import com.trionesdev.phecda.device.sdk.messaging.msg.PhecdaCommand
+import org.eclipse.paho.client.mqttv3.*
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
 @Slf4j
@@ -69,5 +70,21 @@ class MqttMessagingClient : MessagingClient {
         }
     }
 
-    fun subscribe() {}
+    override fun subscribe(topic: String?, callback: (String?, ByteArray?) -> Unit?) {
+        mqttClient?.subscribe("$topicPrefix/$topic", 0) { topic, message -> callback(topic, message.payload) }
+    }
+
+    fun subscribe() {
+        Cache.profiles()?.all()?.let { profiles ->
+            for (profile in profiles) {
+                mqttClient?.subscribe("$topicPrefix/${profile.name}/+/thing/service") { topic: String?, message: MqttMessage ->
+                    val command = JSON.parseObject(
+                        message.payload,
+                        PhecdaCommand::class.java
+                    )
+                    ApplicationCommand.setCommand(command.deviceName, command.commandName, "", command.params, dic!!)
+                }
+            }
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.trionesdev.phecda.device;
 import cn.hutool.core.collection.ListUtil;
 import com.trionesdev.phecda.device.sdk.interfaces.DeviceServiceSDK;
 import com.trionesdev.phecda.device.sdk.interfaces.ProtocolDriver;
+import com.trionesdev.phecda.device.sdk.messaging.MessagingClient;
 import com.trionesdev.phecda.device.sdk.model.CommandRequest;
 import com.trionesdev.phecda.device.sdk.model.CommandValue;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +19,13 @@ import static com.trionesdev.phecda.device.contracts.common.CommonConstants.*;
 @Slf4j
 @Component
 public class VirtualDriver implements ProtocolDriver {
+    private MessagingClient messagingClient;
+
     @Override
     public void initialize(@NotNull DeviceServiceSDK sdk) {
-
+        messagingClient.subscribe("sd", (topic, message) -> {
+            return null;
+        });
     }
 
     @Override
