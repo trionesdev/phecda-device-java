@@ -30,5 +30,5 @@ class Event : Versionable() {
     var sourceName: String? = null
     var origin: Long? = null
     var readings: MutableList<BaseReading>? = null
-    var tags: MutableMap<String, Any>? = null
+    var tags: MutableMap<String, Any?>? = null
 }

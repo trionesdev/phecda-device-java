@@ -33,14 +33,14 @@ object ApplicationCommand {
         regexCmd: Boolean,
         dic: Container
     ): Event? {
-        deviceName ?: let {
+        if (deviceName.isNullOrBlank()) {
             throw CommonPhedaException.newCommonPhedaException(
                 KIND_CONTRACT_INVALID,
                 "device name is empty",
                 null
             )
         }
-        commandName ?: let {
+        if (commandName.isNullOrBlank()) {
             throw CommonPhedaException.newCommonPhedaException(
                 KIND_CONTRACT_INVALID,
                 "command name is empty",
@@ -63,7 +63,32 @@ object ApplicationCommand {
         return res
     }
 
-    fun validateServiceAndDeviceState(deviceName: String?, dic: Container): Device? {
+    fun setCommand(
+        deviceName: String?,
+        commandName: String?,
+        queryParams: String,
+        requests: MutableMap<String, Any?>?,
+        dic: Container
+    ): Event? {
+        if (deviceName.isNullOrBlank()) {
+            throw CommonPhedaException.newCommonPhedaException(
+                KIND_CONTRACT_INVALID,
+                "device name is empty",
+                null
+            )
+        }
+        if (commandName.isNullOrBlank()) {
+            throw CommonPhedaException.newCommonPhedaException(
+                KIND_CONTRACT_INVALID,
+                "command name is empty",
+                null
+            )
+        }
+
+        return null
+    }
+
+    private fun validateServiceAndDeviceState(deviceName: String?, dic: Container): Device? {
         val ds = dic.getInstance(DeviceService::class.java)
         if (ds?.adminState?.equals(AdminState.LOCKED) == true) {
             throw CommonPhedaException(KIND_SERVICE_LOCKED, "service locked")
@@ -82,7 +107,7 @@ object ApplicationCommand {
         }
     }
 
-    fun readDeviceResource(device: Device, resourceName: String, attributes: String?, dic: Container): Event? {
+    private fun readDeviceResource(device: Device, resourceName: String, attributes: String?, dic: Container): Event? {
         Cache.profiles()?.deviceResource(device.profileName!!, resourceName)?.let { dr ->
             if (dr.properties?.readWrite.equals(READ_WRITE_W)) {
                 throw CommonPhedaException(
@@ -124,7 +149,7 @@ object ApplicationCommand {
         }
     }
 
-    fun readDeviceResourcesRegex(
+    private fun readDeviceResourcesRegex(
         device: Device,
         regexResourceName: String?,
         attributes: String?,

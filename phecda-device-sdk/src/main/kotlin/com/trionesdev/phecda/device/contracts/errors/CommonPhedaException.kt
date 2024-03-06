@@ -23,6 +23,11 @@ class CommonPhedaException() : RuntimeException(), PhecdaException {
         this.message = message
     }
 
+    constructor(message: String?,throwable: Throwable): this() {
+        this.message = message
+
+    }
+
     override fun error(): String {
         TODO("Not yet implemented")
     }
