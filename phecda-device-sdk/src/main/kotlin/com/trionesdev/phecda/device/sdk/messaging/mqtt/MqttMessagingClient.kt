@@ -47,7 +47,7 @@ class MqttMessagingClient : MessagingClient {
         }
     }
 
-    private var dic: Container? = null
+    var dic: Container? = null
     private var mqttClient: MqttClient? = null
     private var options: MqttConnectOptions? = null
     private var topicPrefix = "phecda"
@@ -70,11 +70,7 @@ class MqttMessagingClient : MessagingClient {
         }
     }
 
-    override fun subscribe(topic: String?, callback: (String?, ByteArray?) -> Unit?) {
-        mqttClient?.subscribe("$topicPrefix/$topic", 0) { topic, message -> callback(topic, message.payload) }
-    }
-
-    fun subscribe() {
+    override fun subscribeDefault() {
         Cache.profiles()?.all()?.let { profiles ->
             for (profile in profiles) {
                 mqttClient?.subscribe("$topicPrefix/${profile.name}/+/thing/service") { topic: String?, message: MqttMessage ->
@@ -87,4 +83,9 @@ class MqttMessagingClient : MessagingClient {
             }
         }
     }
+
+    override fun subscribe(topic: String?, callback: (String?, ByteArray?) -> Unit?) {
+        mqttClient?.subscribe("$topicPrefix/$topic", 0) { topic, message -> callback(topic, message.payload) }
+    }
+
 }
