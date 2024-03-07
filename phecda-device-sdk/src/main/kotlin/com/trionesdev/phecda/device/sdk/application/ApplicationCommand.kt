@@ -3,6 +3,7 @@ package com.trionesdev.phecda.device.sdk.application
 import com.trionesdev.kotlin.log.Slf4j
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.READ_WRITE_R
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.READ_WRITE_W
 import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_CONTRACT_INVALID
@@ -11,6 +12,7 @@ import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_NOT_ALLOWED
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVICE_LOCKED
 import com.trionesdev.phecda.device.contracts.model.Device
+import com.trionesdev.phecda.device.contracts.model.DeviceResource
 import com.trionesdev.phecda.device.contracts.model.DeviceService
 import com.trionesdev.phecda.device.contracts.model.Event
 import com.trionesdev.phecda.device.contracts.model.enums.AdminState
@@ -20,6 +22,8 @@ import com.trionesdev.phecda.device.sdk.common.SdkConstants.URLRawQuery
 import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
 import com.trionesdev.phecda.device.sdk.interfaces.ProtocolDriver
 import com.trionesdev.phecda.device.sdk.model.CommandRequest
+import com.trionesdev.phecda.device.sdk.model.CommandValue
+import com.trionesdev.phecda.device.sdk.transformer.TransformParam
 import com.trionesdev.phecda.device.sdk.transformer.Transformer
 import java.util.regex.Pattern
 
@@ -84,28 +88,22 @@ object ApplicationCommand {
                 null
             )
         }
-
-        return null
+        var event: Event? = null
+        validateServiceAndDeviceState(deviceName, dic)?.let { device ->
+            Cache.profiles()?.deviceCommand(device.profileName, commandName)?.let {
+                event = writeDeviceCommand(device, commandName, queryParams, requests, dic)
+            } ?: let {
+                event = writeDeviceResource(device, commandName, queryParams, requests, dic)
+            }
+            log.debug(
+                "SET Device Command successfully. Device: {}, Source: {}",
+                deviceName,
+                commandName
+            )
+        }
+        return event
     }
 
-    private fun validateServiceAndDeviceState(deviceName: String?, dic: Container): Device? {
-        val ds = dic.getInstance(DeviceService::class.java)
-        if (ds?.adminState?.equals(AdminState.LOCKED) == true) {
-            throw CommonPhedaException(KIND_SERVICE_LOCKED, "service locked")
-        }
-        return Cache.devices()?.forName(deviceName!!)?.let {
-            if (it.adminState?.equals(AdminState.LOCKED) == true) {
-                throw CommonPhedaException(KIND_SERVICE_LOCKED, String.format("device %s locked", it.name))
-            }
-            if (it.operatingState?.equals(OperatingState.DOWN) == true) {
-                throw CommonPhedaException(
-                    KIND_SERVICE_LOCKED,
-                    String.format("device %s OperatingState is DOWN", it.name)
-                )
-            }
-            it
-        }
-    }
 
     private fun readDeviceResource(device: Device, resourceName: String, attributes: String?, dic: Container): Event? {
         Cache.profiles()?.deviceResource(device.profileName!!, resourceName)?.let { dr ->
@@ -264,6 +262,207 @@ object ApplicationCommand {
                 String.format("DeviceCommand %s not found", commandName)
             )
         }
+    }
+
+    fun writeDeviceCommand(
+        device: Device,
+        commandName: String,
+        attributes: String?,
+        requests: MutableMap<String, Any?>?,
+        dic: Container
+    ): Event? {
+        Cache.profiles()?.deviceCommand(device.profileName, commandName)?.let { dc ->
+            if (dc.readWrite.equals(READ_WRITE_R)) {
+                throw CommonPhedaException(
+                    KIND_NOT_ALLOWED,
+                    String.format("DeviceCommand %s is marked as read-only", dc.name)
+                )
+            }
+            val configuration = dic.getInstance(ConfigurationStruct::class.java)
+            if (dc.resourceOperations!!.size > configuration!!.maxEventSize) {
+                throw CommonPhedaException(
+                    KIND_SERVER_ERROR,
+                    String.format(
+                        "POST command %s exceed device %s MaxCmdOps (%d)",
+                        dc.name,
+                        device.name,
+                        configuration.device?.maxCmdOps
+                    )
+                )
+            }
+            val cvs = mutableListOf<CommandValue>()
+            dc.resourceOperations?.forEachIndexed { i, ro ->
+                val drName = ro.deviceResource
+                Cache.profiles()?.deviceResource(device.profileName!!, drName!!)?.let { dr ->
+                    var value = requests?.get(ro.deviceResource)
+                    value ?: let {
+                        value = if (ro.defaultValue.isNullOrBlank()) {
+                            ro.defaultValue
+                        } else if (dr.properties?.defaultValue.isNullOrBlank()) {
+                            dr.properties?.defaultValue
+                        } else {
+                            throw CommonPhedaException(
+                                KIND_SERVER_ERROR,
+                                String.format(
+                                    "DeviceResource %s not found in request body and no default value defined",
+                                    dr.name
+                                )
+                            )
+                        }
+                    }
+
+                    if (ro.mappings?.isNotEmpty() == true) {
+                        for ((k, v) in ro.mappings!!) {
+                            if (v == value) {
+                                value = k
+                                break
+                            }
+                        }
+                    }
+                    val cv = createCommandValueFromDeviceResource(dr, value)
+                    cvs.add(cv)
+
+
+                } ?: let {
+                    throw CommonPhedaException(
+                        KIND_SERVER_ERROR,
+                        String.format(
+                            "DeviceResource %s in SET commnd %s for %s not defined",
+                            drName,
+                            dc.name,
+                            device.name
+                        )
+                    )
+                }
+            }
+            val reqs = mutableListOf<CommandRequest>()
+            cvs.forEach { cv ->
+                val dr = Cache.profiles()?.deviceResource(device.profileName!!, cv.deviceResourceName!!)
+                val req = CommandRequest().apply {
+                    this.deviceResourceName = cv.deviceResourceName
+                    this.attributes = dr?.attributes
+                    this.type = cv.type
+                    if (attributes.isNullOrBlank()) {
+                        if (this.attributes.isNullOrEmpty()) {
+                            this.attributes = mutableMapOf()
+                        }
+                        this.attributes?.set(URLRawQuery, attributes)
+                    }
+                }
+                if (configuration.device?.dataTransform == true) {
+                    TransformParam.transformWriteParameter(cv, dr?.properties)
+                }
+                reqs.add(req)
+            }
+            dic.getInstance(ProtocolDriver::class.java)?.let { driver ->
+                driver.handleWriteCommands(device.name, device.protocols, reqs, cvs)
+            }
+            if (!dc.readWrite.equals(READ_WRITE_W)) {
+                return Transformer.commandValuesToEvent(
+                    cvs,
+                    device.name,
+                    commandName,
+                    false,
+                    dic
+                )
+            }
+            return null
+        } ?: let {
+            throw CommonPhedaException(
+                KIND_ENTITY_DOSE_NOT_EXIST,
+                String.format("DeviceCommand %s not found", commandName)
+            )
+        }
+    }
+
+    fun writeDeviceResource(
+        device: Device,
+        resourceName: String,
+        attributes: String?,
+        requests: MutableMap<String, Any?>?,
+        dic: Container
+    ): Event? {
+        Cache.profiles()?.deviceResource(device.profileName!!, resourceName)?.let { dr ->
+            if (dr.properties?.readWrite.equals(READ_WRITE_R)) {
+                throw CommonPhedaException(
+                    KIND_NOT_ALLOWED,
+                    String.format("DeviceResource %s is marked as read-only", dr.name)
+                )
+            }
+            var v = requests?.get(dr.name)
+            v ?: let {
+                if (!dr.properties?.defaultValue.isNullOrBlank()) {
+                    v = dr.properties?.defaultValue
+                } else {
+                    throw CommonPhedaException(
+                        KIND_SERVER_ERROR,
+                        String.format(
+                            "DeviceResource %s not found in request body and no default value defined",
+                            dr.name
+                        )
+                    )
+
+                }
+            }
+            val cv = createCommandValueFromDeviceResource(dr, v)
+            val req = CommandRequest().apply {
+                this.deviceResourceName = cv.deviceResourceName
+                this.attributes = dr.attributes
+                this.type = cv.type
+                if (attributes.isNullOrBlank()) {
+                    if (this.attributes.isNullOrEmpty()) {
+                        this.attributes = mutableMapOf()
+                    }
+                    this.attributes?.set(URLRawQuery, attributes)
+                }
+            }
+            dic.getInstance(ConfigurationStruct::class.java)?.let { configuration ->
+                if (configuration.device?.dataTransform == true) {
+                    TransformParam.transformWriteParameter(cv, dr.properties)
+                }
+            }
+            dic.getInstance(ProtocolDriver::class.java)?.let { driver ->
+                driver.handleWriteCommands(device.name, device.protocols, mutableListOf(req), mutableListOf(cv))
+            }
+            if (!dr.properties?.readWrite.equals(READ_WRITE_W)) {
+                return Transformer.commandValuesToEvent(
+                    mutableListOf(cv),
+                    device.name,
+                    resourceName,
+                    false,
+                    dic
+                )
+            }
+            return null
+        } ?: let {
+            throw CommonPhedaException(
+                KIND_ENTITY_DOSE_NOT_EXIST,
+                String.format("DeviceResource %s not found", resourceName)
+            )
+        }
+    }
+
+    private fun validateServiceAndDeviceState(deviceName: String?, dic: Container): Device? {
+        val ds = dic.getInstance(DeviceService::class.java)
+        if (ds?.adminState?.equals(AdminState.LOCKED) == true) {
+            throw CommonPhedaException(KIND_SERVICE_LOCKED, "service locked")
+        }
+        return Cache.devices()?.forName(deviceName!!)?.let {
+            if (it.adminState?.equals(AdminState.LOCKED) == true) {
+                throw CommonPhedaException(KIND_SERVICE_LOCKED, String.format("device %s locked", it.name))
+            }
+            if (it.operatingState?.equals(OperatingState.DOWN) == true) {
+                throw CommonPhedaException(
+                    KIND_SERVICE_LOCKED,
+                    String.format("device %s OperatingState is DOWN", it.name)
+                )
+            }
+            it
+        }
+    }
+
+    fun createCommandValueFromDeviceResource(dr: DeviceResource, value: Any?): CommandValue {
+        return CommandValue()
     }
 
 }
