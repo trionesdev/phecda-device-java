@@ -69,7 +69,7 @@ class ServiceBootstrap {
             log.error("Failed to load devices: {}", e.message, e)
             return false
         }
-        dic.getInstance(MessagingClient::class.java)?.subscribeDefault()
+//        dic.getInstance(MessagingClient::class.java)?.subscribeDefault()
         ds?.autoEventManager?.startAutoEvents()
         return true
     }

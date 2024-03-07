@@ -8,6 +8,8 @@ import com.trionesdev.phecda.device.contracts.model.Event
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
 import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
+import com.trionesdev.phecda.device.sdk.messaging.MessagingClient
+import com.trionesdev.phecda.device.sdk.messaging.msg.PhecdaEvent
 
 @Slf4j
 object SdkCommonUtils {
@@ -17,8 +19,22 @@ object SdkCommonUtils {
      * this is a method send event to things platform
      */
     fun sendEvent(event: Event, correlationID: String?, dic: Container) {
-        val configuration = dic.getInstance(ConfigurationStruct::class.java)
         log.info(JSON.toJSONString(event))
+        dic.getInstance(MessagingClient::class.java)?.let { client ->
+            val phecdaEvent = PhecdaEvent.newPhecdaEvent(event)
+            log.info(JSON.toJSONString(phecdaEvent))
+            if (event.tags?.containsKey("event") == true) {
+                client.publish(
+                    "${event.profileName}/${event.deviceName}/thing/event/post",
+                    JSON.toJSONBytes(phecdaEvent)
+                )
+            } else {
+                client.publish(
+                    "${event.profileName}/${event.deviceName}/thing/property/post",
+                    JSON.toJSONBytes(phecdaEvent)
+                )
+            }
+        }
     }
 
     fun addEventTags(event: Event) {

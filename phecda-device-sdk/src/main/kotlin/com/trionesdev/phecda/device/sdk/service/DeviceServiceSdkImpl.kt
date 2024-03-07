@@ -157,9 +157,9 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
             startupTimer,
             dic,
             mutableListOf(
-                MessagingBootstrap.newMessagingBootstrap(baseServiceName)::bootstrapHandler,
                 DeviceAutoEventManager::bootstrapHandler,
                 ServiceBootstrap.newBootstrap(this)::bootstrapHandler,
+                MessagingBootstrap.newMessagingBootstrap(baseServiceName)::bootstrapHandler,
             )
         )
         this.driver?.start()

@@ -2,6 +2,7 @@ package com.trionesdev.phecda.device.sdk.messaging.msg
 
 import com.trionesdev.phecda.device.contracts.model.Event
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
+import com.trionesdev.phecda.device.sdk.messaging.ValueTypeMapping
 
 class PhecdaEvent {
     companion object {
@@ -35,7 +36,7 @@ class PhecdaEvent {
             fun fromBaseReading(baseReading: BaseReading): Reading {
                 return Reading().apply {
                     this.identifier = baseReading.resourceName
-                    this.valueType = baseReading.valueType
+                    this.valueType = ValueTypeMapping.deviceToPhecdaValueType[baseReading.valueType]
                     this.utils = baseReading.utils
                     this.binaryValue = baseReading.binaryValue
                     this.mediaType = baseReading.mediaType

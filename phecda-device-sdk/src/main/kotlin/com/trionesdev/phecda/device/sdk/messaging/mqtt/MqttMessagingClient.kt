@@ -19,9 +19,9 @@ class MqttMessagingClient : MessagingClient {
         fun newMqttClient(mqttInfo: MqttInfo, dic: Container): MqttMessagingClient {
             val serverUri = (mqttInfo.protocol + "://" + mqttInfo.host) + ":" + mqttInfo.port
             val persistence = MemoryPersistence()
-            var mqttClient: MqttClient? = null
+            var mqttClient: IMqttAsyncClient? = null
             try {
-                mqttClient = MqttClient(serverUri, mqttInfo.clientId, persistence)
+                mqttClient = MqttAsyncClient(serverUri, mqttInfo.clientId, persistence)
             } catch (e: MqttException) {
                 log.error(e.message, e)
                 throw RuntimeException(e)
@@ -48,7 +48,7 @@ class MqttMessagingClient : MessagingClient {
     }
 
     var dic: Container? = null
-    private var mqttClient: MqttClient? = null
+    private var mqttClient: IMqttAsyncClient? = null
     private var options: MqttConnectOptions? = null
     private var topicPrefix = "phecda"
     override fun connect() {
@@ -73,7 +73,7 @@ class MqttMessagingClient : MessagingClient {
     override fun subscribeDefault() {
         Cache.profiles()?.all()?.let { profiles ->
             for (profile in profiles) {
-                mqttClient?.subscribe("$topicPrefix/${profile.name}/+/thing/service") { topic: String?, message: MqttMessage ->
+                mqttClient?.subscribe("$topicPrefix/${profile.name}/+/thing/service", 0) { topic: String?, message: MqttMessage ->
                     val command = JSON.parseObject(
                         message.payload,
                         PhecdaCommand::class.java

@@ -25,4 +25,4 @@ MQTT:
   Username: "admin"
   Password: "public"
   ConnectionTimeout: 30
-  TopicPrefix: "phecda"
+  TopicPrefix: "phecda-test"
