@@ -66,7 +66,7 @@ object ApplicationCommand {
     fun setCommand(
         deviceName: String?,
         commandName: String?,
-        queryParams: String,
+        queryParams: String?,
         requests: MutableMap<String, Any?>?,
         dic: Container
     ): Event? {

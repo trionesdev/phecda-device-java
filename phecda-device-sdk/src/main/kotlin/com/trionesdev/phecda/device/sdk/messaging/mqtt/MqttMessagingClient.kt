@@ -73,12 +73,26 @@ class MqttMessagingClient : MessagingClient {
     override fun subscribeDefault() {
         Cache.profiles()?.all()?.let { profiles ->
             for (profile in profiles) {
-                mqttClient?.subscribe("$topicPrefix/${profile.name}/+/thing/service", 0) { topic: String?, message: MqttMessage ->
+                mqttClient?.subscribe(
+                    "$topicPrefix/${profile.name}/+/thing/service",
+                    0
+                ) { topic: String?, message: MqttMessage ->
                     val command = JSON.parseObject(
                         message.payload,
                         PhecdaCommand::class.java
                     )
-                    ApplicationCommand.setCommand(command.deviceName, command.commandName, "", command.params, dic!!)
+                    val queryParams = command.params?.map { "${it.key}=${it.value}" }?.joinToString("&")
+                    if (command.method == "get") {
+                        ApplicationCommand.getCommand(command.deviceName, command.commandName, queryParams, true, dic!!)
+                    } else {
+                        ApplicationCommand.setCommand(
+                            command.deviceName,
+                            command.commandName,
+                            queryParams,
+                            command.body,
+                            dic!!
+                        )
+                    }
                 }
             }
         }
