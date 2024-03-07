@@ -24,9 +24,6 @@ public class VirtualDriver implements ProtocolDriver {
     @Override
     public void initialize(@NotNull DeviceServiceSDK sdk) {
         messagingClient = sdk.messagingClient();
-        messagingClient.subscribe("sd", (topic, message) -> {
-            return null;
-        });
     }
 
     @Override

@@ -15,11 +15,11 @@ class MqttCallback(mqttClient: MqttMessagingClient) : MqttCallbackExtended {
     }
 
     override fun messageArrived(topic: String?, message: MqttMessage?) {
-        TODO("Not yet implemented")
+
     }
 
     override fun deliveryComplete(token: IMqttDeliveryToken?) {
-        TODO("Not yet implemented")
+
     }
 
     override fun connectComplete(reconnect: Boolean, serverURI: String?) {
