@@ -16,8 +16,8 @@ interface DeviceServiceSDK {
     fun getProfileByName(name: String): DeviceProfile?
     fun updateDeviceProfile(profile: DeviceProfile)
     fun removeDeviceProfileByName(name: String)
-    fun deviceResource(deviceName: String, resourceName: String): DeviceResource
-    fun deviceCommand(deviceName: String, commandName: String): DeviceCommand
+    fun deviceResource(deviceName: String, resourceName: String): DeviceResource?
+    fun deviceCommand(deviceName: String, commandName: String): DeviceCommand?
     fun addDeviceAutoEvent(deviceName: String, autoEvent: AutoEvent)
     fun removeDeviceAutoEvent(deviceName: String, autoEventName: String)
     fun run()
