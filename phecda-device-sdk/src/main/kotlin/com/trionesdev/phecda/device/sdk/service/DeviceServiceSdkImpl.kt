@@ -106,19 +106,23 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
     }
 
     override fun updateDeviceProfile(profile: DeviceProfile) {
-        TODO("Not yet implemented")
+        Cache.profiles()?.update(profile)
     }
 
     override fun removeDeviceProfileByName(name: String) {
-        TODO("Not yet implemented")
+        Cache.profiles()?.removeByName(name)
     }
 
-    override fun deviceResource(deviceName: String, resourceName: String): DeviceResource {
-        TODO("Not yet implemented")
+    override fun deviceResource(deviceName: String, resourceName: String): DeviceResource? {
+        return Cache.devices()?.forName(deviceName)?.let { device ->
+            return device.profileName?.let { Cache.profiles()?.deviceResource(it, resourceName) }
+        }
     }
 
-    override fun deviceCommand(deviceName: String, commandName: String): DeviceCommand {
-        TODO("Not yet implemented")
+    override fun deviceCommand(deviceName: String, commandName: String): DeviceCommand? {
+        return Cache.devices()?.forName(deviceName)?.let { device ->
+            return device.profileName?.let { Cache.profiles()?.deviceCommand(it, commandName) }
+        }
     }
 
     override fun addDeviceAutoEvent(deviceName: String, autoEvent: AutoEvent) {
