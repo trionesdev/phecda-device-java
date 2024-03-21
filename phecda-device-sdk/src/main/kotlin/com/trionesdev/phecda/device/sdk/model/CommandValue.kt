@@ -25,12 +25,22 @@ class CommandValue {
             }
         }
 
+        @JvmStatic
+        fun newCommandValueWithOrigin(deviceResourceName: String?, valueType: String?, value: Any, origin: Long): CommandValue {
+            return CommandValue().apply {
+                this.deviceResourceName = deviceResourceName
+                this.type = valueType
+                this.value = value
+                this.origin = origin
+            }
+        }
+
     }
 
     var deviceResourceName: String? = null
     var type: String? = null
     var value: Any? = null
-    val origin: Long? = null
+    var origin: Long? = null
     val tags: Map<String, String>? = null
 
     fun valueToString(): String {
