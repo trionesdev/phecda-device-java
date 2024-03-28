@@ -10,6 +10,7 @@ import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.config.MqttInfo
 import com.trionesdev.phecda.device.sdk.messaging.MessagingClient
 import com.trionesdev.phecda.device.sdk.messaging.msg.PhecdaCommand
+import com.trionesdev.phecda.device.sdk.model.ReplayEvent
 import org.eclipse.paho.client.mqttv3.*
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
@@ -82,17 +83,48 @@ class MqttMessagingClient : MessagingClient {
                         PhecdaCommand::class.java
                     )
                     val queryParams = command.params?.map { "${it.key}=${it.value}" }?.joinToString("&")
+                    val syncReplayTopic = "$topicPrefix/thing/service/${command.id}/replay/sync"
+                    val asyncReplayTopic = "$topicPrefix/thing/service/${command.id}/replay/async"
+                    val replayEvent: ReplayEvent = ReplayEvent().apply { replayId = command.id }
+
                     if (command.method == "get") {
-                        ApplicationCommand.getCommand(command.deviceName, command.commandName, queryParams, true, dic!!)
+                        try {
+                            val evt = ApplicationCommand.getCommand(
+                                command.deviceName,
+                                command.commandName,
+                                queryParams,
+                                true,
+                                dic!!
+                            )
+                            replayEvent.applyEvent(evt)
+                        } catch (e: Exception) {
+                            replayEvent.apply {
+                                errMsg = e.message
+                            }
+                        }
                     } else {
-                        ApplicationCommand.setCommand(
-                            command.deviceName,
-                            command.commandName,
-                            queryParams,
-                            command.body,
-                            dic!!
-                        )
+                        try {
+                            val evt = ApplicationCommand.setCommand(
+                                command.deviceName,
+                                command.commandName,
+                                queryParams,
+                                command.body,
+                                dic!!
+                            )
+                            replayEvent.applyEvent(evt)
+                        } catch (e: Exception) {
+                            replayEvent.apply {
+                                errMsg = e.message
+                            }
+                        }
                     }
+
+                    if (command.sync == true) {
+                        mqttClient?.publish(syncReplayTopic, MqttMessage(JSON.toJSONBytes(replayEvent)))
+                    } else {
+                        mqttClient?.publish(asyncReplayTopic, MqttMessage(JSON.toJSONBytes(replayEvent)))
+                    }
+
                 }
             }
         }
