@@ -227,7 +227,7 @@ object ApplicationCommand {
                         this.attributes = dr.attributes
                         this.type = dr.properties?.valueType
                         if (attributes?.isNotEmpty() == true) {
-                            if (this.attributes?.isEmpty() == true) {
+                            if (this.attributes == null) {
                                 this.attributes = mutableMapOf()
                             }
                             this.attributes?.set(URLRawQuery, attributes)

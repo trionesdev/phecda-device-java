@@ -10,13 +10,13 @@ interface ProtocolDriver {
     fun handleReadCommands(
         deviceName: String?,
         protocols: MutableMap<String, MutableMap<String, Any?>?>?,
-        reqs: MutableList<CommandRequest>?
+        reqs: MutableList<CommandRequest>
     ): MutableList<CommandValue>
 
     fun handleWriteCommands(
         deviceName: String?,
         protocols: MutableMap<String, MutableMap<String, Any?>?>?,
-        reqs: MutableList<CommandRequest>?,
+        reqs: MutableList<CommandRequest>,
         params: MutableList<CommandValue>?
     )
 
