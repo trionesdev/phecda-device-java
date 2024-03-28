@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON
 import com.trionesdev.kotlin.log.Slf4j
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
+import com.trionesdev.phecda.device.contracts.common.CommonConstants
 import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
 import com.trionesdev.phecda.device.sdk.application.ApplicationCommand
 import com.trionesdev.phecda.device.sdk.cache.Cache
@@ -75,7 +76,7 @@ class MqttMessagingClient : MessagingClient {
         Cache.profiles()?.all()?.let { profiles ->
             for (profile in profiles) {
                 mqttClient?.subscribe(
-                    "$topicPrefix/${profile.name}/+/thing/service",
+                    "$topicPrefix/${profile.name}/+/thing/service/+",
                     0
                 ) { topic: String?, message: MqttMessage ->
                     val command = JSON.parseObject(
@@ -87,34 +88,43 @@ class MqttMessagingClient : MessagingClient {
                     val asyncReplayTopic = "$topicPrefix/thing/service/${command.id}/replay/async"
                     val replayEvent: ReplayEvent = ReplayEvent().apply { replayId = command.id }
 
-                    if (command.method == "get") {
-                        try {
-                            val evt = ApplicationCommand.getCommand(
-                                command.deviceName,
-                                command.commandName,
-                                queryParams,
-                                true,
-                                dic!!
-                            )
-                            replayEvent.applyEvent(evt)
-                        } catch (e: Exception) {
-                            replayEvent.apply {
-                                errMsg = e.message
-                            }
+                    val deviceCommand = Cache.profiles()?.deviceCommand(profile.name, command.commandName)
+                    if (deviceCommand == null) {
+                        replayEvent.apply {
+                            code = "1"
+                            errMsg = "指令不存在"
                         }
                     } else {
-                        try {
-                            val evt = ApplicationCommand.setCommand(
-                                command.deviceName,
-                                command.commandName,
-                                queryParams,
-                                command.body,
-                                dic!!
-                            )
-                            replayEvent.applyEvent(evt)
-                        } catch (e: Exception) {
-                            replayEvent.apply {
-                                errMsg = e.message
+                        val method = if (deviceCommand.readWrite == CommonConstants.READ_WRITE_R) "get" else "set"
+                        if (method == "get") {
+                            try {
+                                val evt = ApplicationCommand.getCommand(
+                                    command.deviceName,
+                                    command.commandName,
+                                    queryParams,
+                                    true,
+                                    dic!!
+                                )
+                                replayEvent.applyEvent(evt)
+                            } catch (e: Exception) {
+                                replayEvent.apply {
+                                    errMsg = e.message
+                                }
+                            }
+                        } else {
+                            try {
+                                val evt = ApplicationCommand.setCommand(
+                                    command.deviceName,
+                                    command.commandName,
+                                    queryParams,
+                                    command.body,
+                                    dic!!
+                                )
+                                replayEvent.applyEvent(evt)
+                            } catch (e: Exception) {
+                                replayEvent.apply {
+                                    errMsg = e.message
+                                }
                             }
                         }
                     }
@@ -124,7 +134,6 @@ class MqttMessagingClient : MessagingClient {
                     } else {
                         mqttClient?.publish(asyncReplayTopic, MqttMessage(JSON.toJSONBytes(replayEvent)))
                     }
-
                 }
             }
         }
