@@ -7,6 +7,8 @@ class PhecdaCommand {
         }
     }
 
+    var id: String? = null
+    var sync: Boolean? = null
     var method: String? = null
     var productKey: String? = null
     var deviceName: String? = null
