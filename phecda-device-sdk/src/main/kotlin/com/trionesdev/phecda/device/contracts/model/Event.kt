@@ -5,7 +5,7 @@ import com.trionesdev.phecda.device.contracts.model.reading.Reading
 import java.time.Instant
 import java.util.*
 
-class Event : Versionable() {
+open class Event : Versionable() {
     companion object {
         fun newEvent(
             profileName: String?,
