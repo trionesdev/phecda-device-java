@@ -16,7 +16,6 @@ import com.trionesdev.phecda.device.sdk.model.ReplyEvent
 import org.eclipse.paho.client.mqttv3.*
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import java.time.Instant
-import java.util.UUID
 
 @Slf4j
 class MqttMessagingClient : MessagingClient {
@@ -91,7 +90,7 @@ class MqttMessagingClient : MessagingClient {
                     val asyncReplayTopic = "$topicPrefix/thing/service/${command.id}/reply/async"
                     val replyEvent: ReplyEvent = ReplyEvent().apply {
                         this.id = command.id
-                        this.replayId = command.id
+                        this.replyId = command.id
                         this.deviceName = command.deviceName
                         this.profileName = command.productKey
                         this.sourceName = command.commandName

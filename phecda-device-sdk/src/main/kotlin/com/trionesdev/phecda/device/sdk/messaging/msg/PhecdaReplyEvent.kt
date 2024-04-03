@@ -16,14 +16,14 @@ class PhecdaReplyEvent: PhecdaEvent() {
                 this.readings = Reading.fromBaseReadingsToMap(event.readings)
                 this.tags = event.tags
 
-                this.replayId = event.replayId
+                this.replyId = event.replyId
                 this.code = event.code
                 this.errMsg = event.errMsg
             }
         }
     }
 
-    var replayId: String? = null
+    var replyId: String? = null
     var code: String? = null
     var errMsg: String? = null
 }
