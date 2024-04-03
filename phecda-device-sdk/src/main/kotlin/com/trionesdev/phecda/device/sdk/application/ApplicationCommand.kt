@@ -279,7 +279,7 @@ object ApplicationCommand {
                 )
             }
             val configuration = dic.getInstance(ConfigurationStruct::class.java)
-            if (dc.resourceOperations!!.size > configuration!!.maxEventSize) {
+            if (dc.resourceOperations!!.size > configuration!!.device!!.maxCmdOps) {
                 throw CommonPhedaException(
                     KIND_SERVER_ERROR,
                     String.format(

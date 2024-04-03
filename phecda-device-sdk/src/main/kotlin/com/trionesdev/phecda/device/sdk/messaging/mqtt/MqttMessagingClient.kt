@@ -11,9 +11,12 @@ import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.config.MqttInfo
 import com.trionesdev.phecda.device.sdk.messaging.MessagingClient
 import com.trionesdev.phecda.device.sdk.messaging.msg.PhecdaCommand
-import com.trionesdev.phecda.device.sdk.model.ReplayEvent
+import com.trionesdev.phecda.device.sdk.messaging.msg.PhecdaReplyEvent
+import com.trionesdev.phecda.device.sdk.model.ReplyEvent
 import org.eclipse.paho.client.mqttv3.*
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import java.time.Instant
+import java.util.UUID
 
 @Slf4j
 class MqttMessagingClient : MessagingClient {
@@ -84,13 +87,20 @@ class MqttMessagingClient : MessagingClient {
                         PhecdaCommand::class.java
                     )
                     val queryParams = command.params?.map { "${it.key}=${it.value}" }?.joinToString("&")
-                    val syncReplayTopic = "$topicPrefix/thing/service/${command.id}/replay/sync"
-                    val asyncReplayTopic = "$topicPrefix/thing/service/${command.id}/replay/async"
-                    val replayEvent: ReplayEvent = ReplayEvent().apply { replayId = command.id }
+                    val syncReplayTopic = "$topicPrefix/thing/service/${command.id}/reply/sync"
+                    val asyncReplayTopic = "$topicPrefix/thing/service/${command.id}/reply/async"
+                    val replyEvent: ReplyEvent = ReplyEvent().apply {
+                        this.id = command.id
+                        this.replayId = command.id
+                        this.deviceName = command.deviceName
+                        this.profileName = command.productKey
+                        this.sourceName = command.commandName
+                        this.origin = Instant.now().toEpochMilli()
+                    }
 
                     val deviceCommand = Cache.profiles()?.deviceCommand(profile.name, command.commandName)
                     if (deviceCommand == null) {
-                        replayEvent.apply {
+                        replyEvent.apply {
                             code = "1"
                             errMsg = "指令不存在"
                         }
@@ -105,9 +115,9 @@ class MqttMessagingClient : MessagingClient {
                                     true,
                                     dic!!
                                 )
-                                replayEvent.applyEvent(evt)
+                                replyEvent.applyEvent(evt)
                             } catch (e: Exception) {
-                                replayEvent.apply {
+                                replyEvent.apply {
                                     errMsg = e.message
                                 }
                             }
@@ -120,19 +130,20 @@ class MqttMessagingClient : MessagingClient {
                                     command.body,
                                     dic!!
                                 )
-                                replayEvent.applyEvent(evt)
+                                replyEvent.applyEvent(evt)
                             } catch (e: Exception) {
-                                replayEvent.apply {
+                                replyEvent.apply {
                                     errMsg = e.message
                                 }
                             }
                         }
                     }
 
+                    val payload = PhecdaReplyEvent.newPhecdaReplyEvent(replyEvent)
                     if (command.sync == true) {
-                        mqttClient?.publish(syncReplayTopic, MqttMessage(JSON.toJSONBytes(replayEvent)))
+                        mqttClient?.publish(syncReplayTopic, MqttMessage(JSON.toJSONBytes(payload)))
                     } else {
-                        mqttClient?.publish(asyncReplayTopic, MqttMessage(JSON.toJSONBytes(replayEvent)))
+                        mqttClient?.publish(asyncReplayTopic, MqttMessage(JSON.toJSONBytes(payload)))
                     }
                 }
             }
