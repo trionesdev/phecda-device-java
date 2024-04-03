@@ -4,7 +4,7 @@ import com.trionesdev.phecda.device.contracts.model.Event
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
 import com.trionesdev.phecda.device.sdk.messaging.ValueTypeMapping
 
-class PhecdaEvent {
+open class PhecdaEvent {
     companion object {
         @JvmStatic
         fun newPhecdaEvent(event: Event): PhecdaEvent {
@@ -15,7 +15,7 @@ class PhecdaEvent {
                 this.productKey = event.profileName
                 this.sourceName = event.sourceName
                 this.ts = event.origin
-                this.readings = Reading.fromBaseReadingsToMap(event.readings!!)
+                this.readings = Reading.fromBaseReadingsToMap(event.readings)
                 this.tags = event.tags
             }
         }

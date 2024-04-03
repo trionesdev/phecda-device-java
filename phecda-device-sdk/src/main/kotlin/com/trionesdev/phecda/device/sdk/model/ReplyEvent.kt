@@ -2,7 +2,7 @@ package com.trionesdev.phecda.device.sdk.model
 
 import com.trionesdev.phecda.device.contracts.model.Event
 
-class ReplayEvent : Event() {
+class ReplyEvent : Event() {
     var replayId: String? = null
     var code: String? = null
     var errMsg: String? = null
