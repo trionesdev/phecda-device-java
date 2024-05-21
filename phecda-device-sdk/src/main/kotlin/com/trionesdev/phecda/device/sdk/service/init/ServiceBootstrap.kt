@@ -10,7 +10,6 @@ import com.trionesdev.phecda.device.bootstrap.BootstrapHandlerArgs
 import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.disruptor.AsyncValuesEvent
 import com.trionesdev.phecda.device.sdk.interfaces.AutoEventManager
-import com.trionesdev.phecda.device.sdk.messaging.MessagingClient
 import com.trionesdev.phecda.device.sdk.provision.Provision
 import com.trionesdev.phecda.device.sdk.service.DeviceServiceSdkImpl
 
