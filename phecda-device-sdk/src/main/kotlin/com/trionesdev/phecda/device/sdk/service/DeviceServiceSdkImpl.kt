@@ -1,5 +1,6 @@
 package com.trionesdev.phecda.device.sdk.service
 
+import com.alibaba.fastjson2.JSON
 import com.lmax.disruptor.EventHandler
 import com.lmax.disruptor.dsl.Disruptor
 import com.trionesdev.kotlin.log.Slf4j
@@ -184,6 +185,24 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
 
     override fun messagingClient(): MessagingClient? {
         return dic?.getInstance(MessagingClient::class.java)
+    }
+
+    override fun sendEvent(event: Event) {
+        dic?.getInstance(MessagingClient::class.java)?.let { client ->
+            client.publish(
+                "${event.profileName}/${event.deviceName}/thing/event/post",
+                JSON.toJSONBytes(event)
+            )
+        }
+    }
+
+    override fun sendProperty(event: Event) {
+        dic?.getInstance(MessagingClient::class.java)?.let { client ->
+            client.publish(
+                "${event.profileName}/${event.deviceName}/thing/property/post",
+                JSON.toJSONBytes(event)
+            )
+        }
     }
 
     private fun setServiceName(instanceName: String) {

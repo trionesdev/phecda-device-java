@@ -25,4 +25,7 @@ interface DeviceServiceSDK {
     fun asyncReadingsEnabled(): Boolean
     fun asyncValuesChannel(): Disruptor<AsyncValuesEvent>?
     fun messagingClient(): MessagingClient?
+
+    fun sendEvent(event: Event)
+    fun sendProperty(event: Event)
 }
