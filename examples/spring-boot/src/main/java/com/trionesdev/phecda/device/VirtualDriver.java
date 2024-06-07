@@ -19,10 +19,12 @@ import static com.trionesdev.phecda.device.contracts.common.CommonConstants.*;
 @Slf4j
 @Component
 public class VirtualDriver implements ProtocolDriver {
+    private DeviceServiceSDK sdk;
     private MessagingClient messagingClient;
 
     @Override
     public void initialize(@NotNull DeviceServiceSDK sdk) {
+        this.sdk = sdk;
         messagingClient = sdk.messagingClient();
     }
 
