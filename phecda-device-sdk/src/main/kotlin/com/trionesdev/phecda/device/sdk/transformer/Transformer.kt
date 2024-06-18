@@ -5,7 +5,7 @@ import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_BINARY
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_OBJECT
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING
-import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
+import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_ENTITY_DOSE_NOT_EXIST
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_NAN_ERROR
@@ -32,7 +32,7 @@ object Transformer {
             return null
         }
         val device = Cache.devices()?.forName(deviceName!!) ?: let {
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_ENTITY_DOSE_NOT_EXIST, String.format("failed to find device %s", deviceName), null
             )
         }
@@ -53,14 +53,14 @@ object Transformer {
                     cv.toString()
                 )
                 log.error(msg)
-                throw CommonPhedaException.newCommonPhedaException(
+                throw CommonPhecdaException.newCommonPhecdaException(
                     KIND_ENTITY_DOSE_NOT_EXIST, msg, null
                 )
             }
             if (dataTransform) {
                 try {
                     TransformResult.transformReadResult(cv, dr.properties!!)
-                } catch (e: CommonPhedaException) {
+                } catch (e: CommonPhecdaException) {
                     when (e.kind) {
                         KIND_OVERFLOW_ERROR -> {
                             cvs[index] =
@@ -93,7 +93,7 @@ object Transformer {
             readings.add(reading)
         }
         if (!transformsOK) {
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR, String.format("failed to transform value for %s", deviceName), null
             )
         }

@@ -11,7 +11,7 @@ import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT32
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT64
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT8
-import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
+import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_NAN_ERROR
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_OVERFLOW_ERROR
 import com.trionesdev.phecda.device.contracts.model.ResourceProperties
@@ -35,7 +35,7 @@ object TransformResult {
         }
         if (CheckNaN.isNaN(cv)) {
             val errMsg = String.format("NaN error for DeviceResource %s", cv.deviceResourceName)
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_NAN_ERROR,
                 errMsg,
                 null
@@ -96,7 +96,7 @@ object TransformResult {
         val inRange = TransformValueChecker.checkTransformedValueInRange(value, doubleValue)
         if (!inRange) {
             val errMsg = String.format("transformed value out of its original type (%s) range", value)
-            throw CommonPhedaException.newCommonPhedaException(KIND_OVERFLOW_ERROR, errMsg, null)
+            throw CommonPhecdaException.newCommonPhecdaException(KIND_OVERFLOW_ERROR, errMsg, null)
         }
         return when (value) {
             is Byte -> {
@@ -164,7 +164,7 @@ object TransformResult {
         val inRange = TransformValueChecker.checkTransformedValueInRange(value, valueDouble)
         if (!inRange) {
             val errMsg = String.format("transformed value out of its original type (%s) range", value)
-            throw CommonPhedaException.newCommonPhedaException(KIND_OVERFLOW_ERROR, errMsg, null)
+            throw CommonPhecdaException.newCommonPhecdaException(KIND_OVERFLOW_ERROR, errMsg, null)
         }
         when (value) {
             is Byte -> {
@@ -256,7 +256,7 @@ object TransformResult {
         val inRange = TransformValueChecker.checkTransformedValueInRange(value, valueDouble)
         if (!inRange) {
             val errMsg = String.format("transformed value out of its original type (%s) range", value)
-            throw CommonPhedaException.newCommonPhedaException(KIND_OVERFLOW_ERROR, errMsg, null)
+            throw CommonPhecdaException.newCommonPhecdaException(KIND_OVERFLOW_ERROR, errMsg, null)
         }
         when (value) {
             is Byte -> {

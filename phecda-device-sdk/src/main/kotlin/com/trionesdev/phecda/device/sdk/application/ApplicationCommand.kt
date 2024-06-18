@@ -5,7 +5,7 @@ import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.READ_WRITE_R
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.READ_WRITE_W
-import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
+import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_CONTRACT_INVALID
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_ENTITY_DOSE_NOT_EXIST
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_NOT_ALLOWED
@@ -38,14 +38,14 @@ object ApplicationCommand {
         dic: Container
     ): Event? {
         if (deviceName.isNullOrBlank()) {
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_CONTRACT_INVALID,
                 "device name is empty",
                 null
             )
         }
         if (commandName.isNullOrBlank()) {
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_CONTRACT_INVALID,
                 "command name is empty",
                 null
@@ -75,14 +75,14 @@ object ApplicationCommand {
         dic: Container
     ): Event? {
         if (deviceName.isNullOrBlank()) {
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_CONTRACT_INVALID,
                 "device name is empty",
                 null
             )
         }
         if (commandName.isNullOrBlank()) {
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_CONTRACT_INVALID,
                 "command name is empty",
                 null
@@ -108,7 +108,7 @@ object ApplicationCommand {
     private fun readDeviceResource(device: Device, resourceName: String, attributes: String?, dic: Container): Event? {
         Cache.profiles()?.deviceResource(device.profileName!!, resourceName)?.let { dr ->
             if (dr.properties?.readWrite.equals(READ_WRITE_W)) {
-                throw CommonPhedaException(
+                throw CommonPhecdaException(
                     KIND_NOT_ALLOWED,
                     String.format("DeviceResource %s is marked as write-only", dr.name)
                 )
@@ -140,7 +140,7 @@ object ApplicationCommand {
             )
 
         } ?: let {
-            throw CommonPhedaException(
+            throw CommonPhecdaException(
                 KIND_ENTITY_DOSE_NOT_EXIST,
                 String.format("DeviceResource %s not found", resourceName)
             )
@@ -157,7 +157,7 @@ object ApplicationCommand {
         Cache.profiles()?.deviceResourcesByRegex(device.profileName!!, regex)?.let { deviceResources ->
             if (deviceResources.isEmpty()) {
                 val errMsg = String.format("Regex DeviceResource %s not found", regexResourceName)
-                throw CommonPhedaException(KIND_ENTITY_DOSE_NOT_EXIST, errMsg)
+                throw CommonPhecdaException(KIND_ENTITY_DOSE_NOT_EXIST, errMsg)
             }
             val reqs: MutableList<CommandRequest> = mutableListOf()
             for (dr in deviceResources) {
@@ -180,7 +180,7 @@ object ApplicationCommand {
             }
             if (reqs.isEmpty()) {
                 val errMsg = String.format("no readable resources matched with %s", regexResourceName)
-                throw CommonPhedaException(KIND_NOT_ALLOWED, errMsg)
+                throw CommonPhecdaException(KIND_NOT_ALLOWED, errMsg)
             }
             val results = dic.getInstance(ProtocolDriver::class.java)!!.let { driver ->
                 driver.handleReadCommands(device.name, device.protocols, reqs)
@@ -201,14 +201,14 @@ object ApplicationCommand {
     fun readDeviceCommand(device: Device, commandName: String, attributes: String?, dic: Container): Event? {
         Cache.profiles()?.deviceCommand(device.profileName, commandName)?.let { dc ->
             if (dc.readWrite.equals(READ_WRITE_W)) {
-                throw CommonPhedaException(
+                throw CommonPhecdaException(
                     KIND_NOT_ALLOWED,
                     String.format("DeviceCommand %s is marked as write-only", dc.name)
                 )
             }
             val configuration = dic.getInstance(ConfigurationStruct::class.java)
             if (dc.resourceOperations!!.size > configuration!!.device!!.maxCmdOps) {
-                throw CommonPhedaException(
+                throw CommonPhecdaException(
                     KIND_SERVER_ERROR,
                     String.format(
                         "GET command %s exceed device %s MaxCmdOps (%d)",
@@ -235,7 +235,7 @@ object ApplicationCommand {
                     }
                     reqs.add(req)
                 } ?: let {
-                    throw CommonPhedaException(
+                    throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
                         String.format(
                             "DeviceResource %s in GET commnd %s for %s not defined",
@@ -257,7 +257,7 @@ object ApplicationCommand {
                 dic
             )
         } ?: let {
-            throw CommonPhedaException(
+            throw CommonPhecdaException(
                 KIND_ENTITY_DOSE_NOT_EXIST,
                 String.format("DeviceCommand %s not found", commandName)
             )
@@ -273,14 +273,14 @@ object ApplicationCommand {
     ): Event? {
         Cache.profiles()?.deviceCommand(device.profileName, commandName)?.let { dc ->
             if (dc.readWrite.equals(READ_WRITE_R)) {
-                throw CommonPhedaException(
+                throw CommonPhecdaException(
                     KIND_NOT_ALLOWED,
                     String.format("DeviceCommand %s is marked as read-only", dc.name)
                 )
             }
             val configuration = dic.getInstance(ConfigurationStruct::class.java)
             if (dc.resourceOperations!!.size > configuration!!.device!!.maxCmdOps) {
-                throw CommonPhedaException(
+                throw CommonPhecdaException(
                     KIND_SERVER_ERROR,
                     String.format(
                         "POST command %s exceed device %s MaxCmdOps (%d)",
@@ -301,7 +301,7 @@ object ApplicationCommand {
                         } else if (dr.properties?.defaultValue.isNullOrBlank()) {
                             dr.properties?.defaultValue
                         } else {
-                            throw CommonPhedaException(
+                            throw CommonPhecdaException(
                                 KIND_SERVER_ERROR,
                                 String.format(
                                     "DeviceResource %s not found in request body and no default value defined",
@@ -324,7 +324,7 @@ object ApplicationCommand {
 
 
                 } ?: let {
-                    throw CommonPhedaException(
+                    throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
                         String.format(
                             "DeviceResource %s in SET commnd %s for %s not defined",
@@ -368,7 +368,7 @@ object ApplicationCommand {
             }
             return null
         } ?: let {
-            throw CommonPhedaException(
+            throw CommonPhecdaException(
                 KIND_ENTITY_DOSE_NOT_EXIST,
                 String.format("DeviceCommand %s not found", commandName)
             )
@@ -384,7 +384,7 @@ object ApplicationCommand {
     ): Event? {
         Cache.profiles()?.deviceResource(device.profileName!!, resourceName)?.let { dr ->
             if (dr.properties?.readWrite.equals(READ_WRITE_R)) {
-                throw CommonPhedaException(
+                throw CommonPhecdaException(
                     KIND_NOT_ALLOWED,
                     String.format("DeviceResource %s is marked as read-only", dr.name)
                 )
@@ -394,7 +394,7 @@ object ApplicationCommand {
                 if (!dr.properties?.defaultValue.isNullOrBlank()) {
                     v = dr.properties?.defaultValue
                 } else {
-                    throw CommonPhedaException(
+                    throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
                         String.format(
                             "DeviceResource %s not found in request body and no default value defined",
@@ -435,7 +435,7 @@ object ApplicationCommand {
             }
             return null
         } ?: let {
-            throw CommonPhedaException(
+            throw CommonPhecdaException(
                 KIND_ENTITY_DOSE_NOT_EXIST,
                 String.format("DeviceResource %s not found", resourceName)
             )
@@ -445,14 +445,14 @@ object ApplicationCommand {
     private fun validateServiceAndDeviceState(deviceName: String?, dic: Container): Device? {
         val ds = dic.getInstance(DeviceService::class.java)
         if (ds?.adminState?.equals(AdminState.LOCKED) == true) {
-            throw CommonPhedaException(KIND_SERVICE_LOCKED, "service locked")
+            throw CommonPhecdaException(KIND_SERVICE_LOCKED, "service locked")
         }
         return Cache.devices()?.forName(deviceName!!)?.let {
             if (it.adminState?.equals(AdminState.LOCKED) == true) {
-                throw CommonPhedaException(KIND_SERVICE_LOCKED, String.format("device %s locked", it.name))
+                throw CommonPhecdaException(KIND_SERVICE_LOCKED, String.format("device %s locked", it.name))
             }
             if (it.operatingState?.equals(OperatingState.DOWN) == true) {
-                throw CommonPhedaException(
+                throw CommonPhecdaException(
                     KIND_SERVICE_LOCKED,
                     String.format("device %s OperatingState is DOWN", it.name)
                 )

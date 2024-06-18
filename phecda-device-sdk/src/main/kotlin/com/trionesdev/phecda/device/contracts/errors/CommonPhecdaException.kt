@@ -1,13 +1,13 @@
 package com.trionesdev.phecda.device.contracts.errors
 
-class CommonPhedaException() : RuntimeException(), PhecdaException {
+class CommonPhecdaException() : RuntimeException(), PhecdaException {
 
     companion object {
-        fun newCommonPhedaException(kind: String?, message: String?, wreppedError: Exception?): CommonPhedaException {
-            return CommonPhedaException().apply {
+        fun newCommonPhecdaException(kind: String?, message: String?, wrappedError: Exception?): CommonPhecdaException {
+            return CommonPhecdaException().apply {
                 this.kind = kind
                 this.message = message
-                this.err = wreppedError
+                this.err = wrappedError
             }
         }
     }
