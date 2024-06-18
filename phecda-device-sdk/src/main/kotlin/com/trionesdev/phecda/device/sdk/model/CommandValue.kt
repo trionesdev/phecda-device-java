@@ -11,7 +11,7 @@ import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT32
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT64
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT8
-import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
+import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 
 class CommandValue {
@@ -62,7 +62,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_UINT8
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null
@@ -77,7 +77,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_UINT16
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null
@@ -92,7 +92,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_UINT32
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null
@@ -107,7 +107,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_UINT64
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null
@@ -122,7 +122,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_INT8
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null
@@ -137,7 +137,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_INT16
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null
@@ -152,7 +152,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_INT32
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null
@@ -167,7 +167,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_INT64
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null
@@ -182,7 +182,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_FLOAT32
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null
@@ -197,7 +197,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_FLOAT64
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null
@@ -212,7 +212,7 @@ class CommandValue {
                 "cannot convert CommandValue of %s to %s",
                 this.type, VALUE_TYPE_BINARY
             )
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
                 errMsg,
                 null

@@ -5,7 +5,7 @@ import com.trionesdev.kotlin.log.Slf4j
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.contracts.common.CommonConstants
-import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
+import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.sdk.application.ApplicationCommand
 import com.trionesdev.phecda.device.sdk.cache.Cache
 import com.trionesdev.phecda.device.sdk.config.MqttInfo
@@ -60,7 +60,7 @@ class MqttMessagingClient : MessagingClient {
             mqttClient!!.setCallback(MqttCallback(this))
             mqttClient!!.connect(options)
         } catch (e: Exception) {
-            throw CommonPhedaException(e.message, e)
+            throw CommonPhecdaException(e.message, e)
         }
     }
 

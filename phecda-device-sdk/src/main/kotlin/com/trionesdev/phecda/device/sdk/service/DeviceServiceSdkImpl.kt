@@ -11,7 +11,7 @@ import com.trionesdev.phecda.device.bootstrap.args.DefaultArgs
 import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.bootstrap.environement.Variables
 import com.trionesdev.phecda.device.bootstrap.startup.Timer
-import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
+import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_DUPLICATE_NAME
 import com.trionesdev.phecda.device.contracts.go.WaitGroup
 import com.trionesdev.phecda.device.contracts.model.*
@@ -68,7 +68,7 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
     var dic: Container? = null
     override fun addDevice(device: Device): String? {
         Cache.devices()?.forName(device.name!!)?.let {
-            throw CommonPhedaException.newCommonPhedaException(
+            throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_DUPLICATE_NAME,
                 String.format("name conflicted, Device %s exists", device.name), null
             )

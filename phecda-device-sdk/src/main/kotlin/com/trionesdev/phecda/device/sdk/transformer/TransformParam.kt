@@ -1,6 +1,6 @@
 package com.trionesdev.phecda.device.sdk.transformer
 
-import com.trionesdev.phecda.device.contracts.errors.CommonPhedaException
+import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_CONTRACT_INVALID
 import com.trionesdev.phecda.device.contracts.model.ResourceProperties
 import com.trionesdev.phecda.device.sdk.model.CommandValue
@@ -43,28 +43,28 @@ object TransformParam {
             is Byte -> {
                 if (value > maximum) {
                     val errMsg = String.format("set command parameter out of maximum value %s", maximum)
-                    throw CommonPhedaException(KIND_CONTRACT_INVALID, errMsg)
+                    throw CommonPhecdaException(KIND_CONTRACT_INVALID, errMsg)
                 }
             }
 
             is Short -> {
                 if (value > maximum) {
                     val errMsg = String.format("set command parameter out of maximum value %s", maximum)
-                    throw CommonPhedaException(KIND_CONTRACT_INVALID, errMsg)
+                    throw CommonPhecdaException(KIND_CONTRACT_INVALID, errMsg)
                 }
             }
 
             is Int -> {
                 if (value > maximum) {
                     val errMsg = String.format("set command parameter out of maximum value %s", maximum)
-                    throw CommonPhedaException(KIND_CONTRACT_INVALID, errMsg)
+                    throw CommonPhecdaException(KIND_CONTRACT_INVALID, errMsg)
                 }
             }
 
             is Long -> {
                 if (value > maximum) {
                     val errMsg = String.format("set command parameter out of maximum value %s", maximum)
-                    throw CommonPhedaException(KIND_CONTRACT_INVALID, errMsg)
+                    throw CommonPhecdaException(KIND_CONTRACT_INVALID, errMsg)
                 }
             }
         }
@@ -75,28 +75,28 @@ object TransformParam {
             is Byte -> {
                 if (value < minimum) {
                     val errMsg = String.format("set command parameter out of minimum value %s", minimum)
-                    throw CommonPhedaException(KIND_CONTRACT_INVALID, errMsg)
+                    throw CommonPhecdaException(KIND_CONTRACT_INVALID, errMsg)
                 }
             }
 
             is Short -> {
                 if (value < minimum) {
                     val errMsg = String.format("set command parameter out of minimum value %s", minimum)
-                    throw CommonPhedaException(KIND_CONTRACT_INVALID, errMsg)
+                    throw CommonPhecdaException(KIND_CONTRACT_INVALID, errMsg)
                 }
             }
 
             is Int -> {
                 if (value < minimum) {
                     val errMsg = String.format("set command parameter out of minimum value %s", minimum)
-                    throw CommonPhedaException(KIND_CONTRACT_INVALID, errMsg)
+                    throw CommonPhecdaException(KIND_CONTRACT_INVALID, errMsg)
                 }
             }
 
             is Long -> {
                 if (value < minimum) {
                     val errMsg = String.format("set command parameter out of minimum value %s", minimum)
-                    throw CommonPhedaException(KIND_CONTRACT_INVALID, errMsg)
+                    throw CommonPhecdaException(KIND_CONTRACT_INVALID, errMsg)
                 }
             }
         }
