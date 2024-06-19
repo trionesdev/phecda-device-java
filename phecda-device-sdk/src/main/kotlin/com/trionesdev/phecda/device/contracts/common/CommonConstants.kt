@@ -18,6 +18,22 @@ object CommonConstants {
     //region Constants related to Reading ValueTypes
     const val VALUE_TYPE_BOOL: String = "Bool"
     const val VALUE_TYPE_STRING: String = "String"
+    const val VALUE_TYPE_INT: String = "Int"
+    const val VALUE_TYPE_LONG: String = "Long"
+    const val VALUE_TYPE_FLOAT: String = "Float"
+    const val VALUE_TYPE_DOUBLE: String = "Double"
+    const val VALUE_TYPE_OBJECT: String = "Object"
+
+    const val VALUE_TYPE_BOOL_ARRAY: String = "BoolArray"
+    const val VALUE_TYPE_STRING_ARRAY: String = "StringArray"
+    const val VALUE_TYPE_INT_ARRAY: String = "IntArray"
+    const val VALUE_TYPE_LONG_ARRAY: String = "LongArray"
+    const val VALUE_TYPE_FLOAT_ARRAY: String = "FloatArray"
+    const val VALUE_TYPE_DOUBLE_ARRAY: String = "DoubleArray"
+    const val VALUE_TYPE_OBJECT_ARRAY: String = "ObjectArray"
+
+    const val VALUE_TYPE_BINARY: String = "Binary"
+
     const val VALUE_TYPE_UINT8: String = "Uint8"
     const val VALUE_TYPE_UINT16: String = "Uint16"
     const val VALUE_TYPE_UINT32: String = "Uint32"
@@ -28,9 +44,8 @@ object CommonConstants {
     const val VALUE_TYPE_INT64: String = "Int64"
     const val VALUE_TYPE_FLOAT32: String = "Float32"
     const val VALUE_TYPE_FLOAT64: String = "Float64"
-    const val VALUE_TYPE_BINARY: String = "Binary"
-    const val VALUE_TYPE_BOOL_ARRAY: String = "BoolArray"
-    const val VALUE_TYPE_STRING_ARRAY: String = "StringArray"
+
+
     const val VALUE_TYPE_UINT8_ARRAY: String = "Uint8Array"
     const val VALUE_TYPE_UINT16_ARRAY: String = "Uint16Array"
     const val VALUE_TYPE_UINT32_ARRAY: String = "Uint32Array"
@@ -41,7 +56,7 @@ object CommonConstants {
     const val VALUE_TYPE_INT64_ARRAY: String = "Int64Array"
     const val VALUE_TYPE_FLOAT32_ARRAY: String = "Float32Array"
     const val VALUE_TYPE_FLOAT64_ARRAY: String = "Float64Array"
-    const val VALUE_TYPE_OBJECT: String = "Object"
+
     //endregion
 
 }

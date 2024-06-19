@@ -1,10 +1,26 @@
 package com.trionesdev.phecda.device.sdk.application
 
+import cn.hutool.core.util.StrUtil
+import com.alibaba.fastjson2.JSON
 import com.trionesdev.kotlin.log.Slf4j
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.READ_WRITE_R
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.READ_WRITE_W
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_BOOL
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_BOOL_ARRAY
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_DOUBLE
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_DOUBLE_ARRAY
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_FLOAT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_FLOAT_ARRAY
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT_ARRAY
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_LONG
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_LONG_ARRAY
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_OBJECT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_OBJECT_ARRAY
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING_ARRAY
 import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_CONTRACT_INVALID
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_ENTITY_DOSE_NOT_EXIST
@@ -462,7 +478,137 @@ object ApplicationCommand {
     }
 
     fun createCommandValueFromDeviceResource(dr: DeviceResource, value: Any?): CommandValue {
-        return CommandValue()
+        var result = CommandValue()
+        val v = StrUtil.join("",value);
+
+        if (!dr.properties?.valueType.equals(VALUE_TYPE_STRING) && StrUtil.trim(v) == "") {
+            throw CommonPhecdaException(
+                KIND_CONTRACT_INVALID,
+                String.format("empty string is invalid for %v value type", dr.properties?.valueType)
+            )
+        }
+        when (dr.properties?.valueType) {
+            VALUE_TYPE_BOOL -> {
+                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_BOOL, v.toBoolean())
+            }
+
+            VALUE_TYPE_STRING -> {
+                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_STRING, v)
+            }
+
+            VALUE_TYPE_INT -> {
+                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_INT, v.toInt())
+            }
+
+            VALUE_TYPE_LONG -> {
+                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_LONG, v.toInt())
+            }
+
+            VALUE_TYPE_FLOAT -> {
+                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_FLOAT, v.toFloat())
+            }
+
+            VALUE_TYPE_DOUBLE -> {
+                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_DOUBLE, v.toDouble())
+            }
+
+            VALUE_TYPE_OBJECT -> {
+                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_OBJECT, v)
+            }
+
+            VALUE_TYPE_BOOL_ARRAY -> {
+                try {
+                    val array = JSON.parseArray(v, Boolean::class.java)
+                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_BOOL_ARRAY, array)
+                } catch (e: Exception) {
+                    throw CommonPhecdaException(
+                        KIND_SERVER_ERROR,
+                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                    )
+                }
+            }
+
+            VALUE_TYPE_STRING_ARRAY -> {
+                try {
+                    val array = JSON.parseArray(v, String::class.java)
+                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_STRING_ARRAY, array)
+                } catch (e: Exception) {
+                    throw CommonPhecdaException(
+                        KIND_SERVER_ERROR,
+                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                    )
+                }
+            }
+
+            VALUE_TYPE_INT_ARRAY -> {
+                try {
+                    val array = JSON.parseArray(v, Int::class.java)
+                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_INT_ARRAY, array)
+                } catch (e: Exception) {
+                    throw CommonPhecdaException(
+                        KIND_SERVER_ERROR,
+                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                    )
+                }
+            }
+
+            VALUE_TYPE_LONG_ARRAY -> {
+                try {
+                    val array = JSON.parseArray(v, Long::class.java)
+                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_LONG_ARRAY, array)
+                } catch (e: Exception) {
+                    throw CommonPhecdaException(
+                        KIND_SERVER_ERROR,
+                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                    )
+                }
+            }
+
+            VALUE_TYPE_FLOAT_ARRAY -> {
+                try {
+                    val array = JSON.parseArray(v, Float::class.java)
+                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_FLOAT_ARRAY, array)
+                } catch (e: Exception) {
+                    throw CommonPhecdaException(
+                        KIND_SERVER_ERROR,
+                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                    )
+                }
+            }
+
+            VALUE_TYPE_DOUBLE_ARRAY -> {
+                try {
+                    val array = JSON.parseArray(v, Double::class.java)
+                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_DOUBLE_ARRAY, array)
+                } catch (e: Exception) {
+                    throw CommonPhecdaException(
+                        KIND_SERVER_ERROR,
+                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                    )
+                }
+            }
+
+            VALUE_TYPE_OBJECT_ARRAY -> {
+                try {
+                    val array = JSON.parseObject(v, Object::class.java)
+                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_OBJECT_ARRAY, array)
+                } catch (e: Exception) {
+                    throw CommonPhecdaException(
+                        KIND_SERVER_ERROR,
+                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                    )
+                }
+            }
+
+            else -> {
+                throw CommonPhecdaException(
+                    KIND_SERVER_ERROR,
+                    String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                )
+            }
+        }
+        //TODO
+        return result
     }
 
 }
