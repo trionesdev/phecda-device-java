@@ -254,7 +254,7 @@ object ApplicationCommand {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
                         String.format(
-                            "DeviceResource %s in GET commnd %s for %s not defined",
+                            "DeviceResource %s in GET command %s for %s not defined",
                             drName,
                             dc.name,
                             device.name
@@ -262,9 +262,8 @@ object ApplicationCommand {
                     )
                 }
             }
-            val results = dic.getInstance(ProtocolDriver::class.java)!!.let { driver ->
-                driver.handleReadCommands(device.name, device.protocols, reqs)
-            }
+            val results =
+                dic.getInstance(ProtocolDriver::class.java)!!.handleReadCommands(device.name, device.protocols, reqs)
             return Transformer.commandValuesToEvent(
                 results,
                 device.name,
@@ -343,7 +342,7 @@ object ApplicationCommand {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
                         String.format(
-                            "DeviceResource %s in SET commnd %s for %s not defined",
+                            "DeviceResource %s in SET command %s for %s not defined",
                             drName,
                             dc.name,
                             device.name
@@ -358,7 +357,7 @@ object ApplicationCommand {
                     this.deviceResourceName = cv.deviceResourceName
                     this.attributes = dr?.attributes
                     this.type = cv.type
-                    if (attributes.isNullOrBlank()) {
+                    if (!attributes.isNullOrBlank()) {
                         if (this.attributes.isNullOrEmpty()) {
                             this.attributes = mutableMapOf()
                         }
@@ -425,7 +424,7 @@ object ApplicationCommand {
                 this.deviceResourceName = cv.deviceResourceName
                 this.attributes = dr.attributes
                 this.type = cv.type
-                if (attributes.isNullOrBlank()) {
+                if (!attributes.isNullOrBlank()) {
                     if (this.attributes.isNullOrEmpty()) {
                         this.attributes = mutableMapOf()
                     }
@@ -479,7 +478,7 @@ object ApplicationCommand {
 
     fun createCommandValueFromDeviceResource(dr: DeviceResource, value: Any?): CommandValue {
         var result = CommandValue()
-        val v = StrUtil.join("",value);
+        val v = StrUtil.join("", value);
 
         if (!dr.properties?.valueType.equals(VALUE_TYPE_STRING) && StrUtil.trim(v) == "") {
             throw CommonPhecdaException(
