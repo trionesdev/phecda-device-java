@@ -1,16 +1,10 @@
 package com.trionesdev.phecda.device.sdk.model
 
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_BINARY
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_FLOAT32
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_FLOAT64
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT16
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT32
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT64
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT8
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT16
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT32
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT64
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_UINT8
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_DOUBLE
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_FLOAT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_LONG
 import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 
@@ -56,11 +50,11 @@ class CommandValue {
         )
     }
 
-    fun uint8Value(): Short {
-        if (this.type != VALUE_TYPE_UINT8) {
+    fun intValue(): Short {
+        if (this.type != VALUE_TYPE_INT) {
             val errMsg = java.lang.String.format(
                 "cannot convert CommandValue of %s to %s",
-                this.type, VALUE_TYPE_UINT8
+                this.type, VALUE_TYPE_INT
             )
             throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
@@ -71,26 +65,11 @@ class CommandValue {
         return this.value as Short
     }
 
-    fun uint16Value(): Int {
-        if (this.type != VALUE_TYPE_UINT16) {
+    fun longValue(): Long {
+        if (this.type != VALUE_TYPE_LONG) {
             val errMsg = java.lang.String.format(
                 "cannot convert CommandValue of %s to %s",
-                this.type, VALUE_TYPE_UINT16
-            )
-            throw CommonPhecdaException.newCommonPhecdaException(
-                KIND_SERVER_ERROR,
-                errMsg,
-                null
-            )
-        }
-        return this.value as Int
-    }
-
-    fun uint32Value(): Long {
-        if (this.type != VALUE_TYPE_UINT32) {
-            val errMsg = java.lang.String.format(
-                "cannot convert CommandValue of %s to %s",
-                this.type, VALUE_TYPE_UINT32
+                this.type, VALUE_TYPE_LONG
             )
             throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
@@ -101,86 +80,11 @@ class CommandValue {
         return this.value as Long
     }
 
-    fun uint64Value(): Long {
-        if (this.type != VALUE_TYPE_UINT64) {
+    fun floatValue(): Float {
+        if (this.type != VALUE_TYPE_FLOAT) {
             val errMsg = java.lang.String.format(
                 "cannot convert CommandValue of %s to %s",
-                this.type, VALUE_TYPE_UINT64
-            )
-            throw CommonPhecdaException.newCommonPhecdaException(
-                KIND_SERVER_ERROR,
-                errMsg,
-                null
-            )
-        }
-        return this.value as Long
-    }
-
-    fun int8Value(): Byte {
-        if (this.type != VALUE_TYPE_INT8) {
-            val errMsg = java.lang.String.format(
-                "cannot convert CommandValue of %s to %s",
-                this.type, VALUE_TYPE_INT8
-            )
-            throw CommonPhecdaException.newCommonPhecdaException(
-                KIND_SERVER_ERROR,
-                errMsg,
-                null
-            )
-        }
-        return this.value as Byte
-    }
-
-    fun int16Value(): Short {
-        if (this.type != VALUE_TYPE_INT16) {
-            val errMsg = java.lang.String.format(
-                "cannot convert CommandValue of %s to %s",
-                this.type, VALUE_TYPE_INT16
-            )
-            throw CommonPhecdaException.newCommonPhecdaException(
-                KIND_SERVER_ERROR,
-                errMsg,
-                null
-            )
-        }
-        return this.value as Short
-    }
-
-    fun int32Value(): Int {
-        if (this.type != VALUE_TYPE_INT32) {
-            val errMsg = java.lang.String.format(
-                "cannot convert CommandValue of %s to %s",
-                this.type, VALUE_TYPE_INT32
-            )
-            throw CommonPhecdaException.newCommonPhecdaException(
-                KIND_SERVER_ERROR,
-                errMsg,
-                null
-            )
-        }
-        return this.value as Int
-    }
-
-    fun int64Value(): Long {
-        if (this.type != VALUE_TYPE_INT64) {
-            val errMsg = java.lang.String.format(
-                "cannot convert CommandValue of %s to %s",
-                this.type, VALUE_TYPE_INT64
-            )
-            throw CommonPhecdaException.newCommonPhecdaException(
-                KIND_SERVER_ERROR,
-                errMsg,
-                null
-            )
-        }
-        return this.value as Long
-    }
-
-    fun float32Value(): Float {
-        if (this.type != VALUE_TYPE_FLOAT32) {
-            val errMsg = java.lang.String.format(
-                "cannot convert CommandValue of %s to %s",
-                this.type, VALUE_TYPE_FLOAT32
+                this.type, VALUE_TYPE_FLOAT
             )
             throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,
@@ -191,11 +95,11 @@ class CommandValue {
         return this.value as Float
     }
 
-    fun float64Value(): Double {
-        if (this.type != VALUE_TYPE_FLOAT64) {
+    fun doubleValue(): Double {
+        if (this.type != VALUE_TYPE_DOUBLE) {
             val errMsg = java.lang.String.format(
                 "cannot convert CommandValue of %s to %s",
-                this.type, VALUE_TYPE_FLOAT64
+                this.type, VALUE_TYPE_DOUBLE
             )
             throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_SERVER_ERROR,

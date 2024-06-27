@@ -34,28 +34,28 @@ object CommonConstants {
 
     const val VALUE_TYPE_BINARY: String = "Binary"
 
-    const val VALUE_TYPE_UINT8: String = "Uint8"
-    const val VALUE_TYPE_UINT16: String = "Uint16"
-    const val VALUE_TYPE_UINT32: String = "Uint32"
-    const val VALUE_TYPE_UINT64: String = "Uint64"
-    const val VALUE_TYPE_INT8: String = "Int8"
-    const val VALUE_TYPE_INT16: String = "Int16"
-    const val VALUE_TYPE_INT32: String = "Int32"
-    const val VALUE_TYPE_INT64: String = "Int64"
-    const val VALUE_TYPE_FLOAT32: String = "Float32"
-    const val VALUE_TYPE_FLOAT64: String = "Float64"
-
-
-    const val VALUE_TYPE_UINT8_ARRAY: String = "Uint8Array"
-    const val VALUE_TYPE_UINT16_ARRAY: String = "Uint16Array"
-    const val VALUE_TYPE_UINT32_ARRAY: String = "Uint32Array"
-    const val VALUE_TYPE_UINT64_ARRAY: String = "Uint64Array"
-    const val VALUE_TYPE_INT8_ARRAY: String = "Int8Array"
-    const val VALUE_TYPE_INT16_ARRAY: String = "Int16Array"
-    const val VALUE_TYPE_INT32_ARRAY: String = "Int32Array"
-    const val VALUE_TYPE_INT64_ARRAY: String = "Int64Array"
-    const val VALUE_TYPE_FLOAT32_ARRAY: String = "Float32Array"
-    const val VALUE_TYPE_FLOAT64_ARRAY: String = "Float64Array"
+//    const val VALUE_TYPE_UINT8: String = "Uint8"
+//    const val VALUE_TYPE_UINT16: String = "Uint16"
+//    const val VALUE_TYPE_UINT32: String = "Uint32"
+//    const val VALUE_TYPE_UINT64: String = "Uint64"
+//    const val VALUE_TYPE_INT8: String = "Int8"
+//    const val VALUE_TYPE_INT16: String = "Int16"
+//    const val VALUE_TYPE_INT32: String = "Int32"
+//    const val VALUE_TYPE_INT64: String = "Int64"
+//    const val VALUE_TYPE_FLOAT32: String = "Float32"
+//    const val VALUE_TYPE_FLOAT64: String = "Float64"
+//
+//
+//    const val VALUE_TYPE_UINT8_ARRAY: String = "Uint8Array"
+//    const val VALUE_TYPE_UINT16_ARRAY: String = "Uint16Array"
+//    const val VALUE_TYPE_UINT32_ARRAY: String = "Uint32Array"
+//    const val VALUE_TYPE_UINT64_ARRAY: String = "Uint64Array"
+//    const val VALUE_TYPE_INT8_ARRAY: String = "Int8Array"
+//    const val VALUE_TYPE_INT16_ARRAY: String = "Int16Array"
+//    const val VALUE_TYPE_INT32_ARRAY: String = "Int32Array"
+//    const val VALUE_TYPE_INT64_ARRAY: String = "Int64Array"
+//    const val VALUE_TYPE_FLOAT32_ARRAY: String = "Float32Array"
+//    const val VALUE_TYPE_FLOAT64_ARRAY: String = "Float64Array"
 
     //endregion
 
