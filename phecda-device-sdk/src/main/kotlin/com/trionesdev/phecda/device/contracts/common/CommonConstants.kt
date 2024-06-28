@@ -22,7 +22,7 @@ object CommonConstants {
     const val VALUE_TYPE_LONG: String = "Long"
     const val VALUE_TYPE_FLOAT: String = "Float"
     const val VALUE_TYPE_DOUBLE: String = "Double"
-    const val VALUE_TYPE_OBJECT: String = "Object"
+    const val VALUE_TYPE_STRUCT: String = "Struct"
 
     const val VALUE_TYPE_BOOL_ARRAY: String = "BoolArray"
     const val VALUE_TYPE_STRING_ARRAY: String = "StringArray"
@@ -30,7 +30,7 @@ object CommonConstants {
     const val VALUE_TYPE_LONG_ARRAY: String = "LongArray"
     const val VALUE_TYPE_FLOAT_ARRAY: String = "FloatArray"
     const val VALUE_TYPE_DOUBLE_ARRAY: String = "DoubleArray"
-    const val VALUE_TYPE_OBJECT_ARRAY: String = "ObjectArray"
+    const val VALUE_TYPE_STRUCT_ARRAY: String = "StructArray"
 
     const val VALUE_TYPE_BINARY: String = "Binary"
 
