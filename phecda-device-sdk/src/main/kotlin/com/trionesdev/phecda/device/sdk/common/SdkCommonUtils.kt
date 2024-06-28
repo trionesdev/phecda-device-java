@@ -53,15 +53,14 @@ object SdkCommonUtils {
         }
     }
 
-    fun addReadingTags(reading: BaseReading?) {
+    fun addReadingTags(reading: BaseReading) {
         val dr = Cache.profiles()?.deviceResource(reading?.profileName!!, reading.resourceName!!)
         dr?.let {
-            if (dr.tags.isNullOrEmpty()) {
-                if (reading?.tags?.isEmpty() == true) {
-                    reading.tags = dr.tags
-                } else {
-                    dr.tags?.let { it1 -> reading?.tags?.putAll(it1) }
+            if (!dr.tags.isNullOrEmpty()) {
+                if (reading.tags.isNullOrEmpty()) {
+                    reading.tags = mutableMapOf()
                 }
+                reading.tags?.putAll(dr.tags!!)
             }
         }
 
