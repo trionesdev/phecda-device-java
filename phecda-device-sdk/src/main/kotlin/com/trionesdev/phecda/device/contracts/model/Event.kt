@@ -1,7 +1,6 @@
 package com.trionesdev.phecda.device.contracts.model
 
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
-import com.trionesdev.phecda.device.contracts.model.reading.Reading
 import java.time.Instant
 import java.util.*
 
