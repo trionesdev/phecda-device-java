@@ -3,7 +3,7 @@ package com.trionesdev.phecda.device.sdk.transformer
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_BINARY
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_OBJECT
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRUCT
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING
 import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
@@ -125,7 +125,7 @@ object Transformer {
                 )
             }
 
-            VALUE_TYPE_OBJECT -> {
+            VALUE_TYPE_STRUCT -> {
                 ObjectReading.newObjectReading(profileName, deviceName, cv.deviceResourceName, cv.value)
             }
 

@@ -17,8 +17,7 @@ import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT_ARRAY
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_LONG
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_LONG_ARRAY
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_OBJECT
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_OBJECT_ARRAY
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRUCT
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING_ARRAY
 import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
@@ -511,8 +510,8 @@ object ApplicationCommand {
                 result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_DOUBLE, v.toDouble())
             }
 
-            VALUE_TYPE_OBJECT -> {
-                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_OBJECT, v)
+            VALUE_TYPE_STRUCT -> {
+                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_STRUCT, v)
             }
 
             VALUE_TYPE_BOOL_ARRAY -> {
@@ -587,10 +586,10 @@ object ApplicationCommand {
                 }
             }
 
-            VALUE_TYPE_OBJECT_ARRAY -> {
+            VALUE_TYPE_STRING_ARRAY -> {
                 try {
                     val array = JSON.parseObject(v, Object::class.java)
-                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_OBJECT_ARRAY, array)
+                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_STRING_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
