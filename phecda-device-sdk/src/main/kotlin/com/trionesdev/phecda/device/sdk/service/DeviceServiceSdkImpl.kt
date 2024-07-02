@@ -66,6 +66,7 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
     var config: ConfigurationStruct? = null
     var wg: WaitGroup? = null
     var dic: Container? = null
+
     override fun addDevice(device: Device): String? {
         Cache.devices()?.forName(device.name!!)?.let {
             throw CommonPhecdaException.newCommonPhecdaException(
