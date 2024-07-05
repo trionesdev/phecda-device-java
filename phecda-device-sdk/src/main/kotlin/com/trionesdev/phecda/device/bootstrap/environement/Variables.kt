@@ -107,6 +107,9 @@ class Variables {
 
     private var variables = mutableMapOf<String, String>()
 
+    /**
+     * 对于配置的重写，暂时用不到
+     */
     fun overrideConfigMapValues(configMap: MutableMap<String, Any>): Int {
         var overrideCount = 0
         val paths: MutableList<String> = buildPaths(configMap)
