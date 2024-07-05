@@ -36,7 +36,7 @@ open class PhecdaEvent {
             fun fromBaseReading(baseReading: BaseReading): Reading {
                 return Reading().apply {
                     this.identifier = baseReading.resourceName
-                    this.valueType = ValueTypeMapping.deviceToPhecdaValueType[baseReading.valueType]
+                    this.valueType = baseReading.valueType
                     this.utils = baseReading.utils
                     this.binaryValue = baseReading.binaryValue
                     this.mediaType = baseReading.mediaType
