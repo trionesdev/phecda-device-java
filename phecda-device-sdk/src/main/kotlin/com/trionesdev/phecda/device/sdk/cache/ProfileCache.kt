@@ -17,13 +17,13 @@ interface ProfileCache {
             val drMap: MutableMap<String, MutableMap<String, DeviceResource?>?> = mutableMapOf()
             val dcMap: MutableMap<String, MutableMap<String, DeviceCommand?>?> = mutableMapOf()
             profiles.forEach { it ->
-                it.name?.let { deviceName ->
-                    dpMap[deviceName] = it
+                it.name?.let { profileName ->
+                    dpMap[profileName] = it
                     it.deviceResources?.associateBy { it.name!! }?.let { deviceResourceMap ->
-                        drMap[deviceName] = deviceResourceMap.toMutableMap()
+                        drMap[profileName] = deviceResourceMap.toMutableMap()
                     }
                     it.deviceCommands?.associateBy { it.name!! }?.let { deviceCommandMap ->
-                        dcMap[deviceName] = deviceCommandMap.toMutableMap()
+                        dcMap[profileName] = deviceCommandMap.toMutableMap()
                     }
                 }
             }
