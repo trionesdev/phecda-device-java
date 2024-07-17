@@ -103,27 +103,27 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
         return Cache.profiles()?.all() ?: mutableListOf()
     }
 
-    override fun getProfileByName(name: String): DeviceProfile? {
-        return Cache.profiles()?.forName(name)
+    override fun getProfileByProductKey(productKey: String): DeviceProfile? {
+        return Cache.profiles()?.forProductKey(productKey)
     }
 
     override fun updateDeviceProfile(profile: DeviceProfile) {
         Cache.profiles()?.update(profile)
     }
 
-    override fun removeDeviceProfileByName(name: String) {
-        Cache.profiles()?.removeByName(name)
+    override fun removeDeviceProfileByProductKey(productKey: String) {
+        Cache.profiles()?.removeByProductKey(productKey)
     }
 
-    override fun deviceResource(deviceName: String, resourceName: String): DeviceResource? {
+    override fun deviceProperty(deviceName: String, resourceName: String): DeviceProperty? {
         return Cache.devices()?.forName(deviceName)?.let { device ->
-            return device.profileName?.let { Cache.profiles()?.deviceResource(it, resourceName) }
+            return device.productKey?.let { Cache.profiles()?.deviceProperty(it, resourceName) }
         }
     }
 
     override fun deviceCommand(deviceName: String, commandName: String): DeviceCommand? {
         return Cache.devices()?.forName(deviceName)?.let { device ->
-            return device.profileName?.let { Cache.profiles()?.deviceCommand(it, commandName) }
+            return device.productKey?.let { Cache.profiles()?.deviceCommand(it, commandName) }
         }
     }
 
@@ -191,7 +191,7 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
     override fun sendEvent(event: Event) {
         dic?.getInstance(MessagingClient::class.java)?.let { client ->
             client.publish(
-                "${event.profileName}/${event.deviceName}/thing/event/post",
+                "${event.productKey}/${event.deviceName}/thing/event/post",
                 JSON.toJSONBytes(event)
             )
         }
@@ -200,7 +200,7 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
     override fun sendProperty(event: Event) {
         dic?.getInstance(MessagingClient::class.java)?.let { client ->
             client.publish(
-                "${event.profileName}/${event.deviceName}/thing/property/post",
+                "${event.productKey}/${event.deviceName}/thing/property/post",
                 JSON.toJSONBytes(event)
             )
         }
@@ -242,15 +242,15 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
             log.error("Skip sending AsyncValues because the CommandValues is empty.")
             return
         }
-        if (acv?.commandValues?.size!! > 1 && acv.sourceName.isNullOrBlank()) {
+        if (acv?.commandValues?.size!! > 1 && acv.identifier.isNullOrBlank()) {
             log.error("Skip sending AsyncValues because the SourceName is empty.")
             return
         }
         if (acv.commandValues.size == 1 && acv.deviceName.isNullOrBlank()) {
-            acv.sourceName = acv.commandValues[0].deviceResourceName
+            acv.identifier = acv.commandValues[0].identifier
         }
         var configuration = dic?.getInstance(ConfigurationStruct::class.java)
-        val event = Transformer.commandValuesToEvent(acv.commandValues, acv.deviceName!!, acv.sourceName!!, true, dic!!)
+        val event = Transformer.commandValuesToEvent(acv.commandValues, acv.deviceName!!, acv.identifier!!, true, dic!!)
         SdkCommonUtils.sendEvent(event!!, "", dic)
     }
 

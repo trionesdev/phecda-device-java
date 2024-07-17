@@ -26,7 +26,7 @@ import java.util.*
 
 object Transformer {
     fun commandValuesToEvent(
-        cvs: MutableList<CommandValue>, deviceName: String?, sourceName: String, dataTransform: Boolean, dic: Container
+        cvs: MutableList<CommandValue>, deviceName: String?, identifier: String, dataTransform: Boolean, dic: Container
     ): Event? {
         if (cvs.isEmpty()) {
             return null
@@ -38,17 +38,17 @@ object Transformer {
         }
         var transformsOK = true
         val origin: Long = uniqueOrigin()
-        val tags = mutableMapOf<String, Any?>()
+        val tags = mutableMapOf<String, String?>()
         val readings = mutableListOf<BaseReading>()
 
         cvs.forEachIndexed { index, cv ->
             if (Objects.isNull(cv)) {
                 return@forEachIndexed
             }
-            val dr = Cache.profiles()?.deviceResource(device.profileName!!, cv.deviceResourceName!!) ?: let {
+            val dp = Cache.profiles()?.deviceProperty(device.productKey!!, cv.identifier!!) ?: let {
                 val msg = String.format(
                     "failed to find DeviceResource %s in Device %s for CommandValue (%s)",
-                    cv.deviceResourceName,
+                    cv.identifier,
                     deviceName,
                     cv.toString()
                 )
@@ -59,16 +59,16 @@ object Transformer {
             }
             if (dataTransform) {
                 try {
-                    TransformResult.transformReadResult(cv, dr.properties!!)
+                    TransformResult.transformReadResult(cv, dp.properties!!)
                 } catch (e: CommonPhecdaException) {
                     when (e.kind) {
                         KIND_OVERFLOW_ERROR -> {
                             cvs[index] =
-                                CommandValue.newCommandValue(cv.deviceResourceName!!, VALUE_TYPE_STRING, Overflow)
+                                CommandValue.newCommandValue(cv.identifier!!, VALUE_TYPE_STRING, Overflow)
                         }
 
                         KIND_NAN_ERROR -> {
-                            cvs[index] = CommandValue.newCommandValue(cv.deviceResourceName!!, VALUE_TYPE_STRING, NaN)
+                            cvs[index] = CommandValue.newCommandValue(cv.identifier!!, VALUE_TYPE_STRING, NaN)
                         }
 
                         else -> {
@@ -78,16 +78,20 @@ object Transformer {
                 }
             }
             if (!cv.tags.isNullOrEmpty()) {
-                cv.tags.let { tags.putAll(it) }
-            }
-            val ro = Cache.profiles()?.resourceOperation(device.profileName!!, cv.deviceResourceName!!)
-            ro?.let {
-                if (!it.mappings.isNullOrEmpty()) {
-                    TransformResult.mapCommandValue(cv, it.mappings)?.let { itCv -> cvs[index] = itCv }
+                cv.tags.let {
+                    if (it != null) {
+                        tags.putAll(it)
+                    }
                 }
             }
+//            val ro = Cache.profiles()?.resourceOperation(device.profileName!!, cv.deviceResourceName!!)
+//            ro?.let {
+//                if (!it.mappings.isNullOrEmpty()) {
+//                    TransformResult.mapCommandValue(cv, it.mappings)?.let { itCv -> cvs[index] = itCv }
+//                }
+//            }
             val reading =
-                commandValueToReading(cv, deviceName!!, device.profileName!!, dr.properties?.mediaType, origin)
+                commandValueToReading(cv, deviceName!!, device.productKey!!, dp.properties?.mediaType, origin)
             val config = dic.getInstance(ConfigurationStruct::class.java)
             SdkCommonUtils.addReadingTags(reading)
             readings.add(reading)
@@ -98,7 +102,7 @@ object Transformer {
             )
         }
         if (readings.isNotEmpty()) {
-            val event = Event.newEvent(device.profileName, device.name, sourceName).apply {
+            val event = Event.newEvent(device.productKey, device.name, identifier).apply {
                 this.readings = readings
                 this.origin = origin
                 this.tags = tags
@@ -119,18 +123,18 @@ object Transformer {
                 BinaryReading.newBinaryReading(
                     profileName,
                     deviceName,
-                    cv.deviceResourceName,
+                    cv.identifier,
                     cv.binaryValue(),
                     mediaType
                 )
             }
 
             VALUE_TYPE_STRUCT -> {
-                ObjectReading.newObjectReading(profileName, deviceName, cv.deviceResourceName, cv.value)
+                ObjectReading.newObjectReading(profileName, deviceName, cv.identifier, cv.value)
             }
 
             else -> {
-                SimpleReading.newSimpleReading(profileName, deviceName, cv.deviceResourceName, cv.type, cv.value)
+                SimpleReading.newSimpleReading(profileName, deviceName, cv.identifier, cv.type, cv.value)
             }
         }
         if (Objects.nonNull(cv.origin) && cv.origin!! > 0) {

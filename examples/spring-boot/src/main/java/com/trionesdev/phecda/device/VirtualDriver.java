@@ -45,18 +45,18 @@ public class VirtualDriver implements ProtocolDriver {
         for (CommandRequest req : reqs) {
             switch (Objects.requireNonNull(req.getType())) {
                 case VALUE_TYPE_BOOL:
-                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), "Bool", true));
+                    cvs.add(CommandValue.newCommandValue(req.getIdentifier(), VALUE_TYPE_BOOL, true));
                     break;
                 case VALUE_TYPE_INT:
-                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_INT, 1));
+                    cvs.add(CommandValue.newCommandValue(req.getIdentifier(), VALUE_TYPE_INT, 1));
                 case VALUE_TYPE_LONG:
-                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_LONG, 1));
+                    cvs.add(CommandValue.newCommandValue(req.getIdentifier(), VALUE_TYPE_LONG, 1));
                     break;
                 case VALUE_TYPE_FLOAT:
-                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_FLOAT, 1));
+                    cvs.add(CommandValue.newCommandValue(req.getIdentifier(), VALUE_TYPE_FLOAT, 1));
                     break;
                 case VALUE_TYPE_DOUBLE:
-                    cvs.add(CommandValue.newCommandValue(req.getDeviceResourceName(), VALUE_TYPE_DOUBLE, 1));
+                    cvs.add(CommandValue.newCommandValue(req.getIdentifier(), VALUE_TYPE_DOUBLE, 1));
                     break;
 
             }

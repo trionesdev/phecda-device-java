@@ -28,7 +28,7 @@ object TransformResult {
             return
         }
         if (CheckNaN.isNaN(cv)) {
-            val errMsg = String.format("NaN error for DeviceResource %s", cv.deviceResourceName)
+            val errMsg = String.format("NaN error for DeviceResource %s", cv.identifier)
             throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_NAN_ERROR,
                 errMsg,
@@ -370,7 +370,7 @@ object TransformResult {
             it[value.valueToString()]
         }?.let {
             if (it.isNotBlank()) {
-                result = CommandValue.newCommandValue(value.deviceResourceName!!, VALUE_TYPE_STRING, it)
+                result = CommandValue.newCommandValue(value.identifier!!, VALUE_TYPE_STRING, it)
             }
         }
         return result

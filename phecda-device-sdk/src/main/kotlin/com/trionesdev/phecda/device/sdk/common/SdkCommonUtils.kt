@@ -25,12 +25,12 @@ object SdkCommonUtils {
             log.info(JSON.toJSONString(phecdaEvent))
             if (event.tags?.containsKey("event") == true) {
                 client.publish(
-                    "${event.profileName}/${event.deviceName}/thing/event/post",
+                    "${event.productKey}/${event.deviceName}/thing/event/post",
                     JSON.toJSONBytes(phecdaEvent)
                 )
             } else {
                 client.publish(
-                    "${event.profileName}/${event.deviceName}/thing/property/post",
+                    "${event.productKey}/${event.deviceName}/thing/property/post",
                     JSON.toJSONBytes(phecdaEvent)
                 )
             }
@@ -39,7 +39,7 @@ object SdkCommonUtils {
 
     fun addEventTags(event: Event) {
         event.tags ?: let { event.tags = mutableMapOf() }
-        val cmd = Cache.profiles()?.deviceCommand(event.profileName, event.sourceName)
+        val cmd = Cache.profiles()?.deviceCommand(event.productKey, event.identifier)
         cmd?.let {
             if (!cmd.tags.isNullOrEmpty()) {
                 event.tags?.putAll(cmd.tags!!)
@@ -54,7 +54,7 @@ object SdkCommonUtils {
     }
 
     fun addReadingTags(reading: BaseReading) {
-        val dr = Cache.profiles()?.deviceResource(reading?.profileName!!, reading.resourceName!!)
+        val dr = Cache.profiles()?.deviceProperty(reading.productKey!!, reading.identifier!!)
         dr?.let {
             if (!dr.tags.isNullOrEmpty()) {
                 if (reading.tags.isNullOrEmpty()) {

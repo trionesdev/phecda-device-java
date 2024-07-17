@@ -1,0 +1,16 @@
+name: "Random-Binary-Device"
+manufacturer: "IOTech"
+model: "Device-Virtual-01"
+labels:
+  - "device-virtual-example"
+description: "Example of Device-Virtual"
+
+deviceResources:
+  -
+    name: "Binary"
+    isHidden: false
+    description: "Generate random binary value"
+    properties:
+      valueType: "Binary"
+      readWrite: "R"
+      mediaType: "random"
