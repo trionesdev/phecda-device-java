@@ -13,10 +13,10 @@ interface DeviceServiceSDK {
     fun removeDeviceByName(name: String)
     fun addDeviceProfile(profile: DeviceProfile)
     fun deviceProfiles(): MutableList<DeviceProfile>
-    fun getProfileByName(name: String): DeviceProfile?
+    fun getProfileByProductKey(productKey: String): DeviceProfile?
     fun updateDeviceProfile(profile: DeviceProfile)
-    fun removeDeviceProfileByName(name: String)
-    fun deviceResource(deviceName: String, resourceName: String): DeviceResource?
+    fun removeDeviceProfileByProductKey(productKey: String)
+    fun deviceProperty(deviceName: String, resourceName: String): DeviceProperty?
     fun deviceCommand(deviceName: String, commandName: String): DeviceCommand?
     fun addDeviceAutoEvent(deviceName: String, autoEvent: AutoEvent)
     fun removeDeviceAutoEvent(deviceName: String, autoEventName: String)

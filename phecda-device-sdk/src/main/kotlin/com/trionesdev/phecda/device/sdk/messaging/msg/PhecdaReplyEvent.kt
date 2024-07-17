@@ -10,8 +10,8 @@ class PhecdaReplyEvent: PhecdaEvent() {
                 this.version = event.apiVersion
                 this.id = event.id
                 this.deviceName = event.deviceName
-                this.productKey = event.profileName
-                this.sourceName = event.sourceName
+                this.productKey = event.productKey
+                this.identifier = event.identifier
                 this.ts = event.origin
                 this.readings = Reading.fromBaseReadingsToMap(event.readings)
                 this.tags = event.tags

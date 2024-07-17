@@ -6,8 +6,8 @@ import com.trionesdev.phecda.device.sdk.cache.ProfileCache.Companion.newProfileC
 
 object Cache {
     fun initCache(instanceName: String, baseServiceName: String, dic: Container) {
-        newDeviceCache(mutableListOf(), dic)
         newProfileCache(mutableListOf())
+        newDeviceCache(mutableListOf(), dic)
     }
 
     fun devices(): DeviceCache? {
