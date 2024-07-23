@@ -281,7 +281,7 @@ object ApplicationCommand {
                     String.format("DeviceResource %s is marked as read-only", dr.name)
                 )
             }
-            var v = requests?.get(dr.name)
+            var v = requests?.get(dr.identifier)
             v ?: let {
                 if (!dr.properties?.defaultValue.isNullOrBlank()) {
                     v = dr.properties?.defaultValue
