@@ -11,18 +11,18 @@ import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 class CommandValue {
     companion object {
         @JvmStatic
-        fun newCommandValue(deviceResourceName: String?, valueType: String?, value: Any): CommandValue {
+        fun newCommandValue(identifier: String?, valueType: String?, value: Any): CommandValue {
             return CommandValue().apply {
-                this.deviceResourceName = deviceResourceName
+                this.identifier = identifier
                 this.type = valueType
                 this.value = value
             }
         }
 
         @JvmStatic
-        fun newCommandValueWithOrigin(deviceResourceName: String?, valueType: String?, value: Any, origin: Long): CommandValue {
+        fun newCommandValueWithOrigin(identifier: String?, valueType: String?, value: Any, origin: Long): CommandValue {
             return CommandValue().apply {
-                this.deviceResourceName = deviceResourceName
+                this.identifier = identifier
                 this.type = valueType
                 this.value = value
                 this.origin = origin
@@ -31,11 +31,11 @@ class CommandValue {
 
     }
 
-    var deviceResourceName: String? = null
+    var identifier: String? = null
     var type: String? = null
     var value: Any? = null
     var origin: Long? = null
-    val tags: Map<String, String>? = null
+    var tags: Map<String, String?>? = null
 
     fun valueToString(): String {
         return value.toString()
@@ -43,8 +43,8 @@ class CommandValue {
 
     fun string(): String {
         return java.lang.String.format(
-            "DeviceResource: %s, %s: %s",
-            this.deviceResourceName,
+            "DeviceProperty: %s, %s: %s",
+            this.identifier,
             this.type,
             this.valueToString()
         )

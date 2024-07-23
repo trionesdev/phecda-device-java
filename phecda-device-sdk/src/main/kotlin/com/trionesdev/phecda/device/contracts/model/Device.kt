@@ -13,8 +13,11 @@ class Device : DBTimestamp() {
     var labels: MutableList<String>? = null
     var location: Any? = null
     var serviceName: String? = null
-    var profileName: String? = null
+//    var profileName: String? = null
+
+
+    var productKey: String? = null
     var autoEvents: List<AutoEvent>? = null
-    var tags: MutableMap<String, Any>? = null
+    var tags: MutableMap<String, String>? = null
     var properties: MutableMap<String, Any>? = null
 }

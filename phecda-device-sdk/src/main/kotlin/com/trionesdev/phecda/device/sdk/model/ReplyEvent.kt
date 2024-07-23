@@ -12,8 +12,8 @@ class ReplyEvent : Event() {
         event?.let {
             this.id = event.id
             this.deviceName = event.deviceName
-            this.profileName = event.profileName
-            this.sourceName = event.sourceName
+            this.productKey = event.productKey
+            this.identifier = event.identifier
             this.origin = event.origin
             this.readings = event.readings
             this.tags = event.tags

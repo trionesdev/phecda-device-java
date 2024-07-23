@@ -7,17 +7,17 @@ import java.util.*
 open class Event : Versionable() {
     companion object {
         fun newEvent(
-            profileName: String?,
+            productKey: String?,
             deviceName: String?,
-            sourceName: String?,
+            identifier: String?,
         ): Event {
             val versionable = newVersionable()
             return Event().apply {
                 this.apiVersion = versionable.apiVersion
                 this.id = UUID.randomUUID().toString()
-                this.profileName = profileName
+                this.productKey = productKey
                 this.deviceName = deviceName
-                this.sourceName = sourceName
+                this.identifier = identifier
                 this.origin = Instant.now().toEpochMilli()
             }
         }
@@ -25,9 +25,9 @@ open class Event : Versionable() {
 
     var id: String? = null
     var deviceName: String? = null
-    var profileName: String? = null
-    var sourceName: String? = null
+    var productKey: String? = null
+    var identifier: String? = null
     var origin: Long? = null
     var readings: MutableList<BaseReading>? = null
-    var tags: MutableMap<String, Any?>? = null
+    var tags: MutableMap<String, String?>? = null
 }

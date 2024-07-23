@@ -6,17 +6,17 @@ import java.util.*
 open class BaseReading : Reading {
     companion object {
         fun newBaseReading(
-            profileName: String?,
+            productKey: String?,
             deviceName: String?,
-            resourceName: String?,
+            identifier: String?,
             valueType: String?
         ): BaseReading {
             return BaseReading().apply {
                 this.id = UUID.randomUUID().toString()
                 this.origin = Instant.now().toEpochMilli()
                 this.deviceName = deviceName
-                this.resourceName = resourceName
-                this.profileName = profileName
+                this.identifier = identifier
+                this.productKey = productKey
                 this.valueType = valueType
             }
         }
@@ -25,8 +25,8 @@ open class BaseReading : Reading {
     var id: String? = null
     var origin: Long? = null
     var deviceName: String? = null
-    var resourceName: String? = null
-    var profileName: String? = null
+    var productKey: String? = null
+    var identifier: String? = null
     var valueType: String? = null
     val utils: String? = null
     var tags: MutableMap<String, Any>? = mutableMapOf()

@@ -17,19 +17,16 @@ import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_INT_ARRAY
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_LONG
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_LONG_ARRAY
-import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRUCT
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRING_ARRAY
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_STRUCT
 import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_CONTRACT_INVALID
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_ENTITY_DOSE_NOT_EXIST
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_NOT_ALLOWED
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVER_ERROR
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_SERVICE_LOCKED
-import com.trionesdev.phecda.device.contracts.model.Device
-import com.trionesdev.phecda.device.contracts.model.DeviceResource
-import com.trionesdev.phecda.device.contracts.model.DeviceService
-import com.trionesdev.phecda.device.contracts.model.Event
+import com.trionesdev.phecda.device.contracts.model.*
 import com.trionesdev.phecda.device.contracts.model.enums.AdminState
 import com.trionesdev.phecda.device.contracts.model.enums.OperatingState
 import com.trionesdev.phecda.device.sdk.cache.Cache
@@ -40,16 +37,17 @@ import com.trionesdev.phecda.device.sdk.model.CommandRequest
 import com.trionesdev.phecda.device.sdk.model.CommandValue
 import com.trionesdev.phecda.device.sdk.transformer.TransformParam
 import com.trionesdev.phecda.device.sdk.transformer.Transformer
-import java.util.regex.Pattern
 
 
 @Slf4j
 object ApplicationCommand {
+    /**
+     * 获取类型的指令，如果不存在对应表示的指令，则去寻找对应的属性
+     */
     fun getCommand(
         deviceName: String?,
-        commandName: String?,
+        identifier: String?,
         queryParams: String?,
-        regexCmd: Boolean,
         dic: Container
     ): Event? {
         if (deviceName.isNullOrBlank()) {
@@ -59,7 +57,7 @@ object ApplicationCommand {
                 null
             )
         }
-        if (commandName.isNullOrBlank()) {
+        if (identifier.isNullOrBlank()) {
             throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_CONTRACT_INVALID,
                 "command name is empty",
@@ -68,23 +66,19 @@ object ApplicationCommand {
         }
         var res: Event? = null
         validateServiceAndDeviceState(deviceName, dic)?.let { device ->
-            Cache.profiles()?.deviceCommand(device.profileName, commandName)?.let { deviceCommand ->
-                res = readDeviceCommand(device, commandName, queryParams, dic)
+            Cache.profiles()?.deviceCommand(device.productKey, identifier)?.let { deviceCommand ->
+                res = readDeviceCommand(device, identifier, queryParams, dic)
             } ?: let {
-                res = if (regexCmd) {
-                    readDeviceResourcesRegex(device, commandName, queryParams, dic)
-                } else {
-                    readDeviceResource(device, commandName, queryParams, dic)
-                }
+                res =  readDeviceProperty(device, identifier, queryParams, dic)
             }
-            log.debug("GET Device Command successfully. Device: {}, Source: {}", deviceName, commandName)
+            log.debug("GET Device Command successfully. Device: {}, Source: {}", deviceName, identifier)
         }
         return res
     }
 
     fun setCommand(
         deviceName: String?,
-        commandName: String?,
+        identifier: String?,
         queryParams: String?,
         requests: MutableMap<String, Any?>?,
         dic: Container
@@ -92,36 +86,36 @@ object ApplicationCommand {
         if (deviceName.isNullOrBlank()) {
             throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_CONTRACT_INVALID,
-                "device name is empty",
+                "device identifier is empty",
                 null
             )
         }
-        if (commandName.isNullOrBlank()) {
+        if (identifier.isNullOrBlank()) {
             throw CommonPhecdaException.newCommonPhecdaException(
                 KIND_CONTRACT_INVALID,
-                "command name is empty",
+                "command identifier is empty",
                 null
             )
         }
         var event: Event? = null
         validateServiceAndDeviceState(deviceName, dic)?.let { device ->
-            Cache.profiles()?.deviceCommand(device.profileName, commandName)?.let {
-                event = writeDeviceCommand(device, commandName, queryParams, requests, dic)
+            Cache.profiles()?.deviceCommand(device.productKey, identifier)?.let {
+                event = writeDeviceCommand(device, identifier, queryParams, requests, dic)
             } ?: let {
-                event = writeDeviceResource(device, commandName, queryParams, requests, dic)
+                event = writeDeviceResource(device, identifier, queryParams, requests, dic)
             }
             log.debug(
-                "SET Device Command successfully. Device: {}, Source: {}",
+                "SET Device Command successfully. Device: {}, Identifier: {}",
                 deviceName,
-                commandName
+                identifier
             )
         }
         return event
     }
 
 
-    private fun readDeviceResource(device: Device, resourceName: String, attributes: String?, dic: Container): Event? {
-        Cache.profiles()?.deviceResource(device.profileName!!, resourceName)?.let { dr ->
+    private fun readDeviceProperty(device: Device, propertyIdentifier: String, attributes: String?, dic: Container): Event? {
+        Cache.profiles()?.deviceProperty(device.productKey!!, propertyIdentifier)?.let { dr ->
             if (dr.properties?.readWrite.equals(READ_WRITE_W)) {
                 throw CommonPhecdaException(
                     KIND_NOT_ALLOWED,
@@ -131,7 +125,7 @@ object ApplicationCommand {
 
             val reqs: MutableList<CommandRequest> = mutableListOf()
             val req = CommandRequest().apply {
-                this.deviceResourceName = dr.name
+                this.identifier = dr.identifier
                 this.attributes = dr.attributes
                 this.type = dr.properties?.valueType
                 if (attributes?.isNotEmpty() == true) {
@@ -157,64 +151,13 @@ object ApplicationCommand {
         } ?: let {
             throw CommonPhecdaException(
                 KIND_ENTITY_DOSE_NOT_EXIST,
-                String.format("DeviceResource %s not found", resourceName)
+                String.format("DeviceProperty %s not found", propertyIdentifier)
             )
-        }
-    }
-
-    private fun readDeviceResourcesRegex(
-        device: Device,
-        regexResourceName: String?,
-        attributes: String?,
-        dic: Container
-    ): Event? {
-        val regex = Pattern.compile(regexResourceName!!)
-        Cache.profiles()?.deviceResourcesByRegex(device.profileName!!, regex)?.let { deviceResources ->
-            if (deviceResources.isEmpty()) {
-                val errMsg = String.format("Regex DeviceResource %s not found", regexResourceName)
-                throw CommonPhecdaException(KIND_ENTITY_DOSE_NOT_EXIST, errMsg)
-            }
-            val reqs: MutableList<CommandRequest> = mutableListOf()
-            for (dr in deviceResources) {
-                if (dr.properties?.readWrite.equals(READ_WRITE_W)) {
-                    log.debug("DeviceResource {} is marked as write-only, skipping adding to RegEx Read list", dr.name)
-                    continue
-                }
-                val req = CommandRequest().apply {
-                    this.deviceResourceName = dr.name
-                    this.attributes = dr.attributes
-                    this.type = dr.properties?.valueType
-                    if (attributes?.isNotEmpty() == true) {
-                        if (this.attributes?.isEmpty() == true) {
-                            this.attributes = mutableMapOf()
-                        }
-                        this.attributes?.set(URLRawQuery, attributes)
-                    }
-                }
-                reqs.add(req)
-            }
-            if (reqs.isEmpty()) {
-                val errMsg = String.format("no readable resources matched with %s", regexResourceName)
-                throw CommonPhecdaException(KIND_NOT_ALLOWED, errMsg)
-            }
-            val results = dic.getInstance(ProtocolDriver::class.java)!!.let { driver ->
-                driver.handleReadCommands(device.name, device.protocols, reqs)
-            }
-            val configuration = dic.getInstance(ConfigurationStruct::class.java)
-            return Transformer.commandValuesToEvent(
-                results,
-                device.name,
-                regexResourceName,
-                configuration?.device?.dataTransform ?: false,
-                dic
-            )
-        } ?: let {
-            return null
         }
     }
 
     fun readDeviceCommand(device: Device, commandName: String, attributes: String?, dic: Container): Event? {
-        Cache.profiles()?.deviceCommand(device.profileName, commandName)?.let { dc ->
+        Cache.profiles()?.deviceCommand(device.productKey, commandName)?.let { dc ->
             if (dc.readWrite.equals(READ_WRITE_W)) {
                 throw CommonPhecdaException(
                     KIND_NOT_ALLOWED,
@@ -222,52 +165,45 @@ object ApplicationCommand {
                 )
             }
             val configuration = dic.getInstance(ConfigurationStruct::class.java)
-            if (dc.resourceOperations!!.size > configuration!!.device!!.maxCmdOps) {
-                throw CommonPhecdaException(
-                    KIND_SERVER_ERROR,
-                    String.format(
-                        "GET command %s exceed device %s MaxCmdOps (%d)",
-                        dc.name,
-                        device.name,
-                        configuration.device?.maxCmdOps
-                    )
-                )
-            }
-            val reqs = mutableListOf<CommandRequest>()
-            dc.resourceOperations?.forEachIndexed { i, op ->
-                val drName = op.deviceResource
-                Cache.profiles()?.deviceResource(device.profileName!!, drName!!)?.let { dr ->
-                    val req = CommandRequest().apply {
-                        this.deviceResourceName = dr.name
-                        this.attributes = dr.attributes
-                        this.type = dr.properties?.valueType
-                        if (attributes?.isNotEmpty() == true) {
-                            if (this.attributes == null) {
-                                this.attributes = mutableMapOf()
-                            }
-                            this.attributes?.set(URLRawQuery, attributes)
-                        }
-                    }
-                    reqs.add(req)
-                } ?: let {
+            dc.inputData?.let {inputData->
+                if (inputData.size > configuration!!.device!!.maxCmdOps) {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
                         String.format(
-                            "DeviceResource %s in GET command %s for %s not defined",
-                            drName,
+                            "GET command %s exceed device %s MaxCmdOps (%d)",
                             dc.name,
-                            device.name
+                            device.name,
+                            configuration.device?.maxCmdOps
                         )
                     )
                 }
             }
+
+
+            val reqs = mutableListOf<CommandRequest>()
+
+            dc.inputData?.forEachIndexed { i, inputItem ->
+                val req = CommandRequest().apply {
+                    this.identifier = inputItem.identifier
+                    this.attributes = inputItem.attributes
+                    this.type = inputItem.properties?.valueType
+                    if (attributes?.isNotEmpty() == true) {
+                        if (this.attributes == null) {
+                            this.attributes = mutableMapOf()
+                        }
+                        this.attributes?.set(URLRawQuery, attributes)
+                    }
+                }
+                reqs.add(req)
+            }
+
             val results =
                 dic.getInstance(ProtocolDriver::class.java)!!.handleReadCommands(device.name, device.protocols, reqs)
             return Transformer.commandValuesToEvent(
                 results,
                 device.name,
                 dc.name!!,
-                configuration.device?.dataTransform ?: false,
+                configuration?.device?.dataTransform ?: false,
                 dic
             )
         } ?: let {
@@ -280,12 +216,12 @@ object ApplicationCommand {
 
     fun writeDeviceCommand(
         device: Device,
-        commandName: String,
+        identifier: String,
         attributes: String?,
         requests: MutableMap<String, Any?>?,
         dic: Container
     ): Event? {
-        Cache.profiles()?.deviceCommand(device.profileName, commandName)?.let { dc ->
+        Cache.profiles()?.deviceCommand(device.productKey, identifier)?.let { dc ->
             if (dc.readWrite.equals(READ_WRITE_R)) {
                 throw CommonPhecdaException(
                     KIND_NOT_ALLOWED,
@@ -293,78 +229,20 @@ object ApplicationCommand {
                 )
             }
             val configuration = dic.getInstance(ConfigurationStruct::class.java)
-            if (dc.resourceOperations!!.size > configuration!!.device!!.maxCmdOps) {
-                throw CommonPhecdaException(
-                    KIND_SERVER_ERROR,
-                    String.format(
-                        "POST command %s exceed device %s MaxCmdOps (%d)",
-                        dc.name,
-                        device.name,
-                        configuration.device?.maxCmdOps
-                    )
-                )
-            }
             val cvs = mutableListOf<CommandValue>()
-            dc.resourceOperations?.forEachIndexed { i, ro ->
-                val drName = ro.deviceResource
-                Cache.profiles()?.deviceResource(device.profileName!!, drName!!)?.let { dr ->
-                    var value = requests?.get(ro.deviceResource)
-                    value ?: let {
-                        value = if (ro.defaultValue.isNullOrBlank()) {
-                            ro.defaultValue
-                        } else if (dr.properties?.defaultValue.isNullOrBlank()) {
-                            dr.properties?.defaultValue
-                        } else {
-                            throw CommonPhecdaException(
-                                KIND_SERVER_ERROR,
-                                String.format(
-                                    "DeviceResource %s not found in request body and no default value defined",
-                                    dr.name
-                                )
-                            )
-                        }
-                    }
 
-                    if (ro.mappings?.isNotEmpty() == true) {
-                        for ((k, v) in ro.mappings!!) {
-                            if (v == value) {
-                                value = k
-                                break
-                            }
-                        }
-                    }
-                    val cv = createCommandValueFromDeviceResource(dr, value)
-                    cvs.add(cv)
-
-
-                } ?: let {
-                    throw CommonPhecdaException(
-                        KIND_SERVER_ERROR,
-                        String.format(
-                            "DeviceResource %s in SET command %s for %s not defined",
-                            drName,
-                            dc.name,
-                            device.name
-                        )
-                    )
-                }
+            dc.inputData?.forEachIndexed { i, inputItem ->
+                val cv = createCommandValue(inputItem.identifier!!,inputItem.properties!!.valueType!!, requests?.get(inputItem.identifier))
+                cvs.add(cv)
             }
             val reqs = mutableListOf<CommandRequest>()
-            cvs.forEach { cv ->
-                val dr = Cache.profiles()?.deviceResource(device.profileName!!, cv.deviceResourceName!!)
-                val req = CommandRequest().apply {
-                    this.deviceResourceName = cv.deviceResourceName
-                    this.attributes = dr?.attributes
+            cvs.forEach { cv->
+                var req = CommandRequest().apply {
+                    this.identifier = cv.identifier
                     this.type = cv.type
-                    if (!attributes.isNullOrBlank()) {
-                        if (this.attributes.isNullOrEmpty()) {
-                            this.attributes = mutableMapOf()
-                        }
-                        this.attributes?.set(URLRawQuery, attributes)
-                    }
                 }
-                if (configuration.device?.dataTransform == true) {
-                    TransformParam.transformWriteParameter(cv, dr?.properties)
+                if (configuration?.device?.dataTransform == true) {
+//                    TransformParam.transformWriteParameter(cv, dr?.properties)
                 }
                 reqs.add(req)
             }
@@ -375,28 +253,28 @@ object ApplicationCommand {
                 return Transformer.commandValuesToEvent(
                     cvs,
                     device.name,
-                    commandName,
+                    identifier,
                     false,
                     dic
                 )
             }
             return null
-        } ?: let {
+        }?: let {
             throw CommonPhecdaException(
                 KIND_ENTITY_DOSE_NOT_EXIST,
-                String.format("DeviceCommand %s not found", commandName)
+                String.format("DeviceCommand %s not found", identifier)
             )
         }
     }
 
     fun writeDeviceResource(
         device: Device,
-        resourceName: String,
+        identifier: String,
         attributes: String?,
         requests: MutableMap<String, Any?>?,
         dic: Container
     ): Event? {
-        Cache.profiles()?.deviceResource(device.profileName!!, resourceName)?.let { dr ->
+        Cache.profiles()?.deviceProperty(device.productKey!!, identifier)?.let { dr ->
             if (dr.properties?.readWrite.equals(READ_WRITE_R)) {
                 throw CommonPhecdaException(
                     KIND_NOT_ALLOWED,
@@ -420,7 +298,7 @@ object ApplicationCommand {
             }
             val cv = createCommandValueFromDeviceResource(dr, v)
             val req = CommandRequest().apply {
-                this.deviceResourceName = cv.deviceResourceName
+                this.identifier = cv.identifier
                 this.attributes = dr.attributes
                 this.type = cv.type
                 if (!attributes.isNullOrBlank()) {
@@ -442,7 +320,7 @@ object ApplicationCommand {
                 return Transformer.commandValuesToEvent(
                     mutableListOf(cv),
                     device.name,
-                    resourceName,
+                    identifier,
                     false,
                     dic
                 )
@@ -451,7 +329,7 @@ object ApplicationCommand {
         } ?: let {
             throw CommonPhecdaException(
                 KIND_ENTITY_DOSE_NOT_EXIST,
-                String.format("DeviceResource %s not found", resourceName)
+                String.format("DeviceResource %s not found", identifier)
             )
         }
     }
@@ -475,53 +353,52 @@ object ApplicationCommand {
         }
     }
 
-    fun createCommandValueFromDeviceResource(dr: DeviceResource, value: Any?): CommandValue {
-        var result = CommandValue()
+    fun createCommandValue(identifier: String,valueType: String, value: Any?): CommandValue {
         val v = StrUtil.join("", value);
-
-        if (!dr.properties?.valueType.equals(VALUE_TYPE_STRING) && StrUtil.trim(v) == "") {
+        if (!valueType.equals(VALUE_TYPE_STRING) && StrUtil.trim(v) == "") {
             throw CommonPhecdaException(
                 KIND_CONTRACT_INVALID,
-                String.format("empty string is invalid for %v value type", dr.properties?.valueType)
+                String.format("empty string is invalid for %v value type", valueType)
             )
         }
-        when (dr.properties?.valueType) {
+        var result: CommandValue = CommandValue()
+        when (valueType) {
             VALUE_TYPE_BOOL -> {
-                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_BOOL, v.toBoolean())
+                result = CommandValue.newCommandValue(identifier, VALUE_TYPE_BOOL, v.toBoolean())
             }
 
             VALUE_TYPE_STRING -> {
-                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_STRING, v)
+                result = CommandValue.newCommandValue(identifier, VALUE_TYPE_STRING, v)
             }
 
             VALUE_TYPE_INT -> {
-                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_INT, v.toInt())
+                result = CommandValue.newCommandValue(identifier, VALUE_TYPE_INT, v.toInt())
             }
 
             VALUE_TYPE_LONG -> {
-                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_LONG, v.toInt())
+                result = CommandValue.newCommandValue(identifier, VALUE_TYPE_LONG, v.toInt())
             }
 
             VALUE_TYPE_FLOAT -> {
-                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_FLOAT, v.toFloat())
+                result = CommandValue.newCommandValue(identifier, VALUE_TYPE_FLOAT, v.toFloat())
             }
 
             VALUE_TYPE_DOUBLE -> {
-                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_DOUBLE, v.toDouble())
+                result = CommandValue.newCommandValue(identifier, VALUE_TYPE_DOUBLE, v.toDouble())
             }
 
             VALUE_TYPE_STRUCT -> {
-                result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_STRUCT, v)
+                result = CommandValue.newCommandValue(identifier, VALUE_TYPE_STRUCT, v)
             }
 
             VALUE_TYPE_BOOL_ARRAY -> {
                 try {
                     val array = JSON.parseArray(v, Boolean::class.java)
-                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_BOOL_ARRAY, array)
+                    result = CommandValue.newCommandValue(identifier, VALUE_TYPE_BOOL_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
-                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                        String.format("failed to convert set parameter %s to ValueType %s", valueType)
                     )
                 }
             }
@@ -529,11 +406,11 @@ object ApplicationCommand {
             VALUE_TYPE_STRING_ARRAY -> {
                 try {
                     val array = JSON.parseArray(v, String::class.java)
-                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_STRING_ARRAY, array)
+                    result = CommandValue.newCommandValue(identifier, VALUE_TYPE_STRING_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
-                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                        String.format("failed to convert set parameter %s to ValueType %s", valueType)
                     )
                 }
             }
@@ -541,11 +418,11 @@ object ApplicationCommand {
             VALUE_TYPE_INT_ARRAY -> {
                 try {
                     val array = JSON.parseArray(v, Int::class.java)
-                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_INT_ARRAY, array)
+                    result = CommandValue.newCommandValue(identifier, VALUE_TYPE_INT_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
-                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                        String.format("failed to convert set parameter %s to ValueType %s", valueType)
                     )
                 }
             }
@@ -553,11 +430,11 @@ object ApplicationCommand {
             VALUE_TYPE_LONG_ARRAY -> {
                 try {
                     val array = JSON.parseArray(v, Long::class.java)
-                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_LONG_ARRAY, array)
+                    result = CommandValue.newCommandValue(identifier, VALUE_TYPE_LONG_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
-                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                        String.format("failed to convert set parameter %s to ValueType %s", valueType)
                     )
                 }
             }
@@ -565,11 +442,11 @@ object ApplicationCommand {
             VALUE_TYPE_FLOAT_ARRAY -> {
                 try {
                     val array = JSON.parseArray(v, Float::class.java)
-                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_FLOAT_ARRAY, array)
+                    result = CommandValue.newCommandValue(identifier, VALUE_TYPE_FLOAT_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
-                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                        String.format("failed to convert set parameter %s to ValueType %s", valueType)
                     )
                 }
             }
@@ -577,11 +454,11 @@ object ApplicationCommand {
             VALUE_TYPE_DOUBLE_ARRAY -> {
                 try {
                     val array = JSON.parseArray(v, Double::class.java)
-                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_DOUBLE_ARRAY, array)
+                    result = CommandValue.newCommandValue(identifier, VALUE_TYPE_DOUBLE_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
-                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                        String.format("failed to convert set parameter %s to ValueType %s", valueType)
                     )
                 }
             }
@@ -589,11 +466,11 @@ object ApplicationCommand {
             VALUE_TYPE_STRING_ARRAY -> {
                 try {
                     val array = JSON.parseObject(v, Object::class.java)
-                    result = CommandValue.newCommandValue(dr.name, VALUE_TYPE_STRING_ARRAY, array)
+                    result = CommandValue.newCommandValue(identifier, VALUE_TYPE_STRING_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
                         KIND_SERVER_ERROR,
-                        String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                        String.format("failed to convert set parameter %s to ValueType %s", valueType)
                     )
                 }
             }
@@ -601,12 +478,15 @@ object ApplicationCommand {
             else -> {
                 throw CommonPhecdaException(
                     KIND_SERVER_ERROR,
-                    String.format("failed to convert set parameter %s to ValueType %s", dr.properties?.valueType)
+                    String.format("failed to convert set parameter %s to ValueType %s",  valueType)
                 )
             }
         }
-        //TODO
         return result
+    }
+
+    fun createCommandValueFromDeviceResource(dr: DeviceProperty, value: Any?): CommandValue {
+        return createCommandValue(dr.identifier!!, dr.properties!!.valueType!!, value)
     }
 
 }
