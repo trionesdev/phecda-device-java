@@ -20,17 +20,18 @@ deviceCommands:
   -
     identifier: "temperature"
     name: "temperature"
-    properties:
-      callType: "Async"
-      inputData:
-        -
-          identifier: "temperature"
-          name: "温度"
+    callType: "Async"
+    inputData:
+      -
+        identifier: "temperature"
+        name: "温度"
+        properties:
           valueType: "Int"
-      outputData:
-        -
-          identifier: "temperature"
-          name: "温度"
+    outputData:
+      -
+        identifier: "temperature"
+        name: "温度"
+        properties:
           valueType: "Int"
 
 
@@ -38,11 +39,11 @@ deviceEvents:
   -
     identifier: "temperature"
     name: "temperature"
-    properties:
-      type: 'Info'
-      outputData:
-        - identifier: "temperature"
-          name: "温度"
+    type: 'Info'
+    outputData:
+      - identifier: "temperature"
+        name: "温度"
+        properties:
           valueType: "Int"
 
 deviceResources:
