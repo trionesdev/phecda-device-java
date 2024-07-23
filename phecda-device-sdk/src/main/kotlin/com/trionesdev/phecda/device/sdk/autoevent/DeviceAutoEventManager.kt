@@ -37,7 +37,7 @@ class DeviceAutoEventManager : AutoEventManager {
                 } catch (e: Exception) {
                     log.error(
                         "failed to create executor of AutoEvent {} for Device {}: {}",
-                        autoEvent.sourceName,
+                        autoEvent.identifier,
                         deviceName,
                         e.message,
                         e

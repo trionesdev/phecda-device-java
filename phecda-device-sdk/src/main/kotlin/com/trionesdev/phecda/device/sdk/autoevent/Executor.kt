@@ -24,23 +24,23 @@ class Executor {
             val duration = Duration.parse( autoEvent.interval!!)
             return Executor().apply {
                 this.deviceName = deviceName
-                this.sourceName = autoEvent.sourceName
+                this.identifier = autoEvent.identifier
                 this.onChange = autoEvent.onChange == true
                 this.duration = duration
                 this.stop = false
             }
         }
 
-        fun readResource(e: Executor, dic: Container): Event? {
+        fun readProperty(e: Executor, dic: Container): Event? {
             val vars: MutableMap<String, String?> = HashMap(2)
             vars[NAME] = e.deviceName
-            vars[COMMAND] = e.sourceName
-            return ApplicationCommand.getCommand(e.deviceName!!, e.sourceName!!, "", false, dic)
+            vars[COMMAND] = e.identifier
+            return ApplicationCommand.getCommand(e.deviceName!!, e.identifier!!, "", dic)
         }
     }
 
     private var deviceName: String? = null
-    private var sourceName: String? = null
+    private var identifier: String? = null
     private var onChange: Boolean = false
     private var lastReadings: MutableMap<String, Any>? = null
     private var duration: Duration? = null
@@ -56,11 +56,11 @@ class Executor {
             override fun run() {
                 var evt: Event? = null
                 try {
-                    evt = readResource(executor, dic)
+                    evt = readProperty(executor, dic)
                 } catch (e: Exception) {
                     log.error(
                         "AutoEvent - error occurs when reading resource {}: {}",
-                        sourceName,
+                        identifier,
                         e.message,
                         e
                     )
@@ -75,13 +75,13 @@ class Executor {
                     SdkCommonUtils.sendEvent(it, correlationId, dic)
                     log.trace(
                         "AutoEvent - Sent new Event/Reading for '{}' source with Correlation Id '{}'",
-                        it.sourceName,
+                        it.identifier,
                         correlationId
                     )
                 } ?: let {
                     log.debug(
                         "AutoEvent - no event generated when reading resource {}",
-                        sourceName
+                        identifier
                     )
                 }
             }
@@ -104,17 +104,17 @@ class Executor {
         }
         var result = true
         for (reading in readings) {
-            val lastReading = lastReadings!![reading.resourceName!!]
+            val lastReading = lastReadings!![reading.identifier!!]
             lastReading?.let {
                 if (CommonConstants.VALUE_TYPE_BINARY == reading.valueType) {
                     val checksum = xxHash64.hash(reading.binaryValue, 0, reading.binaryValue!!.size, 0)
                     if (lastReading != checksum) {
-                        lastReadings!![reading.resourceName!!] = checksum
+                        lastReadings!![reading.identifier!!] = checksum
                         result = false
                     }
                 } else {
                     if (lastReading != reading.value!!) {
-                        lastReadings!![reading.resourceName!!] = reading.value!!
+                        lastReadings!![reading.identifier!!] = reading.value!!
                         result = false
                     }
                 }
@@ -130,14 +130,14 @@ class Executor {
         lastReadings = mutableMapOf()
         for (reading in readings) {
             if (CommonConstants.VALUE_TYPE_BINARY == reading.valueType) {
-                reading.resourceName?.let {
+                reading.identifier?.let {
                     lastReadings!!.put(
                         it,
                         xxHash64.hash(reading.binaryValue, 0, reading.binaryValue?.size ?: 0, 0)
                     )
                 }
             } else {
-                lastReadings!![reading.resourceName!!] = reading.value!!
+                lastReadings!![reading.identifier!!] = reading.value!!
             }
         }
     }

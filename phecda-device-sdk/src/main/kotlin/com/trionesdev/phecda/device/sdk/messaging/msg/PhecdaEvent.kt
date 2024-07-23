@@ -12,8 +12,8 @@ open class PhecdaEvent {
                 this.version = event.apiVersion
                 this.id = event.id
                 this.deviceName = event.deviceName
-                this.productKey = event.profileName
-                this.sourceName = event.sourceName
+                this.productKey = event.productKey
+                this.identifier = event.identifier
                 this.ts = event.origin
                 this.readings = Reading.fromBaseReadingsToMap(event.readings)
                 this.tags = event.tags
@@ -25,17 +25,17 @@ open class PhecdaEvent {
     var id: String? = null
     var deviceName: String? = null
     var productKey: String? = null
-    var sourceName: String? = null
+    var identifier: String? = null
     var ts: Long? = null
     var readings: MutableMap<String, Reading>? = mutableMapOf()
-    var tags: MutableMap<String, Any?>? = mutableMapOf()
+    var tags: MutableMap<String, String?>? = mutableMapOf()
 
 
     class Reading {
         companion object {
             fun fromBaseReading(baseReading: BaseReading): Reading {
                 return Reading().apply {
-                    this.identifier = baseReading.resourceName
+                    this.identifier = baseReading.identifier
                     this.valueType = baseReading.valueType
                     this.utils = baseReading.utils
                     this.binaryValue = baseReading.binaryValue

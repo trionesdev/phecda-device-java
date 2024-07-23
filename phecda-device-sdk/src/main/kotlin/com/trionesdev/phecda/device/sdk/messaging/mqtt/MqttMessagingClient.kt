@@ -92,8 +92,8 @@ class MqttMessagingClient : MessagingClient {
                         this.id = command.id
                         this.replyId = command.id
                         this.deviceName = command.deviceName
-                        this.profileName = command.productKey
-                        this.sourceName = command.commandName
+                        this.productKey = command.productKey
+                        this.identifier = command.commandName
                         this.origin = Instant.now().toEpochMilli()
                     }
 
@@ -111,7 +111,6 @@ class MqttMessagingClient : MessagingClient {
                                     command.deviceName,
                                     command.commandName,
                                     queryParams,
-                                    true,
                                     dic!!
                                 )
                                 replyEvent.applyEvent(evt)
