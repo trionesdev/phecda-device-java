@@ -11,6 +11,7 @@ open class PhecdaEvent {
             return PhecdaEvent().apply {
                 this.version = event.apiVersion
                 this.id = event.id
+                this.type = event.type
                 this.deviceName = event.deviceName
                 this.productKey = event.productKey
                 this.identifier = event.identifier
@@ -23,6 +24,7 @@ open class PhecdaEvent {
 
     var version: String? = null
     var id: String? = null
+    var type: String? = null
     var deviceName: String? = null
     var productKey: String? = null
     var identifier: String? = null

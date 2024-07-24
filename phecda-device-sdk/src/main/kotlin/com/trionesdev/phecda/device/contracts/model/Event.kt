@@ -1,5 +1,6 @@
 package com.trionesdev.phecda.device.contracts.model
 
+import com.trionesdev.phecda.device.contracts.common.CommonConstants.EVENT_TYPE_PROPERTY
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
 import java.time.Instant
 import java.util.*
@@ -15,6 +16,7 @@ open class Event : Versionable() {
             return Event().apply {
                 this.apiVersion = versionable.apiVersion
                 this.id = UUID.randomUUID().toString()
+                this.type = EVENT_TYPE_PROPERTY
                 this.productKey = productKey
                 this.deviceName = deviceName
                 this.identifier = identifier
@@ -24,6 +26,7 @@ open class Event : Versionable() {
     }
 
     var id: String? = null
+    var type: String? = null
     var deviceName: String? = null
     var productKey: String? = null
     var identifier: String? = null

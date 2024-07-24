@@ -143,7 +143,7 @@ object ApplicationCommand {
             return Transformer.commandValuesToEvent(
                 results,
                 device.name,
-                dr.name!!,
+                dr.identifier!!,
                 configuration?.device?.dataTransform ?: false,
                 dic
             )
@@ -202,7 +202,7 @@ object ApplicationCommand {
             return Transformer.commandValuesToEvent(
                 results,
                 device.name,
-                dc.name!!,
+                dc.identifier!!,
                 configuration?.device?.dataTransform ?: false,
                 dic
             )

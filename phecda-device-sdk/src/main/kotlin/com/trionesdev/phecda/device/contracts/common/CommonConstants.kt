@@ -59,4 +59,8 @@ object CommonConstants {
 
     //endregion
 
+    const val EVENT_TYPE_EVENT = "event"
+    const val EVENT_TYPE_COMMAND = "command"
+    const val EVENT_TYPE_PROPERTY = "property"
+
 }
