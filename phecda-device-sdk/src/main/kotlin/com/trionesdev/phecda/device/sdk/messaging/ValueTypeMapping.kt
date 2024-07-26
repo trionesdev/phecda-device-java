@@ -1,5 +1,6 @@
 package com.trionesdev.phecda.device.sdk.messaging
 
+@Deprecated("")
 object ValueTypeMapping {
     val deviceToPhecdaValueType = mapOf(
         "Bool" to "BOOL",
