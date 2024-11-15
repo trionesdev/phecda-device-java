@@ -7,7 +7,6 @@ import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.contracts.model.Event
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
 import com.trionesdev.phecda.device.sdk.cache.Cache
-import com.trionesdev.phecda.device.sdk.config.ConfigurationStruct
 import com.trionesdev.phecda.device.sdk.messaging.MessagingClient
 import com.trionesdev.phecda.device.sdk.messaging.msg.PhecdaEvent
 
