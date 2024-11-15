@@ -1,5 +1,6 @@
 package com.trionesdev.phecda.device.contracts.model
 
+@Deprecated("Use DeviceProperty instead")
 class DeviceResource {
     var name: String? = null
     var description: String? = null

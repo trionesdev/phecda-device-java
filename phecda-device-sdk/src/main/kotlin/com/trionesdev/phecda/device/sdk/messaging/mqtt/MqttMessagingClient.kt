@@ -70,7 +70,7 @@ class MqttMessagingClient : MessagingClient {
             mqttClient!!.publish("$topicPrefix/$topic", mqttMessage)
         } catch (e: MqttException) {
             log.error(e.message, e)
-            throw java.lang.RuntimeException(e)
+            throw RuntimeException(e)
         }
     }
 
@@ -78,26 +78,26 @@ class MqttMessagingClient : MessagingClient {
         Cache.profiles()?.all()?.let { profiles ->
             for (profile in profiles) {
                 mqttClient?.subscribe(
-                    "$topicPrefix/${profile.name}/+/thing/service/+",
+                    "$topicPrefix/${profile.productKey}/+/thing/command/+",
                     0
                 ) { topic: String?, message: MqttMessage ->
                     val command = JSON.parseObject(
                         message.payload,
                         PhecdaCommand::class.java
                     )
-                    val queryParams = command.params?.map { "${it.key}=${it.value}" }?.joinToString("&")
-                    val syncReplayTopic = "$topicPrefix/thing/service/${command.id}/reply/sync"
-                    val asyncReplayTopic = "$topicPrefix/thing/service/${command.id}/reply/async"
+                    val queryParams = command.inputData?.map { "${it.key}=${it.value}" }?.joinToString("&")
+                    val syncReplayTopic = "$topicPrefix/thing/command/${command.id}/reply/sync"
+                    val asyncReplayTopic = "$topicPrefix/thing/command/${command.id}/reply/async"
                     val replyEvent: ReplyEvent = ReplyEvent().apply {
                         this.id = command.id
                         this.replyId = command.id
                         this.deviceName = command.deviceName
                         this.productKey = command.productKey
-                        this.identifier = command.commandName
+                        this.identifier = command.identifier
                         this.origin = Instant.now().toEpochMilli()
                     }
 
-                    val deviceCommand = Cache.profiles()?.deviceCommand(profile.name, command.commandName)
+                    val deviceCommand = Cache.profiles()?.deviceCommand(profile.productKey, command.identifier)
                     if (deviceCommand == null) {
                         replyEvent.apply {
                             code = "1"
@@ -109,7 +109,7 @@ class MqttMessagingClient : MessagingClient {
                             try {
                                 val evt = ApplicationCommand.getCommand(
                                     command.deviceName,
-                                    command.commandName,
+                                    command.identifier,
                                     queryParams,
                                     dic!!
                                 )
@@ -123,9 +123,9 @@ class MqttMessagingClient : MessagingClient {
                             try {
                                 val evt = ApplicationCommand.setCommand(
                                     command.deviceName,
-                                    command.commandName,
+                                    command.identifier,
                                     queryParams,
-                                    command.body,
+                                    command.inputData,
                                     dic!!
                                 )
                                 replyEvent.applyEvent(evt)

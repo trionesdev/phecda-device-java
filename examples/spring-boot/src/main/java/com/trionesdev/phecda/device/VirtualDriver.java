@@ -49,6 +49,7 @@ public class VirtualDriver implements ProtocolDriver {
                     break;
                 case VALUE_TYPE_INT:
                     cvs.add(CommandValue.newCommandValue(req.getIdentifier(), VALUE_TYPE_INT, 1));
+                    break;
                 case VALUE_TYPE_LONG:
                     cvs.add(CommandValue.newCommandValue(req.getIdentifier(), VALUE_TYPE_LONG, 1));
                     break;
