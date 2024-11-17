@@ -1,18 +1,15 @@
 # Pre-define Devices
 deviceList:
-  - name: Random-Binary-Device
-    productKey: Random-Binary-Device
+  - name: device_0001
+    productKey: trionesdev-test001
     description: Example of Device Virtual
     labels:
       - device-virtual-example
     tags:
-      productKey: 'a'
-    protocols:
-      other:
-        Address: device-virtual-bool-01
-        Port: 300
+      env: test
+    protocols: {}
     autoEvents:
       - interval: 10s
         onChange: false
-        identifier: Bool
+        identifier: temperature
 
