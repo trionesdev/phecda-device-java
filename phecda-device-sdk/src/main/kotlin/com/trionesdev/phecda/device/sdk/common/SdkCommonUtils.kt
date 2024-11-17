@@ -18,7 +18,6 @@ object SdkCommonUtils {
      * this is a method send event to things platform
      */
     fun sendEvent(event: Event, correlationID: String?, dic: Container) {
-        log.info(JSON.toJSONString(event))
         dic.getInstance(MessagingClient::class.java)?.let { client ->
             val phecdaEvent = PhecdaEvent.newPhecdaEvent(event)
             log.info(JSON.toJSONString(phecdaEvent))

@@ -1,5 +1,5 @@
-productKey: 'Random-Binary-Device'
-name: "Random-Binary-Device"
+productKey: 'trionesdev-test001'
+name: "测试设备-Device"
 manufacturer: "IOTech"
 model: "Device-Virtual-01"
 labels:
@@ -8,7 +8,7 @@ description: "Example of Device-Virtual"
 
 deviceProperties:
   -
-    identifier: "Bool"
+    identifier: "temperature"
     name: "温度"
     description: "温度"
     properties:
@@ -18,8 +18,8 @@ deviceProperties:
 
 deviceCommands:
   -
-    identifier: "temperature"
-    name: "temperature"
+    identifier: "get_temperature"
+    name: "获取温度"
     callType: "Async"
     inputData:
       -
@@ -37,9 +37,9 @@ deviceCommands:
 
 deviceEvents:
   -
-    identifier: "temperature"
-    name: "temperature"
-    type: 'Info'
+    identifier: "temperature_alarm"
+    name: "温度报警"
+    type: 'Warn'
     outputData:
       - identifier: "temperature"
         name: "温度"
