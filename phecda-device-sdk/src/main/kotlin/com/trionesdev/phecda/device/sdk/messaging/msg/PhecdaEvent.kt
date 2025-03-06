@@ -13,7 +13,6 @@ open class PhecdaEvent {
                 this.type = event.type
                 this.deviceName = event.deviceName
                 this.productKey = event.productKey
-                this.identifier = event.identifier
                 this.ts = event.origin
                 this.readings = Reading.fromBaseReadingsToMap(event.readings)
                 this.tags = event.tags
@@ -36,7 +35,6 @@ open class PhecdaEvent {
         companion object {
             fun fromBaseReading(baseReading: BaseReading): Reading {
                 return Reading().apply {
-                    this.identifier = baseReading.identifier
                     this.valueType = baseReading.valueType
                     this.utils = baseReading.utils
                     this.binaryValue = baseReading.binaryValue
