@@ -101,7 +101,7 @@ class MqttMessagingClient : MessagingClient {
                     if (deviceCommand == null) {
                         replyEvent.apply {
                             code = "1"
-                            errMsg = "指令不存在"
+                            errMsg = "command not found"
                         }
                     } else {
                         val method = if (deviceCommand.readWrite == CommonConstants.READ_WRITE_R) "get" else "set"
