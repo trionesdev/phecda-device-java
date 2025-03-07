@@ -1,4 +1,4 @@
-productKey: 'trionesdev-test001'
+productKey: "WubBERZBJs"
 name: "测试设备-Device"
 manufacturer: "IOTech"
 model: "Device-Virtual-01"
@@ -6,42 +6,36 @@ labels:
   - "device-virtual-example"
 description: "Example of Device-Virtual"
 
+
 deviceProperties:
-  -
-    identifier: "temperature"
-    name: "温度"
-    description: "温度"
+  - identifier: "temperature"
+    name: "温度值"
+    description: ""
     properties:
       valueType: "Int"
       readWrite: "R"
-
-
 deviceCommands:
-  -
-    identifier: "get_temperature"
-    name: "获取温度"
+  - identifier: "get_temperature"
+    name: "获取温度值"
+    description: ""
     callType: "Async"
-    inputData:
-      -
-        identifier: "temperature"
-        name: "温度"
-        properties:
-          valueType: "Int"
-    outputData:
-      -
-        identifier: "temperature"
-        name: "温度"
-        properties:
-          valueType: "Int"
-
-
-deviceEvents:
-  -
-    identifier: "temperature_alarm"
-    name: "温度报警"
-    type: 'Warn'
-    outputData:
+    inputProps:
       - identifier: "temperature"
-        name: "温度"
+        name: "温度值"
+        properties:
+          valueType: "Int"
+    outputProps:
+      - identifier: "temperature"
+        name: "温度值"
+        properties:
+          valueType: "Int"
+deviceEvents:
+  - identifier: "temperature_alarm"
+    name: "温度报警"
+    description: ""
+    type: "Warn"
+    outputProps:
+      - identifier: "temperature"
+        name: "温度值"
         properties:
           valueType: "Int"

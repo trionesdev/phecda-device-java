@@ -1,7 +1,7 @@
 # Pre-define Devices
 deviceList:
-  - name: device_0001
-    productKey: trionesdev-test001
+  - name: temperature0001
+    productKey: WubBERZBJs
     description: Example of Device Virtual
     labels:
       - device-virtual-example

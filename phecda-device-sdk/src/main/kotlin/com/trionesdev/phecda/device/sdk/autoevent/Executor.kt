@@ -65,23 +65,32 @@ class Executor {
                         e
                     )
                 }
-                evt?.let {
-                    if (onChange) {
-                        if (!compareReadings(it.readings!!)) {
-                            log.debug("AutoEvent - readings are the same as previous one")
+                try {
+                    evt?.let {
+                        if (onChange) {
+                            if (!compareReadings(it.readings!!)) {
+                                log.debug("AutoEvent - readings are the same as previous one")
+                            }
                         }
+                        val correlationId = UUID.randomUUID().toString()
+                        SdkCommonUtils.sendEvent(it, correlationId, dic)
+                        log.trace(
+                            "AutoEvent - Sent new Event/Reading for '{}' source with Correlation Id '{}'",
+                            it.identifier,
+                            correlationId
+                        )
+                    } ?: let {
+                        log.debug(
+                            "AutoEvent - no event generated when reading resource {}",
+                            identifier
+                        )
                     }
-                    val correlationId = UUID.randomUUID().toString()
-                    SdkCommonUtils.sendEvent(it, correlationId, dic)
-                    log.trace(
-                        "AutoEvent - Sent new Event/Reading for '{}' source with Correlation Id '{}'",
-                        it.identifier,
-                        correlationId
-                    )
-                } ?: let {
-                    log.debug(
-                        "AutoEvent - no event generated when reading resource {}",
-                        identifier
+                }catch (e: Exception){
+                    log.error(
+                        "AutoEvent - error occurs when reading resource {}: {}",
+                        identifier,
+                        e.message,
+                        e
                     )
                 }
             }

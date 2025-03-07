@@ -35,6 +35,7 @@ open class PhecdaEvent {
         companion object {
             fun fromBaseReading(baseReading: BaseReading): Reading {
                 return Reading().apply {
+                    this.identifier = baseReading.identifier
                     this.valueType = baseReading.valueType
                     this.utils = baseReading.utils
                     this.binaryValue = baseReading.binaryValue
@@ -53,7 +54,8 @@ open class PhecdaEvent {
                 if (baseReadings.isNullOrEmpty()) {
                     return mutableMapOf()
                 }
-                return baseReadings.map { fromBaseReading(it) }.associateBy { it.identifier!! }.toMutableMap()
+                return baseReadings.map {  fromBaseReading(it) }.associateBy() {  it.identifier!!; }.toMutableMap()
+
             }
 
         }
