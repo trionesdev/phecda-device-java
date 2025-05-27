@@ -61,20 +61,20 @@ public void main(String[] args) {
 
 ##### 字段说明
 
-| 属性                           | 说明                      | 类型                             | 默认值        |
-|------------------------------|-------------------------|--------------------------------|------------|
-| version                      | 版本号                     | String                         |            |
-| id                           | 信息ID                    | String                         |            |
-| type                         | 消息类型`property`          | String                         | `property` |
-| deviceName                   | 设备名称(全局唯一)              | String                         |            |
-| productKey                   | 产品KEY                   | String                         |            |
-| productKey                   | 产品KEY                   | String                         |            |
-| ts                           | 时间戳                     | Long                           |            |
-| readings                     | 内容 Map 类型，key 就是属性的name | Map<String,Map<String,Object>> |            |
-| readings\[key\]              | 属性name                  | String                         |            |
-| readings\[key\]\[ts\]        | 属性时间戳                   | Long                           |            |
-| readings\[key\]\[value\]     | 属性值                     | String                         |            |
-| readings\[key\]\[valueType\] | 属性值类型 `Int`\|`String`   | String                         |            |
+| 属性                           | 说明                    | 类型                             | 默认值        |
+|------------------------------|-----------------------|--------------------------------|------------|
+| version                      | 版本号                   | String                         |            |
+| id                           | 信息ID                  | String                         |            |
+| type                         | 消息类型`property`        | String                         | `property` |
+| deviceName                   | 设备名称(全局唯一)            | String                         |            |
+| productKey                   | 产品KEY                 | String                         |            |
+| productKey                   | 产品KEY                 | String                         |            |
+| ts                           | 时间戳                   | Long                           |            |
+| readings                     | 内容 Map 类型，key 就是属性的标识 | Map<String,Map<String,Object>> |            |
+| readings\[key\]              | 属性标识                  | String                         |            |
+| readings\[key\]\[ts\]        | 属性时间戳                 | Long                           |            |
+| readings\[key\]\[value\]     | 属性值                   | String                         |            |
+| readings\[key\]\[valueType\] | 属性值类型 `Int`\|`String` | String                         |            |
 
 
 #### 互相吹捧，共同进步
