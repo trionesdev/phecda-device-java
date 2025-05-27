@@ -355,7 +355,7 @@ object ApplicationCommand {
 
     fun createCommandValue(identifier: String,valueType: String, value: Any?): CommandValue {
         val v = StrUtil.join("", value);
-        if (!valueType.equals(VALUE_TYPE_STRING) && StrUtil.trim(v) == "") {
+        if (valueType != VALUE_TYPE_STRING && StrUtil.trim(v) == "") {
             throw CommonPhecdaException(
                 KIND_CONTRACT_INVALID,
                 String.format("empty string is invalid for %v value type", valueType)
