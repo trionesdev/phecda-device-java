@@ -14,11 +14,11 @@ import java.nio.file.Paths
 
 object Provision {
 
-    enum class FileType {
-        YAML,
-        JSON,
-        OTHER
-    }
+//    enum class FileType {
+//        YAML,
+//        JSON,
+//        OTHER
+//    }
 
     private fun getFileType(path: String): FileType {
         return if (path.endsWith(".yaml") || path.endsWith(".yml")) {

@@ -1,9 +1,9 @@
 package com.trionesdev.phecda.device.sdk.common
 
-import com.alibaba.fastjson2.JSON
 import com.trionesdev.kotlin.log.Slf4j
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
+import com.trionesdev.phecda.device.bootstrap.util.GsonUtils
 import com.trionesdev.phecda.device.contracts.model.Event
 import com.trionesdev.phecda.device.contracts.model.reading.BaseReading
 import com.trionesdev.phecda.device.sdk.cache.Cache
@@ -20,16 +20,16 @@ object SdkCommonUtils {
     fun sendEvent(event: Event, correlationID: String?, dic: Container) {
         dic.getInstance(MessagingClient::class.java)?.let { client ->
             val phecdaEvent = PhecdaEvent.newPhecdaEvent(event)
-            log.info(JSON.toJSONString(phecdaEvent))
+            log.info(GsonUtils.toJson(phecdaEvent))
             if (event.tags?.containsKey("event") == true) {
                 client.publish(
                     "${event.productKey}/${event.deviceName}/thing/event/post",
-                    JSON.toJSONBytes(phecdaEvent)
+                    GsonUtils.toJson(phecdaEvent)?.toByteArray()
                 )
             } else {
                 client.publish(
                     "${event.productKey}/${event.deviceName}/thing/property/post",
-                    JSON.toJSONBytes(phecdaEvent)
+                    GsonUtils.toJson(phecdaEvent)?.toByteArray()
                 )
             }
         }
