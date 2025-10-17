@@ -1,6 +1,6 @@
 package com.trionesdev.phecda.device.sdk.service
 
-import com.alibaba.fastjson2.JSON
+//import com.alibaba.fastjson2.JSON
 import com.lmax.disruptor.EventHandler
 import com.lmax.disruptor.dsl.Disruptor
 import com.trionesdev.kotlin.log.Slf4j
@@ -11,6 +11,7 @@ import com.trionesdev.phecda.device.bootstrap.args.DefaultArgs
 import com.trionesdev.phecda.device.bootstrap.di.Container
 import com.trionesdev.phecda.device.bootstrap.environement.Variables
 import com.trionesdev.phecda.device.bootstrap.startup.Timer
+import com.trionesdev.phecda.device.bootstrap.util.GsonUtils
 import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.contracts.errors.ErrorKind.KIND_DUPLICATE_NAME
 import com.trionesdev.phecda.device.contracts.go.WaitGroup
@@ -192,7 +193,8 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
         dic?.getInstance(MessagingClient::class.java)?.let { client ->
             client.publish(
                 "${event.productKey}/${event.deviceName}/thing/event/post",
-                JSON.toJSONBytes(event)
+//                JSON.toJSONBytes(event)
+                GsonUtils.toJsonBytes(event)
             )
         }
     }
@@ -201,7 +203,8 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
         dic?.getInstance(MessagingClient::class.java)?.let { client ->
             client.publish(
                 "${event.productKey}/${event.deviceName}/thing/property/post",
-                JSON.toJSONBytes(event)
+//                JSON.toJSONBytes(event)
+                GsonUtils.toJsonBytes(event)
             )
         }
     }

@@ -1,9 +1,10 @@
 package com.trionesdev.phecda.device.sdk.messaging.mqtt
 
-import com.alibaba.fastjson2.JSON
+//import com.alibaba.fastjson2.JSON
 import com.trionesdev.kotlin.log.Slf4j
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
+import com.trionesdev.phecda.device.bootstrap.util.GsonUtils
 import com.trionesdev.phecda.device.contracts.common.CommonConstants
 import com.trionesdev.phecda.device.contracts.errors.CommonPhecdaException
 import com.trionesdev.phecda.device.sdk.application.ApplicationCommand
@@ -81,10 +82,11 @@ class MqttMessagingClient : MessagingClient {
                     "$topicPrefix/${profile.productKey}/+/thing/command/+",
                     0
                 ) { topic: String?, message: MqttMessage ->
-                    val command = JSON.parseObject(
-                        message.payload,
-                        PhecdaCommand::class.java
-                    )
+//                    val command = JSON.parseObject(
+//                        message.payload,
+//                        PhecdaCommand::class.java
+//                    )
+                    val command = GsonUtils.parseObject(message.payload, PhecdaCommand::class.java)
                     val queryParams = command.inputData?.map { "${it.key}=${it.value}" }?.joinToString("&")
                     val syncReplayTopic = "$topicPrefix/thing/command/${command.id}/reply/sync"
                     val asyncReplayTopic = "$topicPrefix/thing/command/${command.id}/reply/async"
@@ -139,9 +141,11 @@ class MqttMessagingClient : MessagingClient {
 
                     val payload = PhecdaReplyEvent.newPhecdaReplyEvent(replyEvent)
                     if (command.sync == true) {
-                        mqttClient?.publish(syncReplayTopic, MqttMessage(JSON.toJSONBytes(payload)))
+//                        mqttClient?.publish(syncReplayTopic, MqttMessage(JSON.toJSONBytes(payload)))
+                        mqttClient?.publish(syncReplayTopic, MqttMessage(GsonUtils.toJsonBytes(payload)))
                     } else {
-                        mqttClient?.publish(asyncReplayTopic, MqttMessage(JSON.toJSONBytes(payload)))
+//                        mqttClient?.publish(asyncReplayTopic, MqttMessage(JSON.toJSONBytes(payload)))
+                        mqttClient?.publish(asyncReplayTopic, MqttMessage(GsonUtils.toJsonBytes(payload)))
                     }
                 }
             }

@@ -1,9 +1,11 @@
 package com.trionesdev.phecda.device.sdk.provision
 
 import cn.hutool.core.io.resource.ResourceUtil
-import com.alibaba.fastjson2.JSON
-import com.alibaba.fastjson2.TypeReference
+//import com.alibaba.fastjson2.JSON
+//import com.alibaba.fastjson2.TypeReference
+import com.google.gson.reflect.TypeToken
 import com.trionesdev.phecda.device.bootstrap.di.Container
+import com.trionesdev.phecda.device.bootstrap.util.GsonUtils
 import com.trionesdev.phecda.device.contracts.model.Device
 import com.trionesdev.phecda.device.contracts.model.DeviceProfile
 import com.trionesdev.phecda.device.contracts.model.DeviceService
@@ -73,8 +75,8 @@ object Provision {
             }
 
             FileType.JSON -> {
-                devices =
-                    JSON.parseObject(ResourceUtil.getUtf8Reader(path), object : TypeReference<List<Device>>() {}.type)
+//                devices = JSON.parseObject(ResourceUtil.getUtf8Reader(path), object : TypeReference<List<Device>>() {}.type)
+                devices = GsonUtils.getGson().fromJson(ResourceUtil.getUtf8Reader(path), object : TypeToken<List<Device>>() {}.type)
             }
 
             FileType.OTHER -> {
@@ -115,11 +117,13 @@ object Provision {
         when (fileType) {
             FileType.YAML -> {
                 val profileMap: MutableMap<String, Any> = Yaml().load(ResourceUtil.getStream(path))
-                profile = JSON.parseObject(JSON.toJSONString(profileMap), DeviceProfile::class.java)
+//                profile = JSON.parseObject(JSON.toJSONString(profileMap), DeviceProfile::class.java)
+                profile = GsonUtils.getGson().fromJson(GsonUtils.toJson(profileMap), DeviceProfile::class.java)
             }
 
             FileType.JSON -> {
-                profile = JSON.parseObject(ResourceUtil.getUtf8Reader(path), DeviceProfile::class.java)
+//                profile = JSON.parseObject(ResourceUtil.getUtf8Reader(path), DeviceProfile::class.java)
+                profile = GsonUtils.getGson().fromJson(ResourceUtil.getUtf8Reader(path), DeviceProfile::class.java)
             }
 
             FileType.OTHER -> {

@@ -1,10 +1,11 @@
 package com.trionesdev.phecda.device.sdk.application
 
 import cn.hutool.core.util.StrUtil
-import com.alibaba.fastjson2.JSON
+//import com.alibaba.fastjson2.JSON
 import com.trionesdev.kotlin.log.Slf4j
 import com.trionesdev.kotlin.log.Slf4j.Companion.log
 import com.trionesdev.phecda.device.bootstrap.di.Container
+import com.trionesdev.phecda.device.bootstrap.util.GsonUtils
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.READ_WRITE_R
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.READ_WRITE_W
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_BOOL
@@ -393,7 +394,8 @@ object ApplicationCommand {
 
             VALUE_TYPE_BOOL_ARRAY -> {
                 try {
-                    val array = JSON.parseArray(v, Boolean::class.java)
+//                    val array = JSON.parseArray(v, Boolean::class.java)
+                    val array = GsonUtils.getGson().fromJson(v, BooleanArray::class.java)
                     result = CommandValue.newCommandValue(identifier, VALUE_TYPE_BOOL_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
@@ -405,7 +407,8 @@ object ApplicationCommand {
 
             VALUE_TYPE_STRING_ARRAY -> {
                 try {
-                    val array = JSON.parseArray(v, String::class.java)
+//                    val array = JSON.parseArray(v, String::class.java)
+                    val array = GsonUtils.getGson().fromJson(v, Array<String>::class.java)
                     result = CommandValue.newCommandValue(identifier, VALUE_TYPE_STRING_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
@@ -417,7 +420,8 @@ object ApplicationCommand {
 
             VALUE_TYPE_INT_ARRAY -> {
                 try {
-                    val array = JSON.parseArray(v, Int::class.java)
+//                    val array = JSON.parseArray(v, Int::class.java)
+                    val array = GsonUtils.getGson().fromJson(v, IntArray::class.java)
                     result = CommandValue.newCommandValue(identifier, VALUE_TYPE_INT_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
@@ -429,7 +433,8 @@ object ApplicationCommand {
 
             VALUE_TYPE_LONG_ARRAY -> {
                 try {
-                    val array = JSON.parseArray(v, Long::class.java)
+//                    val array = JSON.parseArray(v, Long::class.java)
+                    val array = GsonUtils.getGson().fromJson(v, LongArray::class.java)
                     result = CommandValue.newCommandValue(identifier, VALUE_TYPE_LONG_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
@@ -441,7 +446,8 @@ object ApplicationCommand {
 
             VALUE_TYPE_FLOAT_ARRAY -> {
                 try {
-                    val array = JSON.parseArray(v, Float::class.java)
+//                    val array = JSON.parseArray(v, Float::class.java)
+                    val array = GsonUtils.getGson().fromJson(v, FloatArray::class.java)
                     result = CommandValue.newCommandValue(identifier, VALUE_TYPE_FLOAT_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
@@ -453,7 +459,8 @@ object ApplicationCommand {
 
             VALUE_TYPE_DOUBLE_ARRAY -> {
                 try {
-                    val array = JSON.parseArray(v, Double::class.java)
+//                    val array = JSON.parseArray(v, Double::class.java)
+                    val array = GsonUtils.getGson().fromJson(v, DoubleArray::class.java)
                     result = CommandValue.newCommandValue(identifier, VALUE_TYPE_DOUBLE_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(
@@ -465,7 +472,8 @@ object ApplicationCommand {
 
             VALUE_TYPE_STRING_ARRAY -> {
                 try {
-                    val array = JSON.parseObject(v, Object::class.java)
+//                    val array = JSON.parseObject(v, Object::class.java)
+                    val array = GsonUtils.getGson().fromJson(v, Array<Any>::class.java)
                     result = CommandValue.newCommandValue(identifier, VALUE_TYPE_STRING_ARRAY, array)
                 } catch (e: Exception) {
                     throw CommonPhecdaException(

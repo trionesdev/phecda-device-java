@@ -1,6 +1,7 @@
 package com.trionesdev.phecda.device.contracts.model.reading
 
-import com.alibaba.fastjson2.JSON
+//import com.alibaba.fastjson2.JSON
+import com.trionesdev.phecda.device.bootstrap.util.GsonUtils
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_BOOL
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_BOOL_ARRAY
 import com.trionesdev.phecda.device.contracts.common.CommonConstants.VALUE_TYPE_DOUBLE
@@ -49,7 +50,7 @@ open class SimpleReading : Reading {
                 VALUE_TYPE_STRING -> value.toString()
                 VALUE_TYPE_BOOL_ARRAY, VALUE_TYPE_STRING_ARRAY,
                 VALUE_TYPE_INT_ARRAY, VALUE_TYPE_LONG_ARRAY,
-                VALUE_TYPE_FLOAT_ARRAY, VALUE_TYPE_DOUBLE_ARRAY -> JSON.toJSONString(value)
+                VALUE_TYPE_FLOAT_ARRAY, VALUE_TYPE_DOUBLE_ARRAY -> GsonUtils.toJson(value)
 
                 else -> throw RuntimeException(MessageFormat.format("invalid simple reading type of {}", valueType))
             }
