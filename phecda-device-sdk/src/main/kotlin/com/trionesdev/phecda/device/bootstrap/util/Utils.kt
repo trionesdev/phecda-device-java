@@ -1,24 +1,27 @@
 package com.trionesdev.phecda.device.bootstrap.util
 
 import cn.hutool.core.bean.BeanUtil
-import com.alibaba.fastjson2.JSON
+import com.google.gson.reflect.TypeToken
 
 object Utils {
     fun mergeValues(dest: Any, src: Any) {
         var destMap: MutableMap<String, Any>? = null
         var srcMap: MutableMap<String, Any>? = null
         destMap = if (dest !is Map<*, *>) {
-            JSON.parseObject(JSON.toJSONString(dest))
+//            JSON.parseObject(JSON.toJSONString(dest))
+            GsonUtils.fromJson(GsonUtils.toJson(dest), object : TypeToken<MutableMap<String, Any>>() {}.type)
         } else {
             dest as MutableMap<String, Any>
         }
         srcMap = if (src !is Map<*, *>) {
-            JSON.parseObject(JSON.toJSONString(src))
+//            JSON.parseObject(JSON.toJSONString(src))
+            GsonUtils.fromJson(GsonUtils.toJson(src), object : TypeToken<MutableMap<String, Any>>() {}.type)
         } else {
             src as MutableMap<String, Any>
         }
         mergeMaps(destMap!!, srcMap!!)
-        val destNew = JSON.parseObject(JSON.toJSONString(destMap), dest.javaClass)
+//        val destNew = JSON.parseObject(JSON.toJSONString(destMap), dest.javaClass)
+        val destNew = GsonUtils.parseObject(destMap, dest.javaClass)
         BeanUtil.copyProperties(destNew, dest, true)
     }
 

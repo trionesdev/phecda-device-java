@@ -2,6 +2,8 @@ package com.trionesdev.phecda.device.bootstrap.util
 
 import com.google.gson.*
 import com.google.gson.annotations.Expose
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 
 object GsonUtils {
@@ -40,4 +42,30 @@ object GsonUtils {
     fun toJson(obj: Any?): String? {
         return gson.toJson(obj)
     }
+
+    fun parseObject(obj: Any): JsonObject? {
+       return gson.toJsonTree( obj).asJsonObject
+    }
+
+    fun <T> parseObject(obj: Any,clazz: Class<T>?): T? {
+        return if (obj is String){
+            gson.fromJson(obj, clazz)
+        }else{
+            gson.fromJson(gson.toJson(obj), clazz)
+        }
+    }
+
+    fun <T> fromJson(json: String?, clazz: Class<T>?): T? {
+        return gson.fromJson(json, clazz)
+    }
+
+    fun <T> fromJson(json: String?,  typeOfT: Type): T? {
+        return gson.fromJson(json, typeOfT)
+    }
+
+    fun <T> fromJson(json: JsonElement?, typeToken: TypeToken<T>): T? {
+        return gson.fromJson(json, typeToken)
+    }
+
+
 }
