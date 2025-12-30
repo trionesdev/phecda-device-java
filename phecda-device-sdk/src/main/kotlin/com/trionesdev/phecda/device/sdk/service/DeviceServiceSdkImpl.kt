@@ -76,6 +76,7 @@ class DeviceServiceSdkImpl : DeviceServiceSDK {
             )
         }
         device.serviceName = serviceKey
+        Cache.devices()?.add(device)
         log.debug("Adding managed Device {}", device.name)
         return ""
     }
